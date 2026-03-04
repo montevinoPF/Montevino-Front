@@ -1,3 +1,12 @@
+export interface IProduct {
+  id: number;
+  name: string;
+  ingredients: string;
+  price: number;
+  image: string;
+  categoryId: number;
+}
+
 export interface ILogin {
   email: string;
   password: string;
@@ -12,16 +21,12 @@ export interface IRegister {
   email: string;
   password: string;
   name: string;
-  address: string;
-  phone: string;
 }
 
 export interface IRegisterErrors {
   email?: string;
   password?: string;
   name?: string;
-  address?: string;
-  phone?: string;
 }
 
 export interface IUserSession {
@@ -29,9 +34,6 @@ export interface IUserSession {
   user: {
     id: number;
     name: string;
-    address: string;
-    phone: string;
     email: string;
-    orders: [];
   };
 }

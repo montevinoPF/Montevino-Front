@@ -22,7 +22,6 @@ export interface IAuthProvider {
 export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
-  const router = useRouter();
 
   useEffect(() => {
     if (userData) {
