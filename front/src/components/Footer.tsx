@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] py-2 px-2 mt-20">
+    <footer className="bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] py-2 px-2">
       <div className="w-[80%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
 
         {/* Información */}
