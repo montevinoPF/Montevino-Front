@@ -1,6 +1,5 @@
 "use client";
 import { IUserSession } from "@/types/types";
-import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export interface IAuthContext {
