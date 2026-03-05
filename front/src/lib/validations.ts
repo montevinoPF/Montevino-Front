@@ -51,15 +51,5 @@ export const registerValidations = (values: IRegister) => {
     errors.name = "El nombre solo puede contener letras y espacios";
   }
 
-  if (!values.address) {
-    errors.address = "La direccion es obligatoria";
-  }
-
-  if (!values.phone.trim()) {
-    errors.phone = "El numero de telefono es obligatorio";
-  } else if (!/^\d{10}$/.test(values.phone)) {
-    errors.phone = "El numero de telefono debe tener 10 digitos";
-  }
-
   return errors;
 };
