@@ -1,5 +1,4 @@
 "use client";
-import { useAuth } from "@/context/AuthContext";
 import { registerValidations } from "@/lib/validations";
 import { register } from "@/services/authService";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -8,7 +7,6 @@ import { useRouter } from "next/navigation";
 
 const RegisterView = () => {
   const router = useRouter();
-  const { setUserData } = useAuth();
   return (
     <div className="flex flex-col items-center justify-center mt-35">
       <Formik
@@ -21,7 +19,7 @@ const RegisterView = () => {
       >
         {({ isSubmitting }) => (
           <Form className="flex flex-col gap-3 w-full max-w-sm items-center justify-center px-7 py-10 shadow-2xl rounded-2xl">
-            <h1 className="text-3xl">Crear Cuenta</h1>
+            <h1 className="text-3xl text-[#56070C]">Crear Cuenta</h1>
             <span className="text-center">
               Registrate para gestionar tus reservas y hacer nuevas
             </span>

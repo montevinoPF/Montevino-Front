@@ -23,7 +23,7 @@ const LoginView = () => {
       >
         {({ isSubmitting }) => (
           <Form className="flex flex-col gap-3 w-full max-w-sm items-center justify-center px-7 py-10 shadow-2xl rounded-2xl">
-            <h1 className="text-3xl">Iniciar Sesion</h1>
+            <h1 className="text-3xl text-[#56070C]">Iniciar Sesion</h1>
             <span className="text-center">
               Accede a tu cuenta para ver tus reservas y hacer nuevas
             </span>

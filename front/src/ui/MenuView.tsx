@@ -1,5 +1,5 @@
 import Card from "@/components/Card";
-import { IProduct } from "../types";
+import { IProduct } from "../types/types";
 
 const sampleProducts: IProduct[] = [
   {
