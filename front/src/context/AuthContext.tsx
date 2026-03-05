@@ -1,6 +1,5 @@
 "use client";
 import { IUserSession } from "@/types/types";
-import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export interface IAuthContext {
@@ -22,7 +21,6 @@ export interface IAuthProvider {
 export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
-  const router = useRouter();
 
   useEffect(() => {
     if (userData) {
