@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 const RegisterView = () => {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center mt-35">
+    <div className="flex flex-col items-center justify-center mt-35 mb-15">
       <Formik
         initialValues={{ name: "", email: "", password: "" }}
         validate={registerValidations}
