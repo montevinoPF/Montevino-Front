@@ -1,6 +1,17 @@
-import { IProduct } from "@/types"
+import { IProduct } from "@/types/types";
 
-const Card: React.FC<IProduct> = ({
+const Card: React.FC<IProduct> = ({ name, price, image, id }) => {
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
+      <div className="bg-slate-50 p-4">
+        <div className="aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center">
+          <img
+            src={image}
+            alt={name}
+            className="h-36 w-36 object-contain md:h-40 md:w-40 "
+          />
+        </div>
+      </div>
 
     name, price, image, id, ingredients
 

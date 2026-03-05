@@ -1,6 +1,6 @@
 'use client'
 import Card from "@/components/Card";
-import { IProduct } from "../types";
+import { IProduct } from "../types/types";
 
 const sampleProducts: IProduct[] = [
   { id: 1, name: "Carne a la parrilla", ingredients: "carne, papas, lechuga, tomate.", price: 8999, image: "https://c.pxhere.com/photos/97/5d/pork_yummy_delicious_dinner_tasty_cuisine_grilled_meat-1386775.jpg!d", categoryId: 1 },
@@ -8,9 +8,13 @@ const sampleProducts: IProduct[] = [
   { id: 3, name: "Mariscos", ingredients: "Mariscos, Limon, Lechuga.", price: 15999, image: "https://centrosantafe.com.mx/cdn/shop/articles/restaurantes-de-mariscos-y-otras-opciones-para-comer-en-cuaresma.jpg?v=1552671997", categoryId: 1 }
 ];
 
-
 const MenuView = () => {
-     return (
+  return (
+    <div>
+      <section>
+        <div className="w-full py-24">
+          <p className="text-center text-7xl font-black ">Menu</p>
+        </div>
         <div>
        
             <section> 
@@ -32,7 +36,8 @@ const MenuView = () => {
                 
             </section>  
         </div>
-        
+      </section>
+    </div>
   );
 };
 
