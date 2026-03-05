@@ -13,22 +13,36 @@ const Card: React.FC<IProduct> = ({ name, price, image, id }) => {
         </div>
       </div>
 
-      <div className="p-5 ">
-        <h3 className="text-base font-semibold text-slate-900 line-clamp-2 flex items-center justify-center ">
-          {name}
-        </h3>
+    name, price, image, id, ingredients
 
-        <p className="text-lg font-bold text-slate-900 flex items-center justify-center">
-          {" "}
-          ${price}
-        </p>
-      </div>
+}) => {
+    return (
+        <article className="rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-lg">
+                <div>
+                    <div className="aspect-square w-full overflow-hidden rounded-xl bg-white flex items-center justify-center">
+                        <img 
+                        src={image} 
+                        className="h-60 w-60 object-contain md:h-70 md:w-70" />
+                    </div>
+                </div>
 
-      <button className="btn-primary mt-4 w-full rounded-xl py-2 text-sm font-semibold">
-        Reservar
-      </button>
-    </article>
-  );
-};
+                <div className="p-5 ">
+                    <h3 className="text-2xl font-bold text-slate-900 line-clamp-2 flex items-center justify-center">
+                        {name}
+                    </h3>
 
-export default Card;
+                    <h3 className="text-base font-semibold text-slate-900 line-clamp-2 flex items-center justify-center">
+                        {ingredients}
+                    </h3>
+                
+                    <p className="text-lg font-bold text-slate-900 flex items-center justify-center"> ${price}</p>
+                </div>
+
+            <button className="btn-primary mt-4 w-full rounded-xl py-2 text-sm font-bold">
+                VER MAS
+            </button>
+        </article>
+    )
+}
+
+export default Card
