@@ -10,7 +10,7 @@ const LoginView = () => {
   const router = useRouter();
   const { setUserData } = useAuth();
   return (
-    <div className="flex flex-col items-center justify-center mt-35">
+    <div className="flex flex-col items-center justify-center mt-35 mb-15">
       <Formik
         initialValues={{ email: "", password: "" }}
         validate={loginValidations}
