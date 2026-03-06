@@ -1,15 +1,31 @@
+"use client";
 import Link from "next/link";
 import { FaInstagram, FaFacebook, FaWhatsapp } from "react-icons/fa";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext"; // Importamos el contexto
 
 export default function Footer() {
+  const { userData, setUserData } = useAuth();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userSession");
+    setUserData(null);
+  };
+
   return (
     <footer className="bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] py-2 px-2">
       <div className="w-[80%] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
 
         {/* Información */}
         <div>
-          <Image src="/logo.png" alt="Logo Montevino" width={120} height={70} className="object-contain max-h-14 scale-[2.5]" priority />
+          <Image 
+            src="/logo.png" 
+            alt="Logo Montevino" 
+            width={120} 
+            height={70} 
+            className="object-contain max-h-14 scale-[2.5]" 
+            priority 
+          />
           <p className="text-sm">
             Restaurante y bodega de excelencia.  
             Experiencia gastronómica cálida y sofisticada.
@@ -35,8 +51,24 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/" className="hover:text-[#FFD580] transition">Inicio</Link></li>
             <li><Link href="/menu" className="hover:text-[#FFD580] transition">Menú</Link></li>
-            <li><Link href="/reservar" className="hover:text-[#FFD580] transition">Reservar</Link></li>
-            <li><Link href="/mis-reservas" className="hover:text-[#FFD580] transition">Mis Reservas</Link></li>
+            {userData && (
+              <>
+                <li><Link href="/reservar" className="hover:text-[#FFD580] transition">Reservar</Link></li>
+                <li><Link href="/mis-reservas" className="hover:text-[#FFD580] transition">Mis Reservas</Link></li>
+              </>
+            )}
+            {!userData ? (
+              <li><Link href="/login" className="hover:text-[#FFD580] transition">Iniciar sesión</Link></li>
+            ) : (
+              <li>
+                <button 
+                  onClick={handleLogout} 
+                  className="hover:text-[#FFD580] transition"
+                >
+                  Cerrar sesión
+                </button>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -65,4 +97,5 @@ export default function Footer() {
     </footer>
   );
 }
+
 
