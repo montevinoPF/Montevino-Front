@@ -2,7 +2,6 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { reservationStatus } from '../reservation-status.enum';
 import { Users } from 'src/modules/users/entities/user.entity';
 
-
 @Entity({
   name: 'RESERVATIONS',
 })

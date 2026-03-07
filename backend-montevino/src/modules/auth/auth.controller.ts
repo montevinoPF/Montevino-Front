@@ -9,11 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginUserDto } from './dto/login-user.dto';
 import type { Response } from 'express';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {

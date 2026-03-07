@@ -1,6 +1,6 @@
 import { Reservations } from 'src/modules/reservations/entities/reservation.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { usersRole } from '../users.role.enum';
+import { usersRole } from '../users-role.enum';
 
 @Entity({
   name: 'USERS',
