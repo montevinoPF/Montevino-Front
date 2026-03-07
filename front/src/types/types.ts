@@ -4,8 +4,8 @@ export interface IProduct {
   ingredients: string;
   price: number;
   image: string;
-  categoryId: number;
 }
+
 
 export interface ILogin {
   email: string;
