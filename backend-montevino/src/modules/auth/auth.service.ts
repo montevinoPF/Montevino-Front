@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Auth0Config } from 'src/config/auth0.confing';
+import { Auth0Config } from 'src/config/auth0.config';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import axios from 'axios';
