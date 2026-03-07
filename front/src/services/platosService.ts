@@ -1,8 +1,10 @@
+import { IProduct } from "@/types/types";
+
 export interface IPlatoFromBack {
   id: string;
   name: string;
   price: string;
-  ingredients: string;
+  ingredientes: string;
   description: string;
   imageUrl: string;
   stock: number;
@@ -35,3 +37,16 @@ export const getPlatos = async () => {
 
   return res.json();
 };
+
+export const adaptPlato = (plato: any) : IProduct => ({
+    id: Number(plato.id),
+    name: plato.name,
+    price: Number(plato.price),
+    ingredientes: plato.ingredients,
+    imageUrl: plato.imageUrl,
+    description: plato.description,
+    category: plato.category ? {
+      id: Number(plato.category.id),
+      name: plato.category.name,
+    } : undefined,
+  });
