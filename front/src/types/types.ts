@@ -6,7 +6,6 @@ export interface IProduct {
   image: string;
 }
 
-
 export interface ILogin {
   email: string;
   password: string;

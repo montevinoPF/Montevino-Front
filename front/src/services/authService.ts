@@ -5,7 +5,7 @@ const APIURL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function login(userData: ILogin) {
   try {
-    const response = await fetch(`${APIURL}/users/login`, {
+    const response = await fetch(`${APIURL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -13,10 +13,24 @@ export async function login(userData: ILogin) {
       body: JSON.stringify(userData),
     });
 
-    const parsedResponse = await response.json();
-    if (!parsedResponse.token) {
-      throw new Error(parsedResponse.message);
+    const data = await response.json();
+    console.log("Data received:", data);
+    if (!data.access_token) {
+      throw new Error(data.message);
     }
+
+    const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
+    const decodedData = {
+      token: data.access_token,
+      user: {
+        id: decodedToken.sub,
+        email: decodedToken.email,
+        name: decodedToken.name,
+      },
+    };
+
+    console.log("Decoded data:", decodedData);
+
     await Swal.fire({
       icon: "success",
       title: "Bienvenido",
@@ -24,7 +38,7 @@ export async function login(userData: ILogin) {
       timer: 1000,
       showConfirmButton: false,
     });
-    return parsedResponse;
+    return decodedData;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     await Swal.fire({
@@ -39,17 +53,19 @@ export async function login(userData: ILogin) {
 
 export async function register(userData: IRegister) {
   try {
-    const response = await fetch(`${APIURL}/users/register`, {
+    const response = await fetch(`${APIURL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify(userData),
     });
+    console.log(response);
 
-    const parsedResponse = await response.json();
-    if (!parsedResponse.name) {
-      throw new Error(parsedResponse.message);
+    const data = await response.json();
+    console.log(data);
+    if (!data.name) {
+      throw new Error(data.message);
     }
     await Swal.fire({
       icon: "success",

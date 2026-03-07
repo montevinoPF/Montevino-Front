@@ -22,7 +22,7 @@ const LoginView = () => {
         }}
       >
         {({ isSubmitting }) => (
-          <Form className="flex flex-col gap-3 w-full max-w-sm items-center justify-center px-7 py-10 shadow-2xl rounded-2xl">
+          <Form className="flex flex-col items-center justify-center w-full max-w-sm gap-3 py-10 shadow-2xl px-7 rounded-2xl">
             <h1 className="text-3xl text-[#56070C]">Iniciar Sesion</h1>
             <span className="text-center">
               Accede a tu cuenta para ver tus reservas y hacer nuevas
@@ -35,12 +35,12 @@ const LoginView = () => {
               type="email"
               name="email"
               placeholder="tuemail@mail.com"
-              className="border border-gray-300 p-2 rounded-md w-full"
+              className="w-full p-2 border border-gray-300 rounded-md"
             />
             <ErrorMessage
               name="email"
               component="div"
-              className="text-red-500 self-start"
+              className="self-start text-red-500"
             />
             <label htmlFor="password" className="self-start">
               Contraseña
@@ -50,14 +50,14 @@ const LoginView = () => {
               type="password"
               name="password"
               placeholder="•••••••"
-              className="border border-gray-300 p-2 rounded-md w-full"
+              className="w-full p-2 border border-gray-300 rounded-md"
             />
             <ErrorMessage
               name="password"
               component="div"
-              className="text-red-500 self-start"
+              className="self-start text-red-500"
             />
-            <span className="text-sm self-end hover:cursor-pointer">
+            <span className="self-end text-sm hover:cursor-pointer">
               Olvidaste tu contraseña?
             </span>
             <button
@@ -68,8 +68,8 @@ const LoginView = () => {
               Entrar
             </button>
             <span>o</span>
-            <button className="border border-gray-300 p-2 rounded-md w-full hover:cursor-pointer">
-              <div className="flex items-center gap-2 justify-center">
+            <button className="w-full p-2 border border-gray-300 rounded-md hover:cursor-pointer">
+              <div className="flex items-center justify-center gap-2">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/500px-Google_%22G%22_logo.svg.png"
                   alt="Google logo"
