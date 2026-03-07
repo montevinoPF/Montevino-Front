@@ -3,7 +3,8 @@ import {
   IsNotEmpty,
   Matches,
   MaxLength,
-  MinLength,} from 'class-validator';
+  MinLength,
+} from 'class-validator';
 
 export class LoginUserDto {
   @IsNotEmpty()

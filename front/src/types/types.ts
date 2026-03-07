@@ -1,9 +1,14 @@
 export interface IProduct {
   id: number;
   name: string;
-  ingredients: string;
+  ingredientes: string;
   price: number;
-  image: string;
+  imageUrl: string;
+  description: string;
+  category?: {
+    id: number;
+    name: string;
+  };
 }
 
 

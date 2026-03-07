@@ -29,11 +29,11 @@ const MenuView = () => {
 
         <div className="w-full py-24">
           <p className="text-center text-8xl font-serif text-red-950 m-7">
-            Menu
+            Menú
           </p>
 
           <p className="text-center text-2xl text-amber-900 m-7">
-            Descubri nuestros platillos destacados con ingredientes frescos y de calidad.
+            Descubrí nuestros platillos destacados con ingredientes frescos y de calidad.
           </p>
         </div>
 
@@ -48,15 +48,17 @@ const MenuView = () => {
           )}
 
           {!loading && (
-            <div className="grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-10 items-stretch md:grid-cols-3 lg:grid-cols-3">
               {platos.map((p: any) => (
                 <Card
                   key={p.id}
                   id={p.id}
                   name={p.name}
                   price={Number(p.price)}
-                  image={p.imageUrl}
-                  ingredients={p.ingredients}
+                  imageUrl={p.imageUrl}
+                  ingredientes={p.ingredientes}
+                  description=""
+
                 />
               ))}
             </div>
