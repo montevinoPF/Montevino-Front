@@ -61,16 +61,18 @@ export default function Navbar() {
         {!userData ? (
           <Link 
             href="/login" 
-            className="hidden md:inline-block ml-4 bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#350A06] hover:text-[#FED0BB] transition"
+            className=" relative overflow-hidden py-2 bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-FED0BB font-semibold rounded-md transition duration-300 group hover:text-[#FFD580] transition-colors"
           >
             Iniciar sesión
+             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
           </Link>
         ) : (
           <button 
             onClick={handleLogout} 
-            className="hidden md:inline-block ml-4 bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#56070C] hover:text-[#FED0BB] transition"
+            className="relative overflow-hidden py-2 bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-FED0BB font-semibold rounded-md transition duration-300 group hover:text-[#FFD580] transition-colors"
           >
             Cerrar sesión
+             <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
           </button>
         )}
 
@@ -99,17 +101,19 @@ export default function Navbar() {
           {!userData ? (
             <Link 
               href="/login" 
-              className="block bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#56070C] hover:text-[#FED0BB] transition"
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-white font-semibold rounded-md  transition duration-300 group"
               onClick={() => setOpen(false)}
             >
               Iniciar sesión
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
             </Link>
           ) : (
             <button 
               onClick={handleLogout} 
-              className="block w-full bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#56070C] hover:text-[#FED0BB] transition"
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-white font-semibold rounded-md transition duration-300 group"
             >
               Cerrar sesión
+               <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
             </button>
           )}
         </div>

@@ -23,7 +23,7 @@ const Card: React.FC<IProduct> = ({ name, price, imageUrl, id, ingredientes, des
             </p>
             <div className="mt-auto">
               <Link href={`/menu/${id}`} >
-                  <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
+                  <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
                   VER MAS
                   <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
                   </button>
