@@ -61,7 +61,7 @@ export default function Navbar() {
         {!userData ? (
           <Link 
             href="/login" 
-            className="hidden md:inline-block ml-4 bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#56070C] hover:text-[#FED0BB] transition"
+            className="hidden md:inline-block ml-4 bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#350A06] hover:text-[#FED0BB] transition"
           >
             Iniciar sesión
           </Link>

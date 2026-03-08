@@ -63,13 +63,15 @@ const PlatosDetailView =  ({ plato }: Props) => {
 
             <div className="flex flex-col gap-3 md:flex-row">
               <Link href="/menu" className="w-full">
-                <button className="btn-primary w-full ">
+                <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
                   VOLVER AL MENÚ
+                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
                 </button>
               </Link>
 
-              <button className=" btn-primary w-full">
+              <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
                 RESERVAR
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
               </button>
             </div>
           </div>

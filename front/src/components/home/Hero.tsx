@@ -26,13 +26,15 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex flex-wrap gap-4">
-          <button className="cursor-pointer rounded-lg bg-[#c27a4a] px-7 py-3 text-sm font-semibold text-black transition hover:opacity-90">
+          <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
             Reservar mesa
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
           </button>
 
           <button 
-          className="cursor-pointer rounded-lg border border-white/30 px-9 py-3 text-sm font-semibold text-white transition hover:bg-white/15">
+          className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
             Ver menú
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
           </button>
         </div>
       </div>
