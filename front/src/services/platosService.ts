@@ -15,7 +15,7 @@ export interface IPlatoFromBack {
 }
 
 export const getPlatoById = async (id: string) => {
-  const res = await fetch(`http://localhost:3001/platos/${id}`, {
+  const res = await fetch(`http://localhost:3002/platos/${id}`, {
     cache: "no-store",
   });
 
@@ -27,7 +27,7 @@ export const getPlatoById = async (id: string) => {
 };
 
 export const getPlatos = async () => {
-  const res = await fetch("http://localhost:3001/platos", 
+  const res = await fetch("http://localhost:3002/platos", 
 
   );
 
