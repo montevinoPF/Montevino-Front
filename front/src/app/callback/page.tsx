@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function Callback() {
   const router = useRouter();
+  const APIURL = process.env.NEXT_PUBLIC_API_URL;
   const { setUserData } = useAuth();
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export default function Callback() {
 
     if (!code) return;
 
-    fetch(`http://localhost:3001/auth/callback?code=${code}`, {
+    fetch(`${APIURL}/auth/callback?code=${code}`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -23,7 +24,13 @@ export default function Callback() {
 
         router.push("/");
       });
-  }, [setUserData, router]);
+  }, [setUserData, router, APIURL]);
 
-  return <p>Iniciando sesión...</p>;
+  return (
+    <>
+      <p className="flex self-center justify-center mt-75 text-2xl text-[#56070C]">
+        Iniciando sesión...
+      </p>
+    </>
+  );
 }
