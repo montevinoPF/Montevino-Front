@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 const LoginView = () => {
   const router = useRouter();
+  const APIURL = process.env.NEXT_PUBLIC_API_URL;
   const { setUserData } = useAuth();
   return (
     <div className="flex flex-col items-center justify-center mt-35 mb-15">
@@ -68,7 +69,10 @@ const LoginView = () => {
               Entrar
             </button>
             <span>o</span>
-            <button className="w-full p-2 border border-gray-300 rounded-md hover:cursor-pointer">
+            <Link
+              href={`${APIURL}/auth/google`}
+              className="w-full p-2 border border-gray-300 rounded-md hover:cursor-pointer"
+            >
               <div className="flex items-center justify-center gap-2">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/500px-Google_%22G%22_logo.svg.png"
@@ -77,7 +81,7 @@ const LoginView = () => {
                 />
                 <span>Continuar con Google</span>
               </div>
-            </button>
+            </Link>
             <span className="text-gray-500">
               ¿No tienes cuenta?{" "}
               <Link href={"/register"} className="text-[#56070C] font-semibold">

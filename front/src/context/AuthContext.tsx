@@ -23,7 +23,6 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("User data updated:", userData);
     if (userData) {
       localStorage.setItem(
         "userSession",
