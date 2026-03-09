@@ -27,17 +27,17 @@ const MenuView = () => {
     <div>
       <section className="bg-white">
         <div className="w-full py-24">
-          <p className="font-serif text-center text-8xl text-red-950 m-7">
+          <p className=" text-center text-5xl text-red-950 m-4">
             Menú
           </p>
 
-          <p className="text-2xl text-center text-amber-900 m-7">
+          <p className="text-xl text-center text-amber-900">
             Descubrí nuestros platillos destacados con ingredientes frescos y de
             calidad.
           </p>
         </div>
 
-        <p className="font-serif text-6xl text-center text-red-950 -m-9">
+        <p className=" text-3xl text-center text-red-950 -m-9">
           Platillos
         </p>
 
@@ -45,7 +45,7 @@ const MenuView = () => {
           {loading && <p className="text-xl text-center">Cargando platos...</p>}
 
           {!loading && (
-            <div className="grid items-stretch grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-4">
+            <div className="grid items-stretch grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-4 mx-auto max-w-300">
               {platos.map((p: any) => (
                 <Card
                   key={p.id}
@@ -61,12 +61,12 @@ const MenuView = () => {
           )}
         </div>
 
-        <p className="font-serif text-6xl text-center text-red-950 m-7">
+        <p className=" text-3xl text-center text-red-950 m-9">
           Bebidas
         </p>
 
         <div className="w-full px-6 py-8 m-6 mx-auto">
-          <p className="text-xl text-center text-slate-600">
+          <p className="text-xl text-center text-amber-900">
             Todavía no hay bebidas.
           </p>
         </div>
