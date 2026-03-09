@@ -11,23 +11,24 @@ const Card: React.FC<IProduct> = ({
   category,
 }) => {
   return (
-    <div className="rounded-2xl bg-[#ffad8779] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-sm ">
+    <div className="rounded-2xl bg-[#ffad8779] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
       <div className="flex overflow-hidden aspect-square rounded-2xl">
         <img src={imageUrl} />
       </div>
-      <div className="flex flex-col flex-1 p-8 px-3 md:text-base">
-        <h3 className="flex items-start justify-start font-serif text-3xl text-red-800 min-h-20 ">
+      <div className="flex flex-col flex-1 p-8 px-3 md:text-base ">
+        <h3 className="flex items-center justify-center font-serif text-2xl text-red-800 ">
           {name}
         </h3>
 
-        <h3 className="p-3 font-serif text-xl text-slate-900 min-h-10">
+        <h3 className="p-3 font-serif text-lg text-slate-900 min-h-10 flex items-center justify-center ">
           {ingredientes}
         </h3>
 
-        <p className="flex items-center justify-center gap-2 p-3 px-8 py-6 text-lg font-bold text-slate-900">
-          ${price}
-        </p>
         <div className="mt-auto">
+          <p className="flex flex-col items-center justify-center py-3 text-lg font-bold text-slate-900 mt-auto ">
+            ${price}
+          </p>
+
           <Link href={`/menu/${id}`}>
             <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer">
               VER MAS
