@@ -1,6 +1,4 @@
 export default function Features() {
-
-  
   return (
     <div className="w-full flex justify-center py-10 bg-[#F6E3D9]">
       <nav
@@ -14,8 +12,6 @@ export default function Features() {
         "
         aria-label="Accesos"
       >
-       
-
         <a
           href="/login"
           className="text-sm font-medium text-[#85675E] hover:text-[#6F564E] transition-colors"

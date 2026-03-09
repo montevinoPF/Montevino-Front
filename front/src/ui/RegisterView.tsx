@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 const RegisterView = () => {
   const router = useRouter();
   const { showPassword, setShowPassword } = useAuth();
-  const APIURL = process.env.NEXT_PUBLIC_API_URL;
+  const BACKURL = process.env.NEXT_PUBLIC_API_URL;
   return (
     <div className="flex flex-col items-center justify-center mt-35 mb-15">
       <Formik
@@ -116,11 +116,11 @@ const RegisterView = () => {
               className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group"
             >
               Registrarse
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
+              <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
             </button>
             <span>o</span>
             <Link
-              href={`${APIURL}/auth/google`}
+              href={`${BACKURL}/auth/google`}
               className="w-full p-2 border border-gray-300 rounded-md hover:cursor-pointer"
             >
               <div className="flex items-center justify-center gap-2">
