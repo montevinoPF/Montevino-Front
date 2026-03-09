@@ -3,7 +3,7 @@ import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
-import { Platos } from 'src/modules/platos/entities/platos.entity';
+import { Platos } from '../platos/entities/platos.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Category])],

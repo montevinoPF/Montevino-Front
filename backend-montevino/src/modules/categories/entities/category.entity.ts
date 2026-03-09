@@ -1,4 +1,3 @@
-
 import { Platos } from "src/modules/platos/entities/platos.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

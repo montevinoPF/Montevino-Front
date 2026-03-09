@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Auth0Config } from 'src/config/auth0.confing';
+import { Auth0Config } from 'src/config/auth0.config';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import axios from 'axios';
@@ -102,11 +102,15 @@ export class AuthService {
       const { id_token, access_token } = response.data;
       const decoded: any = jwt.decode(id_token);
 
-      const user = await this.usersService.create({
-        auth0Id: decoded.sub,
-        email: decoded.email,
-        name: decoded.name,
-      } as any);
+      let user = await this.usersService.findByAuth0Id(decoded.sub);
+
+      if (!user) {
+        user = await this.usersService.create({
+          auth0Id: decoded.sub,
+          email: decoded.email,
+          name: decoded.name,
+        } as any);
+      }
 
       return {
         access_token,

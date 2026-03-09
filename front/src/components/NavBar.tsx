@@ -31,25 +31,24 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 w-full bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] z-50 shadow-lg">
       <div className="w-[80%] mx-auto px-6 py-4 flex justify-between items-center">
-        
         {/* Logo */}
         <Link href="/">
-          <Image 
-            src="/logo.png" 
-            alt="Logo Montevino" 
-            width={100} 
-            height={70} 
-            className="object-contain max-h-14 scale-[2.5]" 
-            priority 
-          /> 
+          <Image
+            src="/logo.png"
+            alt="Logo Montevino"
+            width={100}
+            height={70}
+            className="object-contain max-h-14 scale-[2.5]"
+            priority
+          />
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden space-x-8 md:flex">
           {links.map((link) => (
-            <Link 
-              key={link.href} 
-              href={link.href} 
+            <Link
+              key={link.href}
+              href={link.href}
               className="hover:text-[#FFD580] transition-colors"
             >
               {link.label}
@@ -77,8 +76,8 @@ export default function Navbar() {
         )}
 
         {/* Mobile Menu Button */}
-        <button 
-          onClick={() => setOpen(!open)} 
+        <button
+          onClick={() => setOpen(!open)}
           className="md:hidden text-2xl text-[#FED0BB] focus:outline-none"
         >
           {open ? <FiX /> : <FiMenu />}
@@ -89,9 +88,9 @@ export default function Navbar() {
       {open && (
         <div className="md:hidden bg-[#350A06]/95 px-6 py-4 space-y-4">
           {links.map((link) => (
-            <Link 
-              key={link.href} 
-              href={link.href} 
+            <Link
+              key={link.href}
+              href={link.href}
               className="block text-lg text-[#FED0BB] hover:text-[#FFD580] transition"
               onClick={() => setOpen(false)}
             >
@@ -121,8 +120,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
-
-
-
-
