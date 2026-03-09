@@ -47,8 +47,11 @@ export const registerValidations = (values: IRegister) => {
 
   if (!values.name.trim()) {
     errors.name = "El nombre es obligatorio";
-  } else if (!/^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/.test(values.name)) {
-    errors.name = "El nombre solo puede contener letras y espacios";
+  } else if (
+    !/^[a-zA-ZÁÉÍÓÚáéíóúÑñ]+( [a-zA-ZÁÉÍÓÚáéíóúÑñ]+)*$/.test(values.name)
+  ) {
+    errors.name =
+      "El nombre solo puede contener letras y un espacio entre palabras";
   }
 
   return errors;

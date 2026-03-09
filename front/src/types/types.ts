@@ -36,7 +36,7 @@ export interface IRegisterErrors {
 export interface IUserSession {
   token: string;
   user: {
-    id: number;
+    id: string;
     name: string;
     email: string;
   };

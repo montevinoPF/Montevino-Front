@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,12 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   const swaggerDoc = new DocumentBuilder()
     .setTitle('Montevino Restaurante')
     .setDescription('Montevino restaurante gourmet')
@@ -23,7 +30,6 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, swaggerModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.enableCors();
 
   await app.listen(process.env.PORT ?? 3001);
 }

@@ -14,7 +14,6 @@ export async function login(userData: ILogin) {
     });
 
     const data = await response.json();
-    console.log("Data received:", data);
     if (!data.access_token) {
       throw new Error(data.message);
     }
@@ -28,8 +27,6 @@ export async function login(userData: ILogin) {
         name: decodedToken.name,
       },
     };
-
-    console.log("Decoded data:", decodedData);
 
     await Swal.fire({
       icon: "success",

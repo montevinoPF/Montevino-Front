@@ -6,12 +6,16 @@ export interface IAuthContext {
   userData: IUserSession | null;
   setUserData: (values: IUserSession | null) => void;
   isAuthLoading: boolean;
+  showPassword: boolean;
+  setShowPassword: (value: boolean) => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   userData: null,
   setUserData: () => {},
   isAuthLoading: true,
+  showPassword: false,
+  setShowPassword: () => {},
 });
 
 export interface IAuthProvider {
@@ -21,9 +25,9 @@ export interface IAuthProvider {
 export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("User data updated:", userData);
     if (userData) {
       localStorage.setItem(
         "userSession",
@@ -46,6 +50,8 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
         userData,
         setUserData,
         isAuthLoading,
+        showPassword,
+        setShowPassword,
       }}
     >
       {children}
