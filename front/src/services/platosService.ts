@@ -14,8 +14,10 @@ export interface IPlatoFromBack {
   };
 }
 
+const APIURL = process.env.NEXT_PUBLIC_API_URL;
+
 export const getPlatoById = async (id: string) => {
-  const res = await fetch(`http://localhost:3002/platos/${id}`, {
+  const res = await fetch(`${APIURL}/platos/${id}`, {
     cache: "no-store",
   });
 
@@ -27,9 +29,7 @@ export const getPlatoById = async (id: string) => {
 };
 
 export const getPlatos = async () => {
-  const res = await fetch("http://localhost:3002/platos", 
-
-  );
+  const res = await fetch(`${APIURL}/platos`);
 
   if (!res.ok) {
     throw new Error("Error al traer los platos");
@@ -38,15 +38,17 @@ export const getPlatos = async () => {
   return res.json();
 };
 
-export const adaptPlato = (plato: any) : IProduct => ({
-    id: Number(plato.id),
-    name: plato.name,
-    price: Number(plato.price),
-    ingredientes: plato.ingredients,
-    imageUrl: plato.imageUrl,
-    description: plato.description,
-    category: plato.category ? {
-      id: Number(plato.category.id),
-      name: plato.category.name,
-    } : undefined,
-  });
+export const adaptPlato = (plato: any): IProduct => ({
+  id: Number(plato.id),
+  name: plato.name,
+  price: Number(plato.price),
+  ingredientes: plato.ingredients,
+  imageUrl: plato.imageUrl,
+  description: plato.description,
+  category: plato.category
+    ? {
+        id: Number(plato.category.id),
+        name: plato.category.name,
+      }
+    : undefined,
+});

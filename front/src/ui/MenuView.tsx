@@ -26,29 +26,26 @@ const MenuView = () => {
   return (
     <div>
       <section className="bg-white">
-
         <div className="w-full py-24">
-          <p className="text-center text-8xl font-serif text-red-950 m-7">
+          <p className="font-serif text-center text-8xl text-red-950 m-7">
             Menú
           </p>
 
-          <p className="text-center text-2xl text-amber-900 m-7">
-            Descubrí nuestros platillos destacados con ingredientes frescos y de calidad.
+          <p className="text-2xl text-center text-amber-900 m-7">
+            Descubrí nuestros platillos destacados con ingredientes frescos y de
+            calidad.
           </p>
         </div>
 
-        <p className="text-center text-6xl font-serif text-red-950 -m-9">
+        <p className="font-serif text-6xl text-center text-red-950 -m-9">
           Platillos
         </p>
 
-        <div className="flex-grow mx-auto w-full px-6 py-8 m-6">
-
-          {loading && (
-            <p className="text-center text-xl">Cargando platos...</p>
-          )}
+        <div className="flex-grow w-full px-6 py-8 m-6 mx-auto">
+          {loading && <p className="text-xl text-center">Cargando platos...</p>}
 
           {!loading && (
-            <div className="grid grid-cols-2 gap-10 items-stretch md:grid-cols-4 lg:grid-cols-4">
+            <div className="grid items-stretch grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-4">
               {platos.map((p: any) => (
                 <Card
                   key={p.id}
@@ -58,24 +55,21 @@ const MenuView = () => {
                   imageUrl={p.imageUrl}
                   ingredientes={p.ingredientes}
                   description=""
-
                 />
               ))}
             </div>
           )}
-
         </div>
 
-        <p className="text-center text-6xl font-serif text-red-950 m-7">
+        <p className="font-serif text-6xl text-center text-red-950 m-7">
           Bebidas
         </p>
 
-        <div className="mx-auto w-full px-6 py-8 m-6">
-          <p className="text-center text-xl text-slate-600">
-            Todavía no hay bebidas cargadas desde el backend.
+        <div className="w-full px-6 py-8 m-6 mx-auto">
+          <p className="text-xl text-center text-slate-600">
+            Todavía no hay bebidas.
           </p>
         </div>
-
       </section>
     </div>
   );
