@@ -1,4 +1,6 @@
 export default function Features() {
+
+  
   return (
     <div className="w-full flex justify-center py-10 bg-[#F6E3D9]">
       <nav
@@ -15,7 +17,7 @@ export default function Features() {
        
 
         <a
-          href="#"
+          href="/login"
           className="text-sm font-medium text-[#85675E] hover:text-[#6F564E] transition-colors"
         >
           Reservas
@@ -24,7 +26,7 @@ export default function Features() {
         <span className="text-[#85675E]/80">·</span>
 
         <a
-          href="#"
+          href="/menu"
           className="text-sm font-medium text-[#85675E] hover:text-[#6F564E] transition-colors"
         >
           Menú con fotos
@@ -33,7 +35,7 @@ export default function Features() {
         <span className="text-[#85675E]/80">·</span>
 
         <a
-          href="#"
+          href="/login"
           className="text-sm font-medium text-[#85675E] hover:text-[#6F564E] transition-colors"
         >
           Seña online
