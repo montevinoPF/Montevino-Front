@@ -2,8 +2,8 @@
 export default function Hero() {
   return (
     <section className="relative h-[90vh] w-full overflow-hidden">
-      {/* Imagen de fondo */}
-      
+      {/* Imagen de fondo de restaurante */}
+
       <img
         src="/images/hero.png"
         alt="Restaurante MonteVino"
@@ -15,10 +15,10 @@ export default function Hero() {
 
       {/* Contenido en la image */}
       <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center text-center justify-center px-6 text-white">
-        <img 
-        src="/logo-montevino.png"
-        alt="Logo MonteVino"
-        className="relative h-[200] w-[8000] object-cover translate-x-9.5"
+        <img
+          src="/logo-montevino.png"
+          alt="Logo MonteVino"
+          className="relative h-[200] w-[8000] object-cover translate-x-9.5"
         />
 
         <p className="mt-4 text-lg text-white/85 md:text-2xl">
