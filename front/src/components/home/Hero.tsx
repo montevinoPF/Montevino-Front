@@ -1,4 +1,3 @@
-
 export default function Hero() {
   return (
     <section className="relative h-[90vh] w-full overflow-hidden">
@@ -7,14 +6,14 @@ export default function Hero() {
       <img
         src="/images/hero.png"
         alt="Restaurante MonteVino"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 object-cover w-full h-full"
       />
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/ to-black/25" />
 
       {/* Contenido en la image */}
-      <div className="relative z-10 mx-auto flex h-full max-w-6xl flex-col items-center text-center justify-center px-6 text-white">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full max-w-6xl px-6 mx-auto text-center text-white">
         <img
           src="/logo-montevino.png"
           alt="Logo MonteVino"
@@ -25,16 +24,15 @@ export default function Hero() {
           Experiencia gastronómica & vinos de autor
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4 mt-8">
           <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
             Reservar mesa
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
+            <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
           </button>
 
-          <button 
-          className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
+          <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
             Ver menú
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
+            <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
           </button>
         </div>
       </div>

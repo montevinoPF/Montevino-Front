@@ -1,11 +1,11 @@
 import { ILogin, IRegister } from "@/types/types";
 import Swal from "sweetalert2";
 
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function login(userData: ILogin) {
   try {
-    const response = await fetch(`${APIURL}/auth/login`, {
+    const response = await fetch(`${BACKURL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -50,7 +50,7 @@ export async function login(userData: ILogin) {
 
 export async function register(userData: IRegister) {
   try {
-    const response = await fetch(`${APIURL}/auth/register`, {
+    const response = await fetch(`${BACKURL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",

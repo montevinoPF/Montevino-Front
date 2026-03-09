@@ -14,10 +14,10 @@ export interface IPlatoFromBack {
   };
 }
 
-const APIURL = process.env.NEXT_PUBLIC_API_URL;
+const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getPlatoById = async (id: string) => {
-  const res = await fetch(`${APIURL}/platos/${id}`, {
+  const res = await fetch(`${BACKURL}/platos/${id}`, {
     cache: "no-store",
   });
 
@@ -29,7 +29,7 @@ export const getPlatoById = async (id: string) => {
 };
 
 export const getPlatos = async () => {
-  const res = await fetch(`${APIURL}/platos`);
+  const res = await fetch(`${BACKURL}/platos`);
 
   if (!res.ok) {
     throw new Error("Error al traer los platos");

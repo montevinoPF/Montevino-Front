@@ -1,18 +1,17 @@
 export default function InfoSection() {
   return (
     <section className="bg-[#F6E3D9]">
-      <div className="mx-auto max-w-6xl px-6 py-12" >
-
+      <div className="max-w-6xl px-6 py-12 mx-auto">
         <div className="grid md:grid-cols-3 rounded-2xl border border-[#F6E3D9] bg-[#F6E3D9] overflow-hidden">
-
           {/* Cuadro 1 */}
-          <div className="px-8 py-10 text-center border-r border-[#E6CBBE]">  
+          <div className="px-8 py-10 text-center border-r border-[#E6CBBE]">
             <IconCalendar />
             <h3 className="mt-5 font-serif text-2xl text-[#7E5E55]">
               Reservas
             </h3>
             <p className="mt-3 text-sm text-[#8B6B62] leading-6">
-              Inicia sesión o registrate para ver horarios disponibles según fecha y personas.
+              Inicia sesión o registrate para ver horarios disponibles según
+              fecha y personas.
             </p>
           </div>
 
@@ -23,7 +22,8 @@ export default function InfoSection() {
               MonteVino
             </h3>
             <p className="mt-3 text-sm text-[#8B6B62] leading-6">
-              Elegí platos al reservar para garantizar disponibilidad y mejorar la experiencia con nosotros.
+              Elegí platos al reservar para garantizar disponibilidad y mejorar
+              la experiencia con nosotros.
             </p>
           </div>
 
@@ -34,20 +34,26 @@ export default function InfoSection() {
               Señas online
             </h3>
             <p className="mt-3 text-sm text-[#8B6B62] leading-6">
-              Realiza el pago de tu reservas de forma online para asegurar tu experiencia
+              Realiza el pago de tu reservas de forma online para asegurar tu
+              experiencia
             </p>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
-
 
 function IconCalendar() {
   return (
-    <div className="mx-auto inline-flex h-12 w-12 items-center justify-center">
-      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto">
+      <svg
+        width="44"
+        height="44"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="M7 3v2M17 3v2M4.5 8.5h15"
           stroke="#8B6B62"
@@ -72,8 +78,14 @@ function IconCalendar() {
 
 function IconDish() {
   return (
-    <div className="mx-auto inline-flex h-12 w-12 items-center justify-center">
-      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto">
+      <svg
+        width="44"
+        height="44"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="M4 14c0 3.3 4 6 8 6s8-2.7 8-6"
           stroke="#8B6B62"
@@ -99,8 +111,14 @@ function IconDish() {
 
 function IconWallet() {
   return (
-    <div className="mx-auto inline-flex h-12 w-12 items-center justify-center">
-      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto">
+      <svg
+        width="44"
+        height="44"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
         <path
           d="M6 7h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"
           stroke="#8B6B62"
