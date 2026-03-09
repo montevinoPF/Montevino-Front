@@ -48,7 +48,7 @@ const MenuView = () => {
           )}
 
           {!loading && (
-            <div className="grid grid-cols-2 gap-10 items-stretch md:grid-cols-3 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-10 items-stretch md:grid-cols-4 lg:grid-cols-4">
               {platos.map((p: any) => (
                 <Card
                   key={p.id}

@@ -23,14 +23,14 @@ const PlatosDetailView =  ({ plato }: Props) => {
 
   return (
 
- <div className="mx-auto max-w-5xl px-4 py-30">
+ <div className="mx-auto max-w-5xl px-2 py-30">
       <div className="rounded-2xl border bg-[#ffad8779] shadow-2xs overflow-hidden">
         <div className="grid gap-8 p-6 md:grid-cols-2 md:p-8">
           <div className="h-260px md:h-420px  overflow-hidden rounded-2xl bg-white/60">
             <img
               src={plato.imageUrl}
               alt={plato.name}
-              className="h-full w-full object-cover"
+              className="aspect-square overflow-hidden flex h-full rounded-2xl"
             />
           </div>
 

@@ -61,7 +61,7 @@ export default function Navbar() {
         {!userData ? (
           <Link 
             href="/login" 
-            className=" relative overflow-hidden py-2 bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-FED0BB font-semibold rounded-md transition duration-300 group hover:text-[#FFD580] transition-colors"
+            className="relative overflow-hidden bg-gradient-to-r hidden md:inline-block ml-4 bg-[#FED0BB] text-[#350A06] px-4 py-2 rounded-lg font-semibold hover:bg-[#350A06] hover:text-[#FED0BB] transition duration-300 group"
           >
             Iniciar sesión
              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
@@ -69,7 +69,7 @@ export default function Navbar() {
         ) : (
           <button 
             onClick={handleLogout} 
-            className="relative overflow-hidden py-2 bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-FED0BB font-semibold rounded-md transition duration-300 group hover:text-[#FFD580] transition-colors"
+            className="relative overflow-hidden py-2 bg-gradient-to-r from-[#4a1414f7] to-[#56070C] text-FED0BB font-semibold rounded-md transition duration-300 group"
           >
             Cerrar sesión
              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>

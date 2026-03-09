@@ -3,7 +3,7 @@ import { IProduct } from "@/types/types";
 
 const Card: React.FC<IProduct> = ({ name, price, imageUrl, id, ingredientes, description, category }) => {
   return (
-    <div className= "rounded-2xl bg-[#ffad8779] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full ">
+    <div className= "rounded-2xl bg-[#ffad8779] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-sm ">
         <div className="aspect-square overflow-hidden flex rounded-2xl">
           <img
             src={imageUrl}
