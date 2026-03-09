@@ -104,9 +104,10 @@ const LoginView = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="py-2 w-full bg-linear-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-mdcursor-pointer hover:from-[#56070C] hover:to-[#350A06] transition-colors duration-300"
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group"
             >
               Entrar
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full transition-transform duration-1500"></span>
             </button>
             <span>o</span>
             <Link
