@@ -1,10 +1,13 @@
-import Reserva from "@/components/reserva/Reserva";
+'use client'
+
+import BookingForm from "@/components/reserva/BookingForm";
 
 
 export default function ReservasPage() {
+
   return (
-    <div className="p-60">
-       <Reserva /> 
+    <div className="p-80 bg-[#f7efea]">
+      <BookingForm />
     </div>
   )
 }
