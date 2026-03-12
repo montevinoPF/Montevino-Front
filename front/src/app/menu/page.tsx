@@ -2,7 +2,10 @@ import MenuView from "@/ui/MenuView"
 
 const MenuPage = () => {
     return (
-        <MenuView />
+        <div className="bg-#d8b6ac">
+             <MenuView  />
+        </div>
+       
     )
 }
 

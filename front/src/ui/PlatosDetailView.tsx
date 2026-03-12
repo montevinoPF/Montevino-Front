@@ -19,8 +19,9 @@ const handleReserva = async () =>
 
 const PlatosDetailView = ({ plato }: Props) => {
   return (
+    <section className="min-h-screen bg-[#f7efea]">
     <div className="max-w-5xl px-2 mx-auto py-30">
-      <div className="rounded-2xl border bg-[#ffad8779] shadow-2xs overflow-hidden">
+      <div className="rounded-2xl border bg-[#f1dbd098] shadow-2xs overflow-hidden">
         <div className="grid gap-8 p-6 md:grid-cols-2 md:p-8">
           <div className="overflow-hidden h-260px md:h-420px rounded-2xl bg-white/60">
             <img
@@ -52,13 +53,13 @@ const PlatosDetailView = ({ plato }: Props) => {
                 <p className="leading-7 text-slate-900">{plato.description}</p>
               </div>
 
-              {plato.category?.name && (
+              {plato.type && (
                 <div className="p-3 text-x1 md:text-xl">
                   <p className="text-lg font-semibold text-red-800">
                     Categoría
                   </p>
                   <p className="mt-2 font-serif text-base text-slate-900">
-                    {plato.category.name}
+                    {plato.type}
                   </p>
                 </div>
               )}
@@ -73,16 +74,19 @@ const PlatosDetailView = ({ plato }: Props) => {
               </Link>
 
               <Protected>
+                <Link href="/reservar.platos" className="w-full">
                 <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer">
                   RESERVAR
                   <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
                 </button>
+                </Link>
               </Protected>
             </div>
           </div>
         </div>
       </div>
     </div>
+    </section>
   );
 };
 export default PlatosDetailView;

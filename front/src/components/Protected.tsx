@@ -1,18 +1,30 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthContext";
 
-interface Props {
-    children: React.ReactNode;
+export default function Protected({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { userData, isAuthReady } = useContext(AuthContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthReady && !userData) {
+      router.push("/login");
+    }
+  }, [isAuthReady, userData, router]);
+
+  if (!isAuthReady) {
+    return <p>Cargando...</p>;
+  }
+
+  if (!userData) {
+    return null;
+  }
+
+  return <>{children}</>;
 }
-
-const Protected = ({ children }: Props) => {
-    const { userData } = useContext(AuthContext);
-
-    if (!userData) return null;
-
-    return<>{children}</>
-};
-
-export default Protected
