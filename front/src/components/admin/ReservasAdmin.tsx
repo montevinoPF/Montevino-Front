@@ -2,19 +2,17 @@ import { preloadReservation } from "@/lib/preloadReserva";
 import { useState } from "react";
 
 export default function ReservasAdmin({
+  reservas,
   fechaSeleccionada,
   setFechaSeleccionada,
+  fechasUnicas,
 }) {
-  const fechasUnicas = Array.from(
-    new Set(preloadReservation.map((r) => r.fecha)),
-  );
-
   const estadoColor = (estado) => {
     if (estado === "confirmada") return "bg-green-100 text-green-700";
     if (estado === "pendiente") return "bg-orange-100 text-orange-700";
   };
 
-  const reservasFiltradas = preloadReservation.filter(
+  const reservasFiltradas = reservas.filter(
     (r) => r.fecha === fechaSeleccionada,
   );
 
@@ -32,6 +30,7 @@ export default function ReservasAdmin({
           onChange={(e) => setFechaSeleccionada(e.target.value)}
           className="px-3 py-1 border border-gray-300 rounded-lg"
         >
+          <option value="Seleccionar fecha">Seleccionar fecha</option>
           {fechasUnicas.map((fecha) => (
             <option key={fecha} value={fecha}>
               {fecha}

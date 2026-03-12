@@ -3,17 +3,17 @@ import GestionMesas from "@/components/admin/GestionDeMesas";
 import ReservasAdmin from "@/components/admin/ReservasAdmin";
 import { useAuth } from "@/context/AuthContext";
 import { preloadReservation } from "@/lib/preloadReserva";
+import { getReservations } from "@/services/reservationsService";
+import { Reserva } from "@/types/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-const fechasUnicas = Array.from(
-  new Set(preloadReservation.map((r) => r.fecha)),
-);
-
 const AdminView = () => {
-  const [fechaSeleccionada, setFechaSeleccionada] = useState(fechasUnicas[0]);
+  const [fechaSeleccionada, setFechaSeleccionada] = useState("");
+  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const [loading, setLoading] = useState(true);
   const { role } = useAuth();
   const router = useRouter();
 
@@ -29,6 +29,23 @@ const AdminView = () => {
     }
   }, [role, router]);
 
+  useEffect(() => {
+    const fetchReservas = async () => {
+      try {
+        const data = await getReservations();
+        setReservas(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservas();
+  }, []);
+
+  const fechasUnicas = Array.from(new Set(reservas.map((r) => r.fecha)));
+
   return (
     <div className="h-full mt-20 mb-10 bg-[#F6E3D9]">
       <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">
@@ -38,8 +55,10 @@ const AdminView = () => {
         {/* Lado izquierdo */}
         <div className="mb-5">
           <ReservasAdmin
+            reservas={reservas}
             fechaSeleccionada={fechaSeleccionada}
             setFechaSeleccionada={setFechaSeleccionada}
+            fechasUnicas={fechasUnicas}
           />
         </div>
 
