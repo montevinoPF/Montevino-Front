@@ -1,14 +1,10 @@
 export interface IProduct {
   id: number;
   name: string;
-  ingredientes: string;
+  ingredients: string;
   price: number;
-  imageUrl: string;
-  description: string;
-  category?: {
-    id: number;
-    name: string;
-  };
+  image: string;
+  categoryId?: number
 }
 
 export interface ILogin {
