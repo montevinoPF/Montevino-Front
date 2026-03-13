@@ -1,15 +1,15 @@
 export interface IProduct {
   id: number;
   name: string;
-  ingredientes: string;
+  ingredientes: string[];
   price: number;
   imageUrl: string;
+  stock: number;
   description: string;
-  category?: {
-    id: number;
-    name: string;
-  };
-}
+  category?: string;
+  type?: string;
+};
+
 
 export interface ILogin {
   email: string;

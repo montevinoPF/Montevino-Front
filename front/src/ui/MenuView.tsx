@@ -25,7 +25,7 @@ const MenuView = () => {
 
   return (
     <div>
-      <section className="bg-white">
+      <section className="bg-[#f1dbd098] mt-auto">
         <div className="w-full py-24">
           <p className=" text-center text-5xl text-red-950 m-4">
             Menú
@@ -54,6 +54,7 @@ const MenuView = () => {
                   price={Number(p.price)}
                   imageUrl={p.imageUrl}
                   ingredientes={p.ingredientes}
+                  stock={p.stock}
                   description=""
                 />
               ))}
@@ -65,7 +66,7 @@ const MenuView = () => {
           Bebidas
         </p>
 
-        <div className="w-full px-6 py-8 m-6 mx-auto">
+        <div className="w-full px-6 py-10 m-6 mx-auto">
           <p className="text-xl text-center text-amber-900">
             Todavía no hay bebidas.
           </p>

@@ -11,7 +11,7 @@ const Card: React.FC<IProduct> = ({
   category,
 }) => {
   return (
-    <div className="rounded-2xl bg-[#ffad8779] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
+    <div className="rounded-2xl border border-[#e5cfc5] bg-[#f3dbcf] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
       <div className="flex overflow-hidden aspect-square rounded-2xl">
         <img src={imageUrl} />
       </div>
