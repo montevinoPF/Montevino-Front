@@ -10,9 +10,9 @@ export interface IAuthContext {
   isAuthLoading: boolean;
   showPassword: boolean;
   setShowPassword: (value: boolean) => void;
-  isAuthReady: boolean;
   role: string | null;
   setRole: (value: string | null) => void;
+  isAuthReady: boolean;
 }
 
 export const AuthContext = createContext<IAuthContext>({
@@ -33,9 +33,9 @@ export interface IAuthProvider {
 export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
-  const [isAuthReady, setIsAuthReady] = useState(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
 
   useEffect(() => {
     if (userData) {

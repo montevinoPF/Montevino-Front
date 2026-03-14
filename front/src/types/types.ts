@@ -25,6 +25,7 @@ export interface IProductErrors {
   description?: string;
   imageUrl?: string;
   category?: string;
+  type?: string;
 }
 
 export interface ICategory {
