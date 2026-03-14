@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import PersonSelector from "./PersonSelector";
 import CalendarCustom from "./CalendarCustom";
 import TimeGrid from "./TimeGrid";
-import Protected from "@/components/Protected";
+// import Protected from "@/components/Protected";
 
 export default function BookingForm() {
   const router = useRouter();
@@ -40,7 +40,7 @@ export default function BookingForm() {
   };
 
   return (
-    <Protected>
+    // <Protected>
     <div className="max-w-xl mx-auto p-8 bg-[#f1dbd098] rounded-[2rem] border border-slate-950 shadow-sm mt-10">
       <h1 className="text-2xl font-bold text-slate-800 mb-8">Configura tu reserva</h1>
 
@@ -91,7 +91,7 @@ export default function BookingForm() {
         </div>
       </div>
     </div>
-    </Protected>
+    // </Protected>
   );
 }
 
