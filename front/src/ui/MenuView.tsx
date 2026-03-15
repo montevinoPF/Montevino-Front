@@ -11,7 +11,7 @@ const MenuView = () => {
   useEffect(() => {
     const fetchPlatos = async () => {
       try {
-        const data = await getPlatos();
+        const data = await getPlatos(1, 100);
         setPlatos(data);
       } catch (error) {
         console.error(error);
@@ -25,7 +25,7 @@ const MenuView = () => {
 
   return (
     <div>
-      <section className="bg-[#f1dbd098] mt-auto">
+      <section className="min-h-screen bg-gradient-to-b from-[#fcf7f3] to-[#f7efea] py-10 mt-auto">
         <div className="w-full py-24">
           <p className=" text-center text-5xl text-red-950 m-4">
             Menú
@@ -38,7 +38,7 @@ const MenuView = () => {
         </div>
 
         <p className=" text-3xl text-center text-red-950 -m-9">
-          Platillos
+          Platos
         </p>
 
         <div className="flex-grow w-full px-6 py-8 m-6 mx-auto">
