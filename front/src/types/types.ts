@@ -41,3 +41,14 @@ export interface IUserSession {
     email: string;
   };
 }
+
+export interface IReservation {
+  reservationDate: string;
+  startTime: string;
+  peopleCount: number;
+  notes: string;
+  pedidos: Array<{
+    platoId: string;
+    quantity: number;
+  }>;
+}

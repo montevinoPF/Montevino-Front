@@ -57,7 +57,7 @@ export default function CalendarCustom({ selectedDate, onSelect }: CalendarCusto
     const isPast = (day: number) => {
     const date = new Date(viewYear, viewMonth, day);
     date.setHours(0, 0, 0, 0);
-    return date < today;
+    return date <= today;
   };
 
   const isToday = (day: number) =>

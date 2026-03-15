@@ -6,9 +6,32 @@ import { format } from "date-fns";
 import PersonSelector from "./PersonSelector";
 import CalendarCustom from "./CalendarCustom";
 import TimeGrid from "./TimeGrid";
+import { createReservation } from "@/services/reservations.service";
 // import Protected from "@/components/Protected";
 
+
 export default function BookingForm() {
+
+ const submitReservation = async () => {
+  try {
+    const reservationDate = date ? format(date, "yyyy-MM-dd") : "";
+    const startTime = time.replace(/hs$/i, "").trim();
+    const peopleCount = guests;
+
+    await createReservation({
+      reservationDate,
+      startTime,
+      peopleCount,
+      notes: "",
+      pedidos: [], 
+    });
+
+    alert("Reserva creada");
+  } catch (error: unknown) {
+    console.error(error);
+    alert("No se pudo crear la reserva");
+  }
+};
   const router = useRouter();
 
   // Estados
@@ -29,14 +52,12 @@ export default function BookingForm() {
   const irAPlatillos = () => {
     const fechaString = date ? format(date, "yyyy-MM-dd") : "";
     const horaString = time.replace("hs", "");
-    router.push(`/reservar.plato?fecha=${fechaString}&hora=${horaString}&personas=${guests}`);
+    router.push(`/reservar/platos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`);
   };
 
   
   const reservarDirecto = () => {
-    const fechaString = date ? format(date, "yyyy-MM-dd") : "";
-    alert(`Reserva confirmada: ${fechaString} a las ${time}`);
- 
+   submitReservation();
   };
 
   return (
