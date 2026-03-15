@@ -28,7 +28,7 @@ const PlatosDetailView = ({ plato }: Props) => {
     return;
   }
 
-  router.push("/reservar/platos");
+  router.push("/reserva");
 };
 
   return (

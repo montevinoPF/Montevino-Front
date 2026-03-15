@@ -214,6 +214,8 @@ export default function ReservarPlatosView() {
         };
 
         console.log("BODY RESERVA:", body);
+        console.log("CART:", cart);
+        console.log("PEDIDOS ENVIADOS:", pedidos);
 
         const res = await fetch("http://localhost:3000/reservations", {
             method: "POST",
