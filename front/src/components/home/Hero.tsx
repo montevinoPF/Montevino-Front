@@ -26,20 +26,18 @@ export default function Hero() {
           Experiencia gastronómica & vinos de autor
         </p>
 
-        <div className="flex flex-wrap gap-4 mt-8">
-          <Link href="/reservar" className="w-full">
-          <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
+        <div className="mt-8 flex flex-row gap-4 w-3xl">
+          <a
+            href="/reserva"
+            className="flex-1 py-2 text-center bg-linear-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-md transition-all duration-500 ease-in-out hover:bg-linear-to-l hover:brightness-110 hover:shadow-lg hover:-translate-y-0.5 hover:cursor-pointer">
             Reservar mesa
-            <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-          </button>
-          </Link>
+          </a>
 
-          <Link href="/menu" className="w-full">
-          <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group">
+          <a
+            href="/menu"
+            className="flex-1 py-2 text-center bg-linear-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-md transition-all duration-500 ease-in-out hover:bg-linear-to-l hover:brightness-110 hover:shadow-lg hover:-translate-y-0.5 hover:cursor-pointer">
             Ver menú
-            <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-          </button>
-          </Link>
+          </a>
         </div>
       </div>
     </section>
