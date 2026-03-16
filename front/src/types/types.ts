@@ -20,11 +20,17 @@ export interface IProduct {
 
 export interface IProductErrors {
   name?: string;
-  ingredientes?: string;
   price?: string;
-  imageUrl?: string;
+  ingredientes?: string;
   description?: string;
-  categoryId?: string;
+  imageUrl?: string;
+  category?: string;
+}
+
+export interface ICategory {
+  id: number;
+  name: string;
+  platos: IProduct[];
 }
 
 export interface ILogin {
@@ -70,32 +76,54 @@ export interface IReservation {
 }
 export interface IPlate {
   name: string;
-  description: string;
-  ingredientes: string;
   price: number;
+  ingredientes: string;
+  description: string;
   imageUrl: string;
-  categoryId: string;
   stock: number;
+  categoryId: string;
 }
 
 export interface IPlateErrors {
   name?: string;
-  description?: string;
-  ingredientes?: string;
   price?: string;
+  ingredientes?: string;
+  description?: string;
   imageUrl?: string;
-  categoryId?: string;
   stock?: string;
+  categoryId?: string;
 }
 
-export interface ICategory {
-  id: number;
-  name: string;
-}
-
-export interface Table {
+export interface ITable {
   id: string;
   tableNumber: number;
   status: string;
-  zone: string;
+  reservations: string[];
+}
+
+export interface IReserva {
+  id: string;
+  reservationDate: string;
+  startTime: string;
+  peopleCount: number;
+  totalPrice: number;
+  depositAmount: number;
+  status: string;
+  user: {
+    id: string;
+    auth0Id: string;
+    email: string;
+    name: string;
+    role: "USER" | "ADMIN";
+    reservations: string[];
+  };
+  table: ITable;
+  pedidos: {
+    id: string;
+    quantity: number;
+    price: number;
+    menuItem: IProduct;
+    reservations: string[];
+  };
+  notes: string;
 }

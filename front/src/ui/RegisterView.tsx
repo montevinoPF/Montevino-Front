@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 const RegisterView = () => {
   const router = useRouter();
   const { showPassword, setShowPassword } = useAuth();
-  const { role, setRole } = useAuth();
+  const { setRole } = useAuth();
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
   return (
     <div className="flex flex-col items-center justify-center mt-35 mb-15">

@@ -1,12 +1,8 @@
 import {
-  IDish,
-  IDishErrors,
   ILogin,
   ILoginErrors,
   IPlate,
   IPlateErrors,
-  IProduct,
-  IProductErrors,
   IRegister,
   IRegisterErrors,
 } from "@/types/types";

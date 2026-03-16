@@ -1,5 +1,4 @@
-import { IPlate, IProduct } from "@/types/types";
-import Swal from "sweetalert2";
+import { IProduct } from "@/types/types";
 
 export interface IPlatoFromBack {
   id: string;

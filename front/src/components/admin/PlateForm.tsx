@@ -8,24 +8,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { string } from "yup";
 
 const PlateForm = () => {
   const [categorias, setCategorias] = useState<ICategory[]>([]);
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
-  const { role } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (role !== "admin") {
-      router.push("/");
-      Swal.fire({
-        icon: "error",
-        title: "Acceso denegado",
-        text: "No tienes permisos para acceder a esta página.",
-        confirmButtonColor: "#000",
-      });
-    }
-  }, [role, router]);
+  //const { role } = useAuth();
+  //const router = useRouter();
+  //
+  //useEffect(() => {
+  //  if (role !== "admin") {
+  //    router.push("/");
+  //    Swal.fire({
+  //      icon: "error",
+  //      title: "Acceso denegado",
+  //      text: "No tienes permisos para acceder a esta página.",
+  //      confirmButtonColor: "#000",
+  //    });
+  //  }
+  //}, [role, router]);
 
   useEffect(() => {
     fetch(`${BACKURL}/categories`)

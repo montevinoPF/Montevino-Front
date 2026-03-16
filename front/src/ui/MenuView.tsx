@@ -14,7 +14,6 @@ const MenuView = () => {
         const data = await getPlatos(1, 100);
         setPlatos(data);
       } catch (error) {
-        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -27,9 +26,7 @@ const MenuView = () => {
     <div>
       <section className="min-h-screen bg-gradient-to-b from-[#fcf7f3] to-[#f7efea] py-10 mt-auto">
         <div className="w-full py-24">
-          <p className=" text-center text-5xl text-red-950 m-4">
-            Menú
-          </p>
+          <p className="m-4 text-5xl text-center text-red-950">Menú</p>
 
           <p className="text-xl text-center text-amber-900">
             Descubrí nuestros platillos destacados con ingredientes frescos y de
@@ -37,15 +34,13 @@ const MenuView = () => {
           </p>
         </div>
 
-        <p className=" text-3xl text-center text-red-950 -m-9">
-          Platos
-        </p>
+        <p className="text-3xl text-center  text-red-950 -m-9">Platos</p>
 
         <div className="flex-grow w-full px-6 py-8 m-6 mx-auto">
           {loading && <p className="text-xl text-center">Cargando platos...</p>}
 
           {!loading && (
-            <div className="grid items-stretch grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-4 mx-auto max-w-300">
+            <div className="grid items-stretch grid-cols-2 gap-8 mx-auto md:grid-cols-4 lg:grid-cols-4 max-w-300">
               {platos.map((p: any) => (
                 <Card
                   key={p.id}
@@ -62,9 +57,7 @@ const MenuView = () => {
           )}
         </div>
 
-        <p className=" text-3xl text-center text-red-950 m-9">
-          Bebidas
-        </p>
+        <p className="text-3xl text-center text-red-950 m-9">Bebidas</p>
 
         <div className="w-full px-6 py-10 m-6 mx-auto">
           <p className="text-xl text-center text-amber-900">

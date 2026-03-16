@@ -2,9 +2,8 @@
 import GestionMesas from "@/components/admin/GestionDeMesas";
 import ReservasAdmin from "@/components/admin/ReservasAdmin";
 import { useAuth } from "@/context/AuthContext";
-import { preloadReservation } from "@/lib/preloadReserva";
 import { getReservations } from "@/services/reservationsService";
-import { Reserva } from "@/types/types";
+import { IReservation } from "@/types/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,22 +11,22 @@ import Swal from "sweetalert2";
 
 const AdminView = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState("");
-  const [reservas, setReservas] = useState<Reserva[]>([]);
+  const [reservas, setReservas] = useState<IReservation[]>([]);
   const [loading, setLoading] = useState(true);
-  const { role } = useAuth();
-  const router = useRouter();
+  //const { role } = useAuth();
+  //const router = useRouter();
 
-  useEffect(() => {
-    if (role !== "admin") {
-      router.push("/");
-      Swal.fire({
-        icon: "error",
-        title: "Acceso denegado",
-        text: "No tienes permisos para acceder a esta página.",
-        confirmButtonColor: "#000",
-      });
-    }
-  }, [role, router]);
+  //useEffect(() => {
+  //  if (role !== "admin") {
+  //    router.push("/");
+  //    Swal.fire({
+  //      icon: "error",
+  //      title: "Acceso denegado",
+  //      text: "No tienes permisos para acceder a esta página.",
+  //      confirmButtonColor: "#000",
+  //    });
+  //  }
+  //}, [role, router]);
 
   useEffect(() => {
     const fetchReservas = async () => {
@@ -44,7 +43,9 @@ const AdminView = () => {
     fetchReservas();
   }, []);
 
-  const fechasUnicas = Array.from(new Set(reservas.map((r) => r.fecha)));
+  const fechasUnicas = Array.from(
+    new Set(reservas.map((r) => r.reservationDate)),
+  );
 
   return (
     <div className="h-full mt-20 mb-10 bg-[#F6E3D9]">

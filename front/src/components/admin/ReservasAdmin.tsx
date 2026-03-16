@@ -1,19 +1,25 @@
-import { preloadReservation } from "@/lib/preloadReserva";
-import { useState } from "react";
+import { IReservation } from "@/types/types";
+
+type ReservasAdminProps = {
+  reservas: IReservation[];
+  fechaSeleccionada: string;
+  setFechaSeleccionada: (fecha: string) => void;
+  fechasUnicas: string[];
+};
 
 export default function ReservasAdmin({
   reservas,
   fechaSeleccionada,
   setFechaSeleccionada,
   fechasUnicas,
-}) {
-  const estadoColor = (estado) => {
+}: ReservasAdminProps) {
+  const estadoColor = (estado: string) => {
     if (estado === "confirmada") return "bg-green-100 text-green-700";
     if (estado === "pendiente") return "bg-orange-100 text-orange-700";
   };
 
   const reservasFiltradas = reservas.filter(
-    (r) => r.fecha === fechaSeleccionada,
+    (r) => r.reservationDate === fechaSeleccionada,
   );
 
   return (
@@ -39,43 +45,52 @@ export default function ReservasAdmin({
         </select>
       </div>
 
-      <table className="w-full">
+      <table className="w-full table-fixed">
         <thead className="text-sm text-black bg-gray-100">
           <tr>
-            <th className="p-3 text-center">Fecha</th>
-            <th className="py-3 text-center">Hora</th>
-            <th className="py-3 pr-3 text-center">Personas</th>
-            <th className="p-3 text-center">Mesa</th>
-            <th className="p-3 text-center">Estado</th>
+            <th className="w-1/6 px-3 py-3 text-center">Fecha</th>
+            <th className="w-1/6 px-3 py-3 text-center">Hora</th>
+            <th className="w-1/6 px-3 py-3 text-center">Nombre</th>
+            <th className="w-1/6 px-3 py-3 text-center">Personas</th>
+            <th className="w-1/6 px-3 py-3 text-center">Mesa</th>
+            <th className="w-1/6 px-3 py-3 text-center">Estado</th>
           </tr>
         </thead>
-
         <tbody className="divide-y">
-          {reservasFiltradas.map((r, i) => (
-            <tr key={i} className="cursor-pointer hover:bg-gray-50">
-              <td className="p-3 text-center">{r.fecha}</td>
-
-              <td className="py-3 text-center">{r.hora}</td>
-
-              <td className="py-3 pr-3 text-center">{r.personas}</td>
-
-              <td className="p-3 text-center">
-                {r.mesa.tableNumber || (
-                  <span className="text-gray-500">Sin mesa</span>
-                )}
-              </td>
-
-              <td className="p-3 text-center">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${estadoColor(
-                    r.estado,
-                  )}`}
-                >
-                  {r.estado}
-                </span>
+          {reservasFiltradas.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="py-6 text-center">
+                <h2>No hay reservas para mostrar.</h2>
               </td>
             </tr>
-          ))}
+          ) : (
+            reservasFiltradas.map((r, i) => (
+              <tr key={i} className="cursor-pointer hover:bg-gray-50">
+                <td className="w-1/6 px-3 py-3 text-center">
+                  {r.reservationDate}
+                </td>
+                <td className="w-1/6 px-3 py-3 text-center">{r.startTime}</td>
+                <td className="w-1/6 px-3 py-3 text-center">{r.user.name}</td>
+                <td className="w-1/6 px-3 py-3 text-center">{r.peopleCount}</td>
+                <td className="w-1/6 px-3 py-3 text-center">
+                  {r.table && r.table.tableNumber ? (
+                    r.table.tableNumber
+                  ) : (
+                    <span className="text-gray-500">Sin mesa</span>
+                  )}
+                </td>
+                <td className="w-1/6 px-3 py-3 text-center">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${estadoColor(
+                      r.status.toLowerCase(),
+                    )}`}
+                  >
+                    {r.status}
+                  </span>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
