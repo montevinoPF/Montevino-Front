@@ -6,6 +6,7 @@ import Protected from "@/components/Protected";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { getPlatos } from "@/services/platosService";
+import { useSearchParams } from "next/navigation";
 
 
 type CartItem = IProduct & {
@@ -22,6 +23,16 @@ export default function ReservarPlatosView() {
     const [categoryFilter, setCategoryFilter] = useState<string>("todos");
     const [products, setProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const searchParams = useSearchParams();
+
+    const reservationDate = searchParams.get("fecha")
+    const startTime = searchParams.get("hora") || "";
+    const peopleCount = Number(searchParams.get("personas")) || 1;
+
+    console.log("fecha:", reservationDate);
+    console.log("hora:", startTime);
+    console.log("persona:", peopleCount);
     
     useEffect(() => {
     const savedCart = localStorage.getItem("montevino_reserva_cart");
@@ -193,24 +204,12 @@ export default function ReservarPlatosView() {
             quantity: item.quantity,
         }));
 
-
-
-
-
-
         const body = {
-            //
-            //
-            //
-            //DATOS QUE ESPERO DE DIEGO
-            //
-            //
-            //
-            reservationDate: "2026-03-20", 
-            startTime: "21:00",
-            peopleCount: 2,
-            notes: comentarios,
-            pedidos,
+           reservationDate,
+           startTime,
+           peopleCount,
+           notes: comentarios,
+           pedidos,
         };
 
         console.log("BODY RESERVA:", body);
