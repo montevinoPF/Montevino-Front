@@ -41,26 +41,24 @@ export const getPlatos = async (page: number, limit: number) => {
 };
 
 export const adaptPlato = (plato: any): IProduct => {
-   console.log("PRODUCTOS DEL BACK:", plato)
-   return {
-  id: plato.id,
-  name: plato.name,
-  price: Number(plato.price),
-  ingredientes: plato.ingredientes,
-  imageUrl: plato.imageUrl,
-  description: plato.description,
-  type: "platos", 
-  category: plato.category
-    ? {
-        id: plato.category.id,
-        name: plato.category.name,
-      }
-    : undefined,
-  }
+  console.log("PRODUCTOS DEL BACK:", plato);
+  return {
+    id: plato.id,
+    name: plato.name,
+    price: Number(plato.price),
+    ingredientes: plato.ingredientes,
+    imageUrl: plato.imageUrl,
+    description: plato.description,
+    stock: plato.stock,
+    type: "platos",
+    category: plato.category
+      ? {
+          id: plato.category.id,
+          name: plato.category.name,
+        }
+      : undefined,
+  };
 };
-
-
-
 
 export const getBebidas = async (page: number, limit: number) => {
   const res = await fetch(`${BACKURL}/bebidas?page=${page}&limit=${limit}`);
@@ -74,7 +72,6 @@ export const getBebidas = async (page: number, limit: number) => {
   return data.map(adaptBebida);
 };
 
-
 export const adaptBebida = (bebida: any): IProduct => ({
   id: bebida.id,
   name: bebida.name,
@@ -82,6 +79,7 @@ export const adaptBebida = (bebida: any): IProduct => ({
   ingredientes: bebida.ingredients,
   imageUrl: bebida.imageUrl,
   description: bebida.description,
+  stock: bebida.stock,
   type: "bebidas",
   category: bebida.category
     ? {
