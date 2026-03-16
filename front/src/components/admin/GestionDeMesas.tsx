@@ -3,9 +3,9 @@ import { useState } from "react";
 import { preloadTables } from "@/lib/preloadTables";
 import { preloadReservation } from "@/lib/preloadReserva";
 
-export default function GestionMesas() {
-  const [horaSeleccionada, setHoraSeleccionada] = useState("20:00");
+export default function GestionMesas({ fechaSeleccionada }) {
   const horas = ["19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+  const [horaSeleccionada, setHoraSeleccionada] = useState(horas[0]);
 
   const estadoColor = (estado: string) => {
     switch (estado) {
@@ -18,8 +18,11 @@ export default function GestionMesas() {
     }
   };
 
+  const reservasFiltradas = preloadReservation.filter(
+    (r) => r.fecha === fechaSeleccionada && r.hora === horaSeleccionada,
+  );
   // Filtrar mesas ocupadas en la hora seleccionada
-  const mesasOcupadas = preloadReservation
+  const mesasOcupadas = reservasFiltradas
     .filter((r) => r.hora === horaSeleccionada)
     .map((r) => r.mesa);
 

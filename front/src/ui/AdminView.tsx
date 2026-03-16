@@ -1,9 +1,16 @@
 "use client";
 import GestionMesas from "@/components/admin/GestionDeMesas";
 import ReservasAdmin from "@/components/admin/ReservasAdmin";
+import { preloadReservation } from "@/lib/preloadReserva";
 import Link from "next/link";
+import { useState } from "react";
+
+const fechasUnicas = Array.from(
+  new Set(preloadReservation.map((r) => r.fecha)),
+);
 
 const AdminView = () => {
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(fechasUnicas[0]);
   return (
     <div className="h-full mt-20 mb-10 bg-[#F6E3D9]">
       <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">
@@ -12,12 +19,15 @@ const AdminView = () => {
       <div className="flex justify-center gap-5">
         {/* Lado izquierdo */}
         <div className="mb-5">
-          <ReservasAdmin />
+          <ReservasAdmin
+            fechaSeleccionada={fechaSeleccionada}
+            setFechaSeleccionada={setFechaSeleccionada}
+          />
         </div>
 
         {/* Lado derecho */}
         <div className="mb-5">
-          <GestionMesas />
+          <GestionMesas fechaSeleccionada={fechaSeleccionada} />
         </div>
       </div>
       <Link

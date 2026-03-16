@@ -1,13 +1,44 @@
 import { preloadReservation } from "@/lib/preloadReserva";
+import { useState } from "react";
 
-export default function ReservasAdmin() {
+export default function ReservasAdmin({
+  fechaSeleccionada,
+  setFechaSeleccionada,
+}) {
+  const fechasUnicas = Array.from(
+    new Set(preloadReservation.map((r) => r.fecha)),
+  );
+
   const estadoColor = (estado) => {
     if (estado === "confirmada") return "bg-green-100 text-green-700";
     if (estado === "pendiente") return "bg-orange-100 text-orange-700";
   };
+
+  const reservasFiltradas = preloadReservation.filter(
+    (r) => r.fecha === fechaSeleccionada,
+  );
+
   return (
     <div className="w-200 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
       <h2 className="mb-4 text-3xl text-red-950">Reservas</h2>
+
+      <div className="mb-6">
+        <label htmlFor="fecha" className="mr-2 font-semibold">
+          Fecha:
+        </label>
+        <select
+          id="fecha"
+          value={fechaSeleccionada}
+          onChange={(e) => setFechaSeleccionada(e.target.value)}
+          className="px-3 py-1 border border-gray-300 rounded-lg"
+        >
+          {fechasUnicas.map((fecha) => (
+            <option key={fecha} value={fecha}>
+              {fecha}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <table className="w-full">
         <thead className="text-sm text-black bg-gray-100">
@@ -21,7 +52,7 @@ export default function ReservasAdmin() {
         </thead>
 
         <tbody className="divide-y">
-          {preloadReservation.map((r, i) => (
+          {reservasFiltradas.map((r, i) => (
             <tr key={i} className="cursor-pointer hover:bg-gray-50">
               <td className="p-3 text-center">{r.fecha}</td>
 

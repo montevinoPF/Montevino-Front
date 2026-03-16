@@ -80,10 +80,14 @@ export const dishValidation = (values: IPlate) => {
     errors.description = "La descripción del plato es obligatoria";
   }
 
-  if (!values.imgUrl.trim()) {
-    errors.imgUrl = "La URL de la imagen es obligatoria";
-  } else if (!/^(ftp|http|https):\/\/[^ "]+$/.test(values.imgUrl)) {
-    errors.imgUrl = "La URL de la imagen no es válida";
+  if (!values.ingredientes.trim()) {
+    errors.ingredientes = "Los ingredientes del plato son obligatorios";
+  }
+
+  if (!values.imageUrl.trim()) {
+    errors.imageUrl = "La URL de la imagen es obligatoria";
+  } else if (!/^(ftp|http|https):\/\/[^ "]+$/.test(values.imageUrl)) {
+    errors.imageUrl = "La URL de la imagen no es válida";
   }
 
   if (!values.categoryId.trim()) {

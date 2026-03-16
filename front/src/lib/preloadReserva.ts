@@ -68,4 +68,15 @@ export const preloadReservation: Reserva[] = [
     mesa: preloadTables.find((table) => table.id === "6")!,
     notas: "Sin notas",
   },
+  {
+    id: "7",
+    fecha: "2023-09-16",
+    hora: "23:00",
+    personas: 4,
+    precio: 100,
+    deposito: 20,
+    estado: "confirmada",
+    mesa: preloadTables.find((table) => table.id === "7")!,
+    notas: "Sin notas",
+  },
 ];

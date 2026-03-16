@@ -71,8 +71,9 @@ export interface IReservation {
 export interface IPlate {
   name: string;
   description: string;
+  ingredientes: string;
   price: number;
-  imgUrl: string;
+  imageUrl: string;
   categoryId: string;
   stock: number;
 }
@@ -80,10 +81,16 @@ export interface IPlate {
 export interface IPlateErrors {
   name?: string;
   description?: string;
+  ingredientes?: string;
   price?: string;
-  imgUrl?: string;
+  imageUrl?: string;
   categoryId?: string;
   stock?: string;
+}
+
+export interface ICategory {
+  id: number;
+  name: string;
 }
 
 export interface Table {

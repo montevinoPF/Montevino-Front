@@ -1,10 +1,23 @@
 "use client";
 import { dishValidation } from "@/lib/validations";
 import { createPlato } from "@/services/platosService";
+import { ICategory } from "@/types/types";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const PlateForm = () => {
+  const [categorias, setCategorias] = useState<ICategory[]>([]);
+  const BACKURL = process.env.NEXT_PUBLIC_API_URL;
+
+  useEffect(() => {
+    // Reemplaza la URL por la de tu backend
+    fetch(`${BACKURL}/categories`)
+      .then((res) => res.json())
+      .then((data) => setCategorias(data))
+      .catch(() => setCategorias([]));
+  }, [BACKURL]);
+
   return (
     <div className="bg-[#F6E3D9]">
       <Link
@@ -26,8 +39,9 @@ const PlateForm = () => {
           initialValues={{
             name: "",
             description: "",
+            ingredientes: "",
             price: 0,
-            imgUrl: "",
+            imageUrl: "",
             categoryId: "",
             stock: 0,
           }}
@@ -75,6 +89,25 @@ const PlateForm = () => {
                 className="self-start text-red-500"
               />
 
+              <label htmlFor="ingredientes" className="self-start">
+                Ingredientes
+              </label>
+              <div className="flex items-center w-full border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-[#FED0BB]">
+                <Field
+                  id="ingredientes"
+                  as="textarea"
+                  rows={3}
+                  name="ingredientes"
+                  placeholder="Pasta al dente con salsa pesto de..."
+                  className="w-full p-2 outline-none resize-none"
+                />
+              </div>
+              <ErrorMessage
+                name="ingredientes"
+                component="div"
+                className="self-start text-red-500"
+              />
+
               <label htmlFor="price" className="self-start">
                 Precio
               </label>
@@ -93,34 +126,41 @@ const PlateForm = () => {
                 className="self-start text-red-500"
               />
 
-              <label htmlFor="imgUrl" className="self-start">
+              <label htmlFor="imageUrl" className="self-start">
                 Imagen
               </label>
               <div className="flex items-center w-full border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-[#FED0BB]">
                 <Field
-                  id="imgUrl"
+                  id="imageUrl"
                   type="url"
-                  name="imgUrl"
+                  name="imageUrl"
                   placeholder=""
                   className="w-full p-2 outline-none"
                 />
               </div>
               <ErrorMessage
-                name="imgUrl"
+                name="imageUrl"
                 component="div"
                 className="self-start text-red-500"
               />
 
               <label htmlFor="categoryId" className="self-start">
-                ID de categoria
+                Categoria
               </label>
               <div className="flex items-center w-full border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-[#FED0BB]">
                 <Field
                   id="categoryId"
-                  type="text"
                   name="categoryId"
+                  as="select"
                   className="w-full p-2 outline-none"
-                />
+                >
+                  <option value="">Selecciona una categoría</option>
+                  {categorias.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </Field>
               </div>
               <ErrorMessage
                 name="categoryId"
@@ -134,7 +174,7 @@ const PlateForm = () => {
               <div className="flex items-center w-full border mb-3 border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-[#FED0BB]">
                 <Field
                   id="stock"
-                  type="text"
+                  type="number"
                   name="stock"
                   placeholder="10"
                   className="w-full p-2 outline-none"
