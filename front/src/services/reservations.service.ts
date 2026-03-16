@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+=======
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+>>>>>>> 27951df8a6629c72a5a76b227d20275576ed20b0
 
 import { IReservation } from "@/types/types";
 

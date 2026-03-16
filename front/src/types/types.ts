@@ -50,6 +50,10 @@ export interface IUserSession {
   };
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 27951df8a6629c72a5a76b227d20275576ed20b0
 export interface IReservation {
   reservationDate: string;
   startTime: string;
@@ -59,4 +63,8 @@ export interface IReservation {
     platoId: string;
     quantity: number;
   }>;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 27951df8a6629c72a5a76b227d20275576ed20b0
