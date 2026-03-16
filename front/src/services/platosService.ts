@@ -1,4 +1,5 @@
 import { IPlate, IProduct } from "@/types/types";
+import Swal from "sweetalert2";
 
 export interface IPlatoFromBack {
   id: string;

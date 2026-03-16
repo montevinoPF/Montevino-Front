@@ -1,9 +1,12 @@
 "use client";
 import GestionMesas from "@/components/admin/GestionDeMesas";
 import ReservasAdmin from "@/components/admin/ReservasAdmin";
+import { useAuth } from "@/context/AuthContext";
 import { preloadReservation } from "@/lib/preloadReserva";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const fechasUnicas = Array.from(
   new Set(preloadReservation.map((r) => r.fecha)),
@@ -11,6 +14,21 @@ const fechasUnicas = Array.from(
 
 const AdminView = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState(fechasUnicas[0]);
+  const { role } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (role !== "admin") {
+      router.push("/");
+      Swal.fire({
+        icon: "error",
+        title: "Acceso denegado",
+        text: "No tienes permisos para acceder a esta página.",
+        confirmButtonColor: "#000",
+      });
+    }
+  }, [role, router]);
+
   return (
     <div className="h-full mt-20 mb-10 bg-[#F6E3D9]">
       <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">

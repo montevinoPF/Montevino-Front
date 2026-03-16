@@ -18,6 +18,7 @@ const LoginView = () => {
         onSubmit={async (values) => {
           const response = await login(values);
           const { token, user } = response;
+          console.log(token, user);
           setUserData({ token, user });
           router.push("/");
         }}
