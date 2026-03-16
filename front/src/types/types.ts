@@ -14,10 +14,18 @@ export interface IProduct {
   category?: {
     id: string;
     name: string;
-  }
+  };
   type?: string;
-};
+}
 
+export interface IProductErrors {
+  name?: string;
+  ingredientes?: string;
+  price?: string;
+  imageUrl?: string;
+  description?: string;
+  categoryId?: string;
+}
 
 export interface ILogin {
   email: string;
@@ -50,7 +58,6 @@ export interface IUserSession {
   };
 }
 
-
 export interface IReservation {
   reservationDate: string;
   startTime: string;
@@ -60,4 +67,28 @@ export interface IReservation {
     platoId: string;
     quantity: number;
   }>;
+}
+export interface IPlate {
+  name: string;
+  description: string;
+  price: number;
+  imgUrl: string;
+  categoryId: string;
+  stock: number;
+}
+
+export interface IPlateErrors {
+  name?: string;
+  description?: string;
+  price?: string;
+  imgUrl?: string;
+  categoryId?: string;
+  stock?: string;
+}
+
+export interface ITable {
+  number: number;
+  zone: string;
+  capacity: number;
+  state: string;
 }
