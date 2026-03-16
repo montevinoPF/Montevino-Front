@@ -11,7 +11,7 @@ const Card: React.FC<IProduct> = ({
   category,
 }) => {
   return (
-    <div className="rounded-2xl border border-[#e5cfc5] bg-[#f3dbcf] shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
+    <div className="rounded-2xl shadow-md  bg-[#fdeadf]  shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
       <div className="flex overflow-hidden aspect-square rounded-2xl">
         <img src={imageUrl} />
       </div>
@@ -30,7 +30,7 @@ const Card: React.FC<IProduct> = ({
           </p>
 
           <Link href={`/menu/${id}`}>
-            <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer">
+            <button className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer">
               VER MAS
               <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
             </button>

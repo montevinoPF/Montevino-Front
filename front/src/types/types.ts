@@ -1,12 +1,20 @@
-export interface IProduct {
+export interface ICategory {
   id: number;
   name: string;
-  ingredientes: string[];
+}
+
+export interface IProduct {
+  id: string;
+  name: string;
+  ingredientes: string[] | string;
   price: number;
   imageUrl: string;
   stock: number;
   description: string;
-  category?: string;
+  category?: {
+    id: string;
+    name: string;
+  }
   type?: string;
 };
 
