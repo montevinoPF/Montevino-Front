@@ -34,7 +34,7 @@ const MenuView = () => {
           </p>
         </div>
 
-        <p className="text-3xl text-center  text-red-950 -m-9">Platos</p>
+        <p className="text-3xl text-center text-red-950 -m-9">Platos</p>
 
         <div className="flex-grow w-full px-6 py-8 m-6 mx-auto">
           {loading && <p className="text-xl text-center">Cargando platos...</p>}
