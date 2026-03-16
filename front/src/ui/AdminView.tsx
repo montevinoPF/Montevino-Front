@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const AdminView = () => {
   return (
-    <div className="h-full mt-20 mb-10">
+    <div className="h-full mt-20 mb-10 bg-[#F6E3D9]">
       <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">
         Panel de Administración
       </h1>

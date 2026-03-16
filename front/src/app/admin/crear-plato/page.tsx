@@ -3,7 +3,7 @@ import React from "react";
 
 const CreatePlatePage = () => {
   return (
-    <div className="mt-30">
+    <div>
       <PlateForm />
     </div>
   );

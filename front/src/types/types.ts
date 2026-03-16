@@ -86,9 +86,9 @@ export interface IPlateErrors {
   stock?: string;
 }
 
-export interface ITable {
-  number: number;
+export interface Table {
+  id: string;
+  tableNumber: number;
+  status: string;
   zone: string;
-  capacity: number;
-  state: string;
 }
