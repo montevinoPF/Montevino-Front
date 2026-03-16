@@ -3,7 +3,7 @@ import GestionMesas from "@/components/admin/GestionDeMesas";
 import ReservasAdmin from "@/components/admin/ReservasAdmin";
 import { useAuth } from "@/context/AuthContext";
 import { getReservations } from "@/services/reservationsService";
-import { IReservation } from "@/types/types";
+import { IReserva } from "@/types/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 
 const AdminView = () => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState("");
-  const [reservas, setReservas] = useState<IReservation[]>([]);
+  const [reservas, setReservas] = useState<IReserva[]>([]);
   const [loading, setLoading] = useState(true);
   //const { role } = useAuth();
   //const router = useRouter();

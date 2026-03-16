@@ -8,7 +8,7 @@ interface GestionMesasProps {
 }
 
 export default function GestionMesas({ fechaSeleccionada }: GestionMesasProps) {
-  const horas = ["18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00"];
+  const horas = ["18:00", "20:00", "22:00", "00:00"];
   const [horaSeleccionada, setHoraSeleccionada] = useState("");
   const [mesas, setMesas] = useState<ITable[]>([]);
   const [loading, setLoading] = useState(true);

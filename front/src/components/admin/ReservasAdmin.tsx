@@ -1,7 +1,7 @@
-import { IReservation } from "@/types/types";
+import { IReserva } from "@/types/types";
 
 type ReservasAdminProps = {
-  reservas: IReservation[];
+  reservas: IReserva[];
   fechaSeleccionada: string;
   setFechaSeleccionada: (fecha: string) => void;
   fechasUnicas: string[];
