@@ -8,13 +8,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { string } from "yup";
 
 const PlateForm = () => {
   const [categorias, setCategorias] = useState<ICategory[]>([]);
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
   //const { role } = useAuth();
-  //const router = useRouter();
+  const router = useRouter();
   //
   //useEffect(() => {
   //  if (role !== "admin") {
@@ -64,7 +63,7 @@ const PlateForm = () => {
           }}
           validate={dishValidation}
           onSubmit={async (values) => {
-            await createPlato(values);
+            await createPlato(values, router);
           }}
         >
           {({ isSubmitting }) => (

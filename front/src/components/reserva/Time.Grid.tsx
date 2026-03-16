@@ -3,24 +3,19 @@
 interface TimeGridProps {
   selectedTime: string;
   onSelect: (time: string) => void;
-  selectedDate?: Date | null; 
+  selectedDate?: Date | null;
 }
 
 export default function TimeGrid({ selectedTime, onSelect }: TimeGridProps) {
-
-  const times = [
-    "08:30hs", "10:30hs", "12:30hs", "14:30hs",
-    "16:30hs", "18:30hs", "20:30hs", "22:30hs"
-  ];
+  const times = ["18:00", "20:00", "22:00", "00:00"];
 
   return (
     <div className="w-full mb-8">
-      <label className="block text-lg font-medium text-slate-950 mb-4">
+      <label className="block mb-4 text-lg font-medium text-slate-950">
         ¿A qué hora?
       </label>
 
-     
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {times.map((time) => (
           <button
             key={time}
@@ -35,5 +30,5 @@ export default function TimeGrid({ selectedTime, onSelect }: TimeGridProps) {
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,5 @@
 import { IProduct } from "@/types/types";
+import Swal from "sweetalert2";
 
 export interface IPlatoFromBack {
   id: string;
@@ -39,6 +40,43 @@ export const getPlatos = async (page: number, limit: number) => {
   const data = await res.json();
   return data.map(adaptPlato);
 };
+
+export const createPlato = async (plato: any, router?: any) => {
+  try {
+    const res = await fetch(`${BACKURL}/platos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(plato),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error al crear el plato");
+    }
+
+    const data = await res.json();
+    Swal.fire({
+      icon: "success",
+      title: "Plato creado",
+      text: "El plato se ha creado correctamente.",
+      confirmButtonColor: "#000",
+      showCancelButton: true,
+      confirmButtonText: "Ver plato",
+      cancelButtonText: "Reservar otro",
+    }).then((result) => {
+      if (result.isConfirmed && router) {
+        router.push(`/menu/${data.id}`);
+      }
+      // Si elige "Reservar otro", simplemente se queda en el formulario
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+// ...existing code...
 
 export const adaptPlato = (plato: any): IProduct => {
   console.log("PRODUCTOS DEL BACK:", plato);
