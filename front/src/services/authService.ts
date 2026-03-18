@@ -71,6 +71,7 @@ export async function register(userData: IRegister) {
       confirmButtonText: "Continuar",
       confirmButtonColor: "black",
     });
+    return data.role;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     await Swal.fire({
