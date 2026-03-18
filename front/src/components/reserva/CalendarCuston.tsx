@@ -76,11 +76,11 @@ export default function CalendarCustom({ selectedDate, onSelect }: CalendarCusto
 
   while (cells.length % 7 !== 0) cells.push(null);
 
-  const dotColor: Record<string, string> = {
-    available: "#22c55e",
-    full: "#ef4444",
-    // waitlist: "#f97316",
-  };
+  // const dotColor: Record<string, string> = {
+  //   available: "#22c55e",
+  //   full: "#ef4444",
+  //   // waitlist: "#f97316",
+  // };
 
   return (
     <div style={{
@@ -209,7 +209,6 @@ export default function CalendarCustom({ selectedDate, onSelect }: CalendarCusto
                   <div style={{
                     width: 6, height: 6,
                     borderRadius: "50%",
-                    background: dotColor[avail],
                     marginTop: 1,
                   }} />
                 )}
@@ -228,8 +227,8 @@ export default function CalendarCustom({ selectedDate, onSelect }: CalendarCusto
           color: "#555",
         }}>
           {[
-            { color: "#22c55e", label: "Hay lugar" },
-            { color: "#ef4444", label: "Lleno" },
+            // { color: "#22c55e", label: "Hay lugar" },
+            // { color: "#ef4444", label: "Lleno" },
             // { color: "#f97316", label: "Lista de espera" },
           ].map(({ color, label }) => (
             <div key={label} style={{ display: "flex", alignItems: "center", gap: 5 }}>

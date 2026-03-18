@@ -27,17 +27,17 @@ export default function Hero() {
         </p>
 
         <div className="mt-8 flex flex-row gap-4 w-3xl">
-          <a
-            href="/reserva"
+          <Link
+            href="/reservar"
             className="flex-1 py-2 text-center bg-linear-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-md transition-all duration-500 ease-in-out hover:bg-linear-to-l hover:brightness-110 hover:shadow-lg hover:-translate-y-0.5 hover:cursor-pointer">
             Reservar mesa
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/menu"
             className="flex-1 py-2 text-center bg-linear-to-r from-[#350A06] to-[#56070C] text-white font-semibold rounded-md shadow-md transition-all duration-500 ease-in-out hover:bg-linear-to-l hover:brightness-110 hover:shadow-lg hover:-translate-y-0.5 hover:cursor-pointer">
             Ver menú
-          </a>
+          </Link>
         </div>
       </div>
     </section>

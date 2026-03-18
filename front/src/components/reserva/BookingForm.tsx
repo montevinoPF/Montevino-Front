@@ -3,20 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-<<<<<<< HEAD
-import PersonSelector from "./PersonSelector";
-import CalendarCustom from "./CalendarCustom";
-import TimeGrid from "./TimeGrid";
-import { createReservation } from "@/services/reservations.service";
-// import Protected from "@/components/Protected";
-=======
 
 import Protected from "@/components/Protected";
 import { createReservation } from "@/services/reservations.service";
 import PersonSelector from "./PersonSelector";
 import CalendarCustom from "./CalendarCuston";
 import TimeGrid from "./Time.Grid";
->>>>>>> 27951df8a6629c72a5a76b227d20275576ed20b0
 
 
 export default function BookingForm() {
@@ -70,11 +62,7 @@ export default function BookingForm() {
   };
 
   return (
-<<<<<<< HEAD
-    // <Protected>
-=======
     <Protected>
->>>>>>> 27951df8a6629c72a5a76b227d20275576ed20b0
     <div className="max-w-xl mx-auto p-8 bg-[#f1dbd098] rounded-[2rem] border border-slate-950 shadow-sm mt-10">
       <h1 className="text-2xl font-bold text-slate-800 mb-8">Configura tu reserva</h1>
 
@@ -125,13 +113,6 @@ export default function BookingForm() {
         </div>
       </div>
     </div>
-<<<<<<< HEAD
-    // </Protected>
-  );
-}
-
-=======
   </Protected>
   );
 }
->>>>>>> 27951df8a6629c72a5a76b227d20275576ed20b0
