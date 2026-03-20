@@ -1,4 +1,5 @@
 import { IProduct } from "@/types/types";
+import Swal from "sweetalert2";
 
 export interface IPlatoFromBack {
   id: string;
@@ -24,31 +25,104 @@ export const getPlatoById = async (id: string) => {
   if (!res.ok) {
     throw new Error("Error al traer el plato");
   }
+  const data = await res.json();
 
-  return res.json();
+  return adaptPlato(data);
 };
 
-export const getPlatos = async () => {
-  const res = await fetch(`${BACKURL}/platos`);
+export const getPlatos = async (page: number, limit: number) => {
+  const res = await fetch(`${BACKURL}/platos?page=${page}&limit=${limit}`);
 
   if (!res.ok) {
     throw new Error("Error al traer los platos");
   }
 
-  return res.json();
+  const data = await res.json();
+  return data.map(adaptPlato);
 };
 
-export const adaptPlato = (plato: any): IProduct => ({
-  id: Number(plato.id),
-  name: plato.name,
-  price: Number(plato.price),
-  ingredientes: plato.ingredients,
-  imageUrl: plato.imageUrl,
-  description: plato.description,
-  category: plato.category
+export const createPlato = async (plato: any, router?: any) => {
+  try {
+    const res = await fetch(`${BACKURL}/platos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(plato),
+    });
+
+    if (!res.ok) {
+      throw new Error("Error al crear el plato");
+    }
+
+    const data = await res.json();
+    Swal.fire({
+      icon: "success",
+      title: "Plato creado",
+      text: "El plato se ha creado correctamente.",
+      confirmButtonColor: "#000",
+      showCancelButton: true,
+      confirmButtonText: "Ver plato",
+      cancelButtonText: "Reservar otro",
+    }).then((result) => {
+      if (result.isConfirmed && router) {
+        router.push(`/menu/${data.id}`);
+      }
+      // Si elige "Reservar otro", simplemente se queda en el formulario
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+// ...existing code...
+
+export const adaptPlato = (plato: any): IProduct => {
+  console.log("PRODUCTOS DEL BACK:", plato);
+  return {
+    id: plato.id,
+    name: plato.name,
+    price: Number(plato.price),
+    ingredientes: plato.ingredientes,
+    imageUrl: plato.imageUrl,
+    description: plato.description,
+    stock: plato.stock,
+    type: "platos",
+    category: plato.category
+      ? {
+          id: plato.category.id,
+          name: plato.category.name,
+        }
+      : undefined,
+  };
+};
+
+export const getBebidas = async (page: number, limit: number) => {
+  const res = await fetch(`${BACKURL}/bebidas?page=${page}&limit=${limit}`);
+
+  if (!res.ok) {
+    throw new Error("Error al traer las bebidas");
+  }
+
+  const data = await res.json();
+
+  return data.map(adaptBebida);
+};
+
+export const adaptBebida = (bebida: any): IProduct => ({
+  id: bebida.id,
+  name: bebida.name,
+  price: Number(bebida.price),
+  ingredientes: bebida.ingredients,
+  imageUrl: bebida.imageUrl,
+  description: bebida.description,
+  stock: bebida.stock,
+  type: "bebidas",
+  category: bebida.category
     ? {
-        id: Number(plato.category.id),
-        name: plato.category.name,
+        id: bebida.category.id,
+        name: bebida.category.name,
       }
     : undefined,
 });

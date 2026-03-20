@@ -1,4 +1,4 @@
-import Reserva from "@/components/reserva/Reserva";
+import Reserva from "@/components/reserva/BookingForm";
 
 export default function ReservasPage() {
   return (
