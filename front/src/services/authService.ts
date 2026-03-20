@@ -15,7 +15,34 @@ export async function login(userData: ILogin) {
 
     const data = await response.json();
     if (!data.access_token) {
+      let errorMsg = "Contraseña o email incorrecto";
+      if (data.message?.toLowerCase().includes("usuario")) {
+        errorMsg = "El usuario no existe. ¿Quieres registrarte?";
+      } else if (data.message?.toLowerCase().includes("contraseña")) {
+        errorMsg = "La contraseña es incorrecta.";
+      }
+      await Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: errorMsg,
+        confirmButtonColor: "black",
+      });
       throw new Error(data.message);
+    }
+
+    // Validar id_token antes de decodificar
+    if (
+      !data.id_token ||
+      typeof data.id_token !== "string" ||
+      data.id_token.split(".").length !== 3
+    ) {
+      await Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: "Token inválido recibido del servidor.",
+        confirmButtonColor: "black",
+      });
+      throw new Error("Token inválido");
     }
 
     const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
@@ -60,7 +87,6 @@ export async function register(userData: IRegister) {
     console.log(response);
 
     const data = await response.json();
-    console.log(data);
     if (!data.name) {
       throw new Error(data.message);
     }
@@ -74,12 +100,25 @@ export async function register(userData: IRegister) {
     return data.role;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    await Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Ocurrió un error al registrarse.",
-      confirmButtonColor: "black",
-    });
+    if (error.message.includes("correo")) {
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "El correo electrónico ya está en uso.",
+        confirmButtonColor: "black",
+      });
+    } else {
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al registrarse.",
+        confirmButtonColor: "black",
+      });
+    }
     throw new Error(error);
   }
+}
+
+export async function googleLogin() {
+  window.location.href = `${BACKURL}/auth/google`;
 }
