@@ -4,14 +4,14 @@ import { IProduct } from "@/types/types";
 const Card: React.FC<IProduct> = ({
   name,
   price,
-  image,
+  imageUrl,
   id,
-  ingredients,  
+  ingredientes,  
 }) => {
   return (
     <div className="rounded-2xl shadow-md  bg-[#fdeadf]  shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
       <div className="flex overflow-hidden aspect-square rounded-2xl">
-        <img src={image} />
+        <img src={imageUrl} />
       </div>
       <div className="flex flex-col flex-1 p-8 px-3 md:text-base ">
         <h3 className="flex items-center justify-center font-serif text-2xl text-red-800 ">
@@ -19,7 +19,7 @@ const Card: React.FC<IProduct> = ({
         </h3>
 
         <h3 className="p-3 font-serif text-lg text-slate-900 min-h-10 flex items-center justify-center ">
-          {ingredients}
+          {ingredientes}
         </h3>
 
         <div className="mt-auto">
