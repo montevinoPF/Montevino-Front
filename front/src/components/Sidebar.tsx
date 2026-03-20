@@ -1,9 +1,21 @@
-// ─── SIDEBAR ────────────────────────────────────────────────────────────────
+
 const WINE = "#7B1D2E";
 const WINE2 = "#5A1020";
 const GOLD = "#C9A84C";
 
-function NavItem({ label, active, onClick }) {
+
+interface NavItemProps {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+interface SidebarProps {
+  seccion: string;
+  setSeccion: (seccion: string) => void;
+}
+
+function NavItem({ label, active, onClick }: NavItemProps) {
   return (
     <button
       onClick={onClick}
@@ -19,7 +31,7 @@ function NavItem({ label, active, onClick }) {
   );
 }
 
-export default function Sidebar({ seccion, setSeccion }) {
+export default function Sidebar({ seccion, setSeccion }: SidebarProps) {
   const nav = [
     { key: "reservas", label: "Reservas" },
     { key: "mesas", label: "Mesas" },
@@ -34,7 +46,7 @@ export default function Sidebar({ seccion, setSeccion }) {
       }}
     >
       {/* Nav links */}
-      <nav className="flex-1 pt-4 mt-18">
+      <nav className="flex-1 pt-4 mt-16">
         {nav.map((n) => (
           <NavItem
             {...n}
