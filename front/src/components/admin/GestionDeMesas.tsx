@@ -32,7 +32,7 @@ export default function GestionMesas({ fechaSeleccionada }: GestionMesasProps) {
   }, [fechaSeleccionada, horaSeleccionada]);
 
   return (
-    <div className="h-full w-200 p-6 bg-white rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)]">
+    <div className="h-full w-150 p-6 bg-white rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)]">
       <h2 className="mb-4 text-3xl text-red-950">Gestión de Mesas</h2>
 
       {/* Selector de hora */}

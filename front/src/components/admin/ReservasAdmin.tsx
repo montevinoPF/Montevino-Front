@@ -1,4 +1,6 @@
+"use client";
 import { IReserva } from "@/types/types";
+import { useState } from "react";
 
 type ReservasAdminProps = {
   reservas: IReserva[];
@@ -13,6 +15,8 @@ export default function ReservasAdmin({
   setFechaSeleccionada,
   fechasUnicas,
 }: ReservasAdminProps) {
+  const [reservaDetalle, setReservaDetalle] = useState<IReserva | null>(null);
+
   const estadoColor = (estado: string) => {
     if (estado === "confirmada") return "bg-green-100 text-green-700";
     if (estado === "pendiente") return "bg-orange-100 text-orange-700";
@@ -23,7 +27,7 @@ export default function ReservasAdmin({
   );
 
   return (
-    <div className="w-200 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
+    <div className="w-150 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
       <h2 className="mb-4 text-3xl text-red-950">Reservas</h2>
 
       <div className="mb-6">
@@ -93,6 +97,102 @@ export default function ReservasAdmin({
           )}
         </tbody>
       </table>
+      {/* Modal de detalle */}
+      {reservaDetalle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative w-full max-w-md p-8 bg-white shadow-lg rounded-xl">
+            <button
+              className="absolute text-2xl text-gray-400 top-2 right-3 hover:text-red-600"
+              onClick={() => setReservaDetalle(null)}
+            >
+              &times;
+            </button>
+            <h3 className="mb-4 text-xl font-bold text-red-950">
+              Detalle de Reserva
+            </h3>
+            <div className="space-y-2">
+              <div>
+                <span className="font-semibold">Nombre:</span>{" "}
+                {reservaDetalle.user.name}
+              </div>
+              <div>
+                <span className="font-semibold">Email:</span>{" "}
+                {reservaDetalle.user.email}
+              </div>
+              <div>
+                <span className="font-semibold">Fecha:</span>{" "}
+                {reservaDetalle.reservationDate}
+              </div>
+              <div>
+                <span className="font-semibold">Hora:</span>{" "}
+                {reservaDetalle.startTime}
+              </div>
+              <div>
+                <span className="font-semibold">Personas:</span>{" "}
+                {reservaDetalle.peopleCount}
+              </div>
+              <div>
+                <span className="font-semibold">Mesa:</span>{" "}
+                {reservaDetalle.table && reservaDetalle.table.tableNumber
+                  ? reservaDetalle.table.tableNumber
+                  : "Sin mesa"}
+              </div>
+              <div>
+                <span className="font-semibold">Estado:</span>{" "}
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor(reservaDetalle.status.toLowerCase())}`}
+                >
+                  {reservaDetalle.status}
+                </span>
+              </div>
+              <div>
+                <span className="font-semibold">Estado:</span>{" "}
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor(
+                    reservaDetalle.status.toLowerCase(),
+                  )}`}
+                >
+                  {reservaDetalle.status}
+                </span>
+              </div>
+              {/* Platos pedidos */}
+              <div>
+                <span className="font-semibold">Platos pedidos:</span>
+                <ul className="mt-1 ml-4 list-disc">
+                  {Array.isArray(reservaDetalle.pedidos) &&
+                  reservaDetalle.pedidos.length > 0 ? (
+                    reservaDetalle.pedidos.map((pedido: any, idx: number) => (
+                      <li key={pedido.id || idx}>
+                        {pedido.menuItem?.name} x {pedido.quantity}{" "}
+                        <span className="text-gray-500">
+                          (${(pedido.price * pedido.quantity).toFixed(2)})
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-gray-500">No hay platos pedidos.</li>
+                  )}
+                </ul>
+              </div>
+              <div>
+                <span className="font-semibold">Total:</span>{" "}
+                <span>
+                  $
+                  {Array.isArray(reservaDetalle.pedidos)
+                    ? reservaDetalle.pedidos
+                        .reduce(
+                          (acc: number, pedido: any) =>
+                            acc + pedido.price * pedido.quantity,
+                          0,
+                        )
+                        .toFixed(2)
+                    : "0.00"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

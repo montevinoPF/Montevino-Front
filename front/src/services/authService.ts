@@ -14,38 +14,16 @@ export async function login(userData: ILogin) {
     });
 
     const data = await response.json();
-    if (!data.access_token) {
-      let errorMsg = "Contraseña o email incorrecto";
-      if (data.message?.toLowerCase().includes("usuario")) {
-        errorMsg = "El usuario no existe. ¿Quieres registrarte?";
-      } else if (data.message?.toLowerCase().includes("contraseña")) {
-        errorMsg = "La contraseña es incorrecta.";
-      }
-      await Swal.fire({
-        icon: "error",
-        title: "Error al iniciar sesión",
-        text: errorMsg,
-        confirmButtonColor: "black",
-      });
-      throw new Error(data.message);
-    }
 
-    // Validar id_token antes de decodificar
-    if (
-      !data.id_token ||
-      typeof data.id_token !== "string" ||
-      data.id_token.split(".").length !== 3
-    ) {
-      await Swal.fire({
-        icon: "error",
-        title: "Error al iniciar sesión",
-        text: "Token inválido recibido del servidor.",
-        confirmButtonColor: "black",
-      });
-      throw new Error("Token inválido");
-    }
+    const token = data.id_token;
+    const base64Payload = token
+      .split(".")[1]
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const decoded = atob(base64Payload);
+    const decodedToken = JSON.parse(decoded);
+    console.log(decodedToken);
 
-    const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
     const decodedData = {
       token: data.access_token,
       user: {
@@ -65,12 +43,23 @@ export async function login(userData: ILogin) {
     return decodedData;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    await Swal.fire({
-      icon: "error",
-      title: "Error al iniciar sesión",
-      text: "Contraseña o email incorrecto",
-      confirmButtonColor: "black",
-    });
+    if (error.message.includes("Token inválido")) {
+      await Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: "La cuenta no existe. ¿Quieres registrarte?",
+        confirmButtonText: "Registrarse",
+        denyButtonText: "Cancelar",
+        confirmButtonColor: "black",
+      });
+    } else {
+      await Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: "Contraseña o email incorrecto",
+        confirmButtonColor: "black",
+      });
+    }
     throw new Error(error);
   }
 }

@@ -7,7 +7,7 @@ import { useAuth } from "@/context/AuthContext"; // importa tu hook
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const { userData, setUserData } = useAuth(); // obtenemos sesión y setter
+  const { userData, setUserData, handleLogout, checkAdmin } = useAuth(); // obtenemos sesión y setter
 
   // Links base
   const links = [
@@ -21,15 +21,12 @@ export default function Navbar() {
     links.push({ href: "/mis-reservas", label: "Mis Reservas" });
   }
 
-  // Función de logout
-  const handleLogout = () => {
-    localStorage.removeItem("userSession");
-    setUserData(null);
-    setOpen(false);
-  };
+  if (userData && checkAdmin()) {
+    links.push({ href: "/admin", label: "Admin" });
+  }
 
   return (
-    <nav className="fixed top-0 w-full bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] z-50 shadow-lg">
+    <nav className="fixed top-0 w-full bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] z-50">
       <div className="w-[80%] mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link href="/">
