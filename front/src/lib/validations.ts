@@ -82,8 +82,12 @@ export const dishValidation = (values: IPlate) => {
 
   if (!values.imageUrl.trim()) {
     errors.imageUrl = "La URL de la imagen es obligatoria";
-  } else if (!/^(ftp|http|https):\/\/[^ "]+$/.test(values.imageUrl)) {
-    errors.imageUrl = "La URL de la imagen no es válida";
+  } else {
+    try {
+      new URL(values.imageUrl);
+    } catch (e) {
+      errors.imageUrl = "La URL de la imagen no es válida";
+    }
   }
 
   if (!values.categoryId.trim()) {

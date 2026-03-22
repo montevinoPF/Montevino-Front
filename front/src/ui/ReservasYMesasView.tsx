@@ -2,6 +2,7 @@
 import GestionMesas from "@/components/admin/GestionDeMesas";
 import ReservasAdmin from "@/components/admin/ReservasAdmin";
 import Sidebar from "@/components/admin/Sidebar";
+import Navbar from "@/components/NavBar";
 import { useAuth } from "@/context/AuthContext";
 import { getReservations } from "@/services/reservationsService";
 import { IReserva } from "@/types/types";
@@ -15,23 +16,24 @@ const ReservasYMesasView = () => {
   const [reservas, setReservas] = useState<IReserva[]>([]);
   const [loading, setLoading] = useState(true);
   const { userData, isAuthReady, checkAdmin } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isAuthReady) return;
-    if (!userData) {
-      Swal.fire({
-        icon: "error",
-        title: "Acceso Denegado",
-        text: "No tienes permisos para acceder a esta página.",
-        confirmButtonColor: "#000",
-      });
-      router.push("/login");
-      return;
-    }
-    checkAdmin();
-  }, [userData, isAuthReady, router, checkAdmin]);
+  //useEffect(() => {
+  //  if (!isAuthReady) return;
+  //  if (!userData) {
+  //    Swal.fire({
+  //      icon: "error",
+  //      title: "Acceso Denegado",
+  //      text: "No tienes permisos para acceder a esta página.",
+  //      confirmButtonColor: "#000",
+  //    });
+  //    router.push("/login");
+  //    return;
+  //  }
+  //  checkAdmin();
+  //}, [userData, isAuthReady, router, checkAdmin]);
 
   useEffect(() => {
     const fetchReservas = async () => {
@@ -53,33 +55,35 @@ const ReservasYMesasView = () => {
   );
 
   return (
-    <div className="h-full mt-20 w-full mb-10 bg-[#F6E3D9] flex">
-      {/* Sidebar */}
-      <Sidebar />
+    <>
+      <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="h-full mt-20 w-full mb-10 bg-[#F6E3D9] flex">
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
-      {/* Main content */}
-      <div className="flex-1">
-        <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">
-          Panel de Administración
-        </h1>
-        <div className="flex justify-center gap-5">
-          {/* Lado izquierdo */}
-          <div className="mb-5">
-            <ReservasAdmin
-              reservas={reservas}
-              fechaSeleccionada={fechaSeleccionada}
-              setFechaSeleccionada={setFechaSeleccionada}
-              fechasUnicas={fechasUnicas}
-            />
-          </div>
+        {/* Main content */}
+        <div className="flex-1">
+          <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">
+            Panel de Administración
+          </h1>
+          <div className="flex justify-center gap-5">
+            {/* Lado izquierdo */}
+            <div className="mb-5">
+              <ReservasAdmin
+                reservas={reservas}
+                fechaSeleccionada={fechaSeleccionada}
+                setFechaSeleccionada={setFechaSeleccionada}
+                fechasUnicas={fechasUnicas}
+              />
+            </div>
 
-          {/* Lado derecho */}
-          <div className="mb-5">
-            <GestionMesas fechaSeleccionada={fechaSeleccionada} />
+            {/* Lado derecho */}
+            <div className="mb-5">
+              <GestionMesas fechaSeleccionada={fechaSeleccionada} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

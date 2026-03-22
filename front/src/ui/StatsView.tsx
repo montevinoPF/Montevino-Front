@@ -15,11 +15,13 @@ import { IReserva } from "@/types/types";
 import Sidebar from "@/components/admin/Sidebar";
 import { AlignCenter, TextAlignCenter } from "lucide-react";
 import { text } from "stream/consumers";
+import Navbar from "@/components/NavBar";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Stats() {
   const [data, setData] = useState<IReserva[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,20 +87,23 @@ export default function Stats() {
   };
 
   return (
-    <div className="h-full mt-20 w-full bg-[#F6E3D9] flex">
-      <Sidebar />
-      <div className="flex-col items-center justify-center flex-1 mx-10 mb-10">
-        <h2 className="pt-10 mb-10 text-5xl text-center text-red-950">
-          Gráficos y Estadísticas
-        </h2>
-        <div className="flex justify-center gap-5">
-          <Bar
-            data={chartData}
-            options={options}
-            className="w-150 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white"
-          />
+    <>
+      <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="h-full mt-20 w-full bg-[#F6E3D9] flex">
+        <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
+        <div className="flex-col items-center justify-center flex-1 mx-10 mb-10">
+          <h2 className="pt-10 mb-10 text-5xl text-center text-red-950">
+            Gráficos y Estadísticas
+          </h2>
+          <div className="flex justify-center gap-5">
+            <Bar
+              data={chartData}
+              options={options}
+              className="w-150 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
