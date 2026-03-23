@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import PersonSelector from "./PersonSelector";
 import CalendarCustom from "./CalendarCustom";
 import TimeGrid from "./TimeGrid";
-import Protected from "@/components/Protected";
+// import Protected from "@/components/Protected";
 
 export default function BookingForm() {
   const router = useRouter();
@@ -40,58 +40,58 @@ export default function BookingForm() {
   };
 
   return (
-    <Protected>
-      <div className="max-w-xl mx-auto p-8 bg-[#f1dbd098] rounded-[2rem] border border-slate-950 shadow-sm mt-10">
-        <h1 className="mb-8 text-2xl font-bold text-slate-800">
-          Configura tu reserva
-        </h1>
+    // <Protected>
+    <div className="max-w-xl mx-auto p-8 bg-[#f1dbd098] rounded-[2rem] border border-slate-950 shadow-sm mt-10">
+      <h1 className="mb-8 text-2xl font-bold text-slate-800">
+        Configura tu reserva
+      </h1>
 
-        <PersonSelector selected={guests} onSelect={setGuests} />
+      <PersonSelector selected={guests} onSelect={setGuests} />
 
-        <CalendarCustom selectedDate={date} onSelect={setDate} />
+      <CalendarCustom selectedDate={date} onSelect={setDate} />
 
-        <TimeGrid selectedTime={time} onSelect={setTime} />
+      <TimeGrid selectedTime={time} onSelect={setTime} />
 
-        {/* Barra Inferior */}
-        <div className="flex flex-col gap-4 p-5 mt-10 bg-white border shadow-md border-slate-200 rounded-2xl">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex flex-col">
-              <span className="text-lg font-bold capitalize text-slate-800">
-                {formatDate(date)} - {time}
-              </span>
-              <span className="text-sm font-medium text-slate-500">
-                {guests} personas
-              </span>
-            </div>
+      {/* Barra Inferior */}
+      <div className="flex flex-col gap-4 p-5 mt-10 bg-white border shadow-md border-slate-200 rounded-2xl">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col">
+            <span className="text-lg font-bold capitalize text-slate-800">
+              {formatDate(date)} - {time}
+            </span>
+            <span className="text-sm font-medium text-slate-500">
+              {guests} personas
+            </span>
+          </div>
 
-            {!showOptions ? (
+          {!showOptions ? (
+            <button
+              onClick={() => setShowOptions(true)}
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
+            >
+              Continuar
+              <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
+            </button>
+          ) : (
+            <div className="flex flex-col gap-2">
               <button
-                onClick={() => setShowOptions(true)}
+                onClick={irAPlatillos}
                 className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
               >
-                Continuar
+                Elegir Platillos
                 <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
               </button>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={irAPlatillos}
-                  className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
-                >
-                  Elegir Platillos
-                  <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-                </button>
-                <button
-                  onClick={reservarDirecto}
-                  className="text-[15px] text-black underline text-center cursor-pointer"
-                >
-                  Omitir y reservar mesa
-                </button>
-              </div>
-            )}
-          </div>
+              <button
+                onClick={reservarDirecto}
+                className="text-[15px] text-black underline text-center cursor-pointer"
+              >
+                Omitir y reservar mesa
+              </button>
+            </div>
+          )}
         </div>
       </div>
-    </Protected>
+    </div>
+    // </Protected>
   );
 }
