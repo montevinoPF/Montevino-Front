@@ -20,20 +20,20 @@ const ReservasYMesasView = () => {
 
   const router = useRouter();
 
-  //useEffect(() => {
-  //  if (!isAuthReady) return;
-  //  if (!userData) {
-  //    Swal.fire({
-  //      icon: "error",
-  //      title: "Acceso Denegado",
-  //      text: "No tienes permisos para acceder a esta página.",
-  //      confirmButtonColor: "#000",
-  //    });
-  //    router.push("/login");
-  //    return;
-  //  }
-  //  checkAdmin();
-  //}, [userData, isAuthReady, router, checkAdmin]);
+  useEffect(() => {
+    if (!isAuthReady) return;
+    if (!userData) {
+      Swal.fire({
+        icon: "error",
+        title: "Acceso Denegado",
+        text: "No tienes permisos para acceder a esta página.",
+        confirmButtonColor: "#000",
+      });
+      router.push("/login");
+      return;
+    }
+    checkAdmin();
+  }, [userData, isAuthReady, router, checkAdmin]);
 
   useEffect(() => {
     const fetchReservas = async () => {

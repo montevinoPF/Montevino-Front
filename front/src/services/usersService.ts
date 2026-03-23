@@ -49,10 +49,6 @@ export default async function promoteUserRole(id: string) {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
 
-  if (!token) {
-    throw new Error("No hay token de autenticación");
-  }
-
   try {
     const response = await fetch(`${BACKURL}/users/${id}/makeadmin`, {
       method: "PATCH",

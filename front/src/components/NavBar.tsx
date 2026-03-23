@@ -26,17 +26,32 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
     links.push({ href: "/dashboard-user", label: "Mis Reservas" });
   }
 
+  if (userData && checkAdmin()) {
+    links.push({ href: "/admin", label: "Admin" });
+  }
+
   return (
-    <>
-      <nav className="fixed top-0 w-full bg-linear-to-r flex from-[#350A06] to-[#56070C] text-[#FED0BB] z-50">
-        <div className="flex items-center justify-center ml-10 text-center">
-          {/* Botón para mostrar/ocultar sidebar solo en admin */}
-          {userData && window.location.pathname.startsWith("/admin") && (
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              aria-label={
-                sidebarOpen ? "Cerrar menú lateral" : "Abrir menú lateral"
-              }
+    <nav className="fixed top-0 w-full bg-linear-to-r from-[#350A06] to-[#56070C] text-[#FED0BB] z-50">
+      <div className="w-[80%] mx-auto px-6 py-4 flex justify-between items-center">
+        {/* Logo */}
+        <Link href="/">
+          <Image
+            src="/logo.png"
+            alt="Logo Montevino"
+            width={100}
+            height={70}
+            className="object-contain max-h-14 scale-[2.5]"
+            priority
+          />
+        </Link>
+
+        {/* Desktop Links */}
+        <div className="hidden space-x-8 md:flex">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="hover:text-[#FFD580] transition-colors"
             >
               {sidebarOpen ? <FiX /> : <FiMenu />}
             </button>
