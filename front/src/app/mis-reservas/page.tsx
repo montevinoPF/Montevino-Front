@@ -1,5 +1,3 @@
-"use client";
-
 import BookingForm from "@/components/reserva/BookingForm";
 
 export default function ReservasPage() {
