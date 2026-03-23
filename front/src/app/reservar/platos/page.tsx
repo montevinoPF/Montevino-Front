@@ -1,9 +1,13 @@
+"use client";
 import ReservarPlatosView from "@/ui/ReservarPlatosView";
+import { Suspense } from "react";
 
 
 const ReservarPlatosPage = () => {
   return (
-    <ReservarPlatosView />
+    <Suspense fallback={<div>Cargando reserva...</div>}>
+      <ReservarPlatosView />
+    </Suspense>
   )
 }
 
