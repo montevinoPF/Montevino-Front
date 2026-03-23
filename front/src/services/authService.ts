@@ -1,35 +1,46 @@
 import { ILogin, IRegister } from "@/types/types";
 import Swal from "sweetalert2";
+import { getMyUser } from "./usersService";
 
 const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
+const decodeJWT = (token: string) => {
+  const base64Payload = token
+    .split(".")[1]
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+  const decoded = atob(base64Payload);
+  return JSON.parse(decoded);
+};
+
 export async function login(userData: ILogin) {
   try {
-    const response = await fetch(`${BACKURL}/auth/login`, {
+    const responseLogin = await fetch(`${BACKURL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify(userData),
     });
+    const data = await responseLogin.json();
 
-    const data = await response.json();
+    const responseProfile = await fetch(`${BACKURL}/auth/profile`, {
+      headers: {
+        Authorization: `Bearer ${data.access_token}`,
+      },
+    });
 
-    const token = data.id_token;
-    const base64Payload = token
-      .split(".")[1]
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-    const decoded = atob(base64Payload);
-    const decodedToken = JSON.parse(decoded);
-    console.log(decodedToken);
+    const user = await responseProfile.json();
+
+    const decodedIdToken = decodeJWT(data.id_token);
 
     const decodedData = {
       token: data.access_token,
       user: {
-        id: decodedToken.sub,
-        email: decodedToken.email,
-        name: decodedToken.name,
+        id: decodedIdToken.sub,
+        email: decodedIdToken.email,
+        name: decodedIdToken.name,
+        role: user.role,
       },
     };
 

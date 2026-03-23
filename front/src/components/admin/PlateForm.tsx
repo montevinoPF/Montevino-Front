@@ -12,27 +12,23 @@ import Swal from "sweetalert2";
 const PlateForm = () => {
   const [categorias, setCategorias] = useState<ICategory[]>([]);
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
-  const { role } = useAuth();
   const router = useRouter();
-
-  //useEffect(() => {
-  //  if (role !== "admin") {
-  //    router.push("/");
-  //    Swal.fire({
-  //      icon: "error",
-  //      title: "Acceso denegado",
-  //      text: "No tienes permisos para acceder a esta página.",
-  //      confirmButtonColor: "#000",
-  //    });
-  //  }
-  //}, [role, router]);
+  const { checkAdmin, isAuthReady, userData } = useAuth();
 
   useEffect(() => {
-    fetch(`${BACKURL}/categories`)
-      .then((res) => res.json())
-      .then((data) => setCategorias(data))
-      .catch(() => setCategorias([]));
-  }, [BACKURL]);
+    if (!isAuthReady || !userData) return;
+    const init = async () => {
+      checkAdmin();
+      if (userData.user.role !== "ADMIN") return;
+      fetch(`${BACKURL}/categories`)
+        .then((res) => res.json())
+        .then((data) => setCategorias(data))
+        .catch(() => setCategorias([]));
+    };
+    init();
+  }, [BACKURL, userData, isAuthReady]);
+
+  if (!isAuthReady || !userData) return null;
 
   return (
     <div className="bg-[#F6E3D9]">

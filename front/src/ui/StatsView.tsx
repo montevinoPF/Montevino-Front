@@ -13,23 +13,40 @@ import { useEffect, useState } from "react";
 import { getReservations } from "@/services/reservationsService";
 import { IReserva } from "@/types/types";
 import Sidebar from "@/components/admin/Sidebar";
-import { AlignCenter, TextAlignCenter } from "lucide-react";
-import { text } from "stream/consumers";
 import Navbar from "@/components/NavBar";
+import { useAuth } from "@/context/AuthContext";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Stats() {
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<IReserva[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { checkAdmin, isAuthReady, userData } = useAuth();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const reservas = await getReservations();
-      setData(reservas);
+    if (!isAuthReady || !userData) return;
+    const init = async () => {
+      checkAdmin(); // Espera a que checkAdmin termine
+      if (userData.user.role !== "ADMIN") return;
+      try {
+        const reservas = await getReservations();
+        if (Array.isArray(reservas)) {
+          setData(reservas);
+        } else {
+          setData([]);
+        }
+      } catch (error) {
+        console.error(error);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchData();
-  }, []);
+    init();
+  }, [isAuthReady, userData]);
+
+  if (!isAuthReady || !userData) return null;
 
   // Agrupa por mes y suma totalPrice
   const gananciasPorMes: { [mes: string]: number } = {};

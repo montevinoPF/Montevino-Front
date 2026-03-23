@@ -24,10 +24,6 @@ export async function getUsers() {
 export async function getUsersById(id: string) {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
-
-  if (!token) {
-    throw new Error("No hay token de autenticación");
-  }
   try {
     const response = await fetch(`${BACKURL}/users/${id}`, {
       method: "GET",
@@ -41,6 +37,22 @@ export async function getUsersById(id: string) {
     return data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export async function getMyUser() {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+  try {
+    const response = await fetch("/auth/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const user = await response.json();
+    console.log(user.role);
+  } catch (error) {
     throw new Error(error);
   }
 }

@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/context/AuthContext";
 import { dishValidation } from "@/lib/validations";
 import { editPlato } from "@/services/platosService";
 import { ICategory, IProduct } from "@/types/types";
@@ -9,6 +10,7 @@ import { useEffect, useState } from "react";
 const EditPlateForm = ({ plato }: any) => {
   const [categorias, setCategorias] = useState<ICategory[]>([]);
   const [categoriasLoaded, setCategoriasLoaded] = useState(false);
+  const { checkAdmin, isAuthReady, userData } = useAuth();
   const tipos = [
     { id: "platos", name: "Platos" },
     { id: "bebidas", name: "Bebidas" },
@@ -17,21 +19,25 @@ const EditPlateForm = ({ plato }: any) => {
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`${BACKURL}/categories`)
-      .then((res) => res.json())
-      .then((data) => {
-        setCategorias(data);
-        setCategoriasLoaded(true);
-      })
-      .catch(() => {
-        setCategorias([]);
-        setCategoriasLoaded(true);
-      });
-  }, [BACKURL]);
+    if (!isAuthReady || !userData) return;
+    const init = async () => {
+      checkAdmin();
+      if (userData.user.role !== "ADMIN") return;
+      fetch(`${BACKURL}/categories`)
+        .then((res) => res.json())
+        .then((data) => {
+          setCategorias(data);
+          setCategoriasLoaded(true);
+        })
+        .catch(() => {
+          setCategorias([]);
+          setCategoriasLoaded(true);
+        });
+    };
+    init();
+  }, [BACKURL, userData, isAuthReady]);
 
-  if (!categoriasLoaded) {
-    return <p className="py-10 text-center">Cargando...</p>;
-  }
+  if (!isAuthReady || !userData) return null;
 
   return (
     <Formik

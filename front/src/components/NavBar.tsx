@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useAuth } from "@/context/AuthContext"; // importa tu hook
+import { usePathname, useRouter } from "next/navigation";
 
 type NavbarProps = {
   sidebarOpen?: boolean;
@@ -12,18 +13,24 @@ type NavbarProps = {
 
 export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
   const [open, setOpen] = useState(false);
-  const { userData, setUserData, handleLogout, checkAdmin } = useAuth(); // obtenemos sesión y setter
+  const { userData, handleLogout } = useAuth();
+  const pathname = usePathname();
+  const isAdminRoute = pathname?.startsWith("/admin");
 
-  // Links base
+  const isAdmin = userData?.user?.role === "ADMIN";
+
   const links = [
     { href: "/", label: "Inicio" },
     { href: "/menu", label: "Menú" },
   ];
 
-  // Solo agregamos estos si hay sesión
   if (userData) {
     links.push({ href: "/reservar", label: "Reservar" });
     links.push({ href: "/dashboard-user", label: "Mis Reservas" });
+  }
+
+  if (isAdmin) {
+    links.push({ href: "/admin", label: "Admin" });
   }
 
   return (
@@ -31,7 +38,7 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
       <nav className="fixed top-0 w-full bg-linear-to-r flex from-[#350A06] to-[#56070C] text-[#FED0BB] z-50">
         <div className="flex items-center justify-center ml-10 text-center">
           {/* Botón para mostrar/ocultar sidebar solo en admin */}
-          {userData && window.location.pathname.startsWith("/admin") && (
+          {isAdmin && isAdminRoute && setSidebarOpen && (
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label={

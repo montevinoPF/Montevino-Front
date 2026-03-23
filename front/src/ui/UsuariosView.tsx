@@ -1,30 +1,45 @@
 "use client";
 import Sidebar from "@/components/admin/Sidebar";
 import Navbar from "@/components/NavBar";
+import { useAuth } from "@/context/AuthContext";
 import promoteUserRole, { getUsers } from "@/services/usersService";
 import { IUser } from "@/types/types";
-import React, { useEffect, useState } from "react";
+import { is } from "date-fns/locale";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const UsuariosView = () => {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<IUser[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { isAuthReady, userData, checkAdmin } = useAuth();
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    if (!isAuthReady || !userData) return;
+
+    const init = async () => {
+      checkAdmin();
+      if (userData.user.role !== "ADMIN") return;
       try {
-        const users = await getUsers();
-        setUsers(users);
+        const data = await getUsers();
+        // Verifica que sea un array antes de setearlo
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          setUsers([]);
+        }
       } catch (error) {
         console.error(error);
+        setUsers([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUsers();
-  }, []);
+    init();
+  }, [isAuthReady, userData]);
+
+  if (!isAuthReady || !userData) return null;
 
   return (
     <>

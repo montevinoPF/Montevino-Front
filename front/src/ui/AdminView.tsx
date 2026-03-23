@@ -1,10 +1,20 @@
 "use client";
 import Sidebar from "@/components/admin/Sidebar";
 import Navbar from "@/components/NavBar";
-import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
 
 const AdminView = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { checkAdmin, isAuthReady, userData } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthReady) return;
+    checkAdmin(); // Solo dentro del useEffect, nunca en el render
+  }, [isAuthReady, userData]); // Se ejecuta cuando cambia isAuthReady o userData
+
+  if (!isAuthReady || !userData) return null;
+
   return (
     <>
       <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { ITable } from "@/types/types";
 import { getTablesAvailability } from "@/services/reservationsService";
+import { useAuth } from "@/context/AuthContext";
 
 interface GestionMesasProps {
   fechaSeleccionada: string;
@@ -12,24 +13,33 @@ export default function GestionMesas({ fechaSeleccionada }: GestionMesasProps) {
   const [horaSeleccionada, setHoraSeleccionada] = useState("");
   const [mesas, setMesas] = useState<ITable[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAuthReady, userData, checkAdmin } = useAuth();
 
   useEffect(() => {
-    const fetchTables = async () => {
+    if (!isAuthReady || !userData) return;
+    const init = async () => {
+      checkAdmin();
+      if (userData.user.role !== "ADMIN") return;
       try {
         const res = await getTablesAvailability(
           fechaSeleccionada,
           horaSeleccionada,
         );
-        setMesas(res);
+        if (Array.isArray(res)) {
+          setMesas(res);
+        } else {
+          setMesas([]);
+        }
       } catch (error) {
         console.error(error);
+        setMesas([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTables();
-  }, [fechaSeleccionada, horaSeleccionada]);
+    init();
+  }, [fechaSeleccionada, horaSeleccionada, isAuthReady, userData]);
 
   return (
     <div className="h-full w-150 p-6 bg-white rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)]">

@@ -8,6 +8,7 @@ import { IProduct } from "@/types/types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 =======
 import Card from "@/components/Card";
 import { getPlatos } from "@/services/platosService";
@@ -23,6 +24,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 >>>>>>> 4064a16 (Mejoras)
+=======
+import { useAuth } from "@/context/AuthContext";
+import { is } from "date-fns/locale";
+>>>>>>> a7bf492 (Proteccion de la ruta terminada)
 
 const PlatosYCategoriasView = () => {
   const [loading, setLoading] = useState(true);
@@ -30,6 +35,7 @@ const PlatosYCategoriasView = () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { checkAdmin, isAuthReady, userData } = useAuth();
   const router = useRouter();
 =======
 >>>>>>> 99dd073 (Panel de usuarios, stats y platos)
@@ -39,20 +45,36 @@ const PlatosYCategoriasView = () => {
 >>>>>>> 4064a16 (Mejoras)
 
   useEffect(() => {
-    const fetchPlatos = async () => {
+    if (!isAuthReady || !userData) return;
+
+    const init = async () => {
+      checkAdmin();
+      if (userData.user.role !== "ADMIN") return;
       try {
         const platos = await getPlatos(1, 100);
-        setPlatos(platos);
+        if (Array.isArray(platos)) {
+          setPlatos(platos);
+        } else {
+          setPlatos([]);
+        }
       } catch (error) {
         console.error(error);
+        setPlatos([]);
       } finally {
         setLoading(false);
       }
     };
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     fetchPlatos();
   }, []);
+=======
+    init();
+  }, [isAuthReady, userData]);
+
+  if (!isAuthReady || !userData) return null;
+>>>>>>> a7bf492 (Proteccion de la ruta terminada)
 
   const getStockLabel = (stock: number) => {
     if (stock === 0)
