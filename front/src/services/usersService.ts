@@ -24,6 +24,10 @@ export async function getUsers() {
 export async function getUsersById(id: string) {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
+
+  if (!token) {
+    throw new Error("No hay token de autenticación");
+  }
   try {
     const response = await fetch(`${BACKURL}/users/${id}`, {
       method: "GET",
@@ -41,33 +45,14 @@ export async function getUsersById(id: string) {
   }
 }
 
-export async function getMyUser() {
-  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
-  const token = session?.token;
-  try {
-    const response = await fetch("/auth/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const user = await response.json();
-    console.log(user.role);
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
 export default async function promoteUserRole(id: string) {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
 
-<<<<<<< HEAD
-=======
   if (!token) {
     throw new Error("No hay token de autenticación");
   }
 
->>>>>>> 4064a16 (Mejoras)
   try {
     const response = await fetch(`${BACKURL}/users/${id}/makeadmin`, {
       method: "PATCH",
