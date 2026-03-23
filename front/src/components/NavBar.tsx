@@ -23,7 +23,7 @@ export default function Navbar({ sidebarOpen, setSidebarOpen }: NavbarProps) {
   // Solo agregamos estos si hay sesión
   if (userData) {
     links.push({ href: "/reservar", label: "Reservar" });
-    links.push({ href: "/mis-reservas", label: "Mis Reservas" });
+    links.push({ href: "/dashboard-user", label: "Mis Reservas" });
   }
 
   return (
