@@ -15,7 +15,7 @@ type ProductItem = {
   quantity: number;
 };
 
-const BACKURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PagoPage() {
   const router = useRouter();
@@ -160,10 +160,8 @@ export default function PagoPage() {
     setLoading(true);
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-      if (!API_URL) {
-        throw new Error("Falta configurar NEXT_PUBLIC_API_URL");
+      if (!BACKURL) {
+        throw new Error("Falta configurar NEXT_PUBLIC_BACKURL");
       }
 
       const session = localStorage.getItem("userSession");
@@ -177,7 +175,7 @@ export default function PagoPage() {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const reservaRes = await fetch(`${API_URL}/reservations`, {
+      const reservaRes = await fetch(`${BACKURL}/reservations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

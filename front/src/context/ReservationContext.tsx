@@ -13,7 +13,6 @@ type ReservationData = {
   peopleCount: number;
 };
 
-
 interface IReservationContext {
   cart: CartItem[];
   comentarios: string;
@@ -22,14 +21,14 @@ interface IReservationContext {
   eliminarDelCarrito: (id: string) => void;
   vaciarReserva: () => void;
 
-   reservationData: ReservationData;
+  reservationData: ReservationData;
   setReservationData: (data: ReservationData) => void;
   clearReservationData: () => void;
 }
 
-export const ReservationContext = createContext<IReservationContext | undefined>(
-  undefined
-);
+export const ReservationContext = createContext<
+  IReservationContext | undefined
+>(undefined);
 
 export const ReservationProvider = ({
   children,
@@ -38,7 +37,7 @@ export const ReservationProvider = ({
 }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [comentarios, setComentarios] = useState("");
-   const [reservationData, setReservationDataState] = useState<ReservationData>({
+  const [reservationData, setReservationDataState] = useState<ReservationData>({
     reservationDate: "",
     startTime: "",
     peopleCount: 1,
@@ -46,7 +45,9 @@ export const ReservationProvider = ({
 
   useEffect(() => {
     const savedCart = localStorage.getItem("montevino_reserva_cart");
-    const savedComentarios = localStorage.getItem("montevino_reserva_comentarios");
+    const savedComentarios = localStorage.getItem(
+      "montevino_reserva_comentarios",
+    );
 
     if (savedCart) {
       setCart(JSON.parse(savedCart));
@@ -66,7 +67,6 @@ export const ReservationProvider = ({
   }, [comentarios]);
 
   const agregarAlCarrito = (item: IProduct, quantity: number = 1) => {
-
     setCart((prev) => {
       const existing = prev.find((cartItem) => cartItem.id === item.id);
 
@@ -74,21 +74,22 @@ export const ReservationProvider = ({
         return prev.map((cartItem) =>
           cartItem.id === item.id
             ? { ...cartItem, quantity: cartItem.quantity + quantity }
-            : cartItem
+            : cartItem,
         );
       }
 
       return [...prev, { ...item, quantity }];
     });
-
   };
   const eliminarDelCarrito = (id: string) => {
     setCart((prev) =>
       prev
         .map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+          String(item.id) === String(id)
+            ? { ...item, quantity: item.quantity - 1 }
+            : item,
         )
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0),
     );
   };
 
@@ -105,7 +106,7 @@ export const ReservationProvider = ({
         cart,
         comentarios,
         setComentarios,
-          reservationData,
+        reservationData,
         setReservationData: setReservationDataState,
         clearReservationData: () =>
           setReservationDataState({
@@ -123,7 +124,6 @@ export const ReservationProvider = ({
     </ReservationContext.Provider>
   );
 };
-
 
 export const useReservation = () => {
   const context = useContext(ReservationContext);
