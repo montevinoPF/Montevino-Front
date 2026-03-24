@@ -12,16 +12,13 @@ export default function DashboardUser() {
   const email = userData?.user.email ?? "Sin email";
 
   return (
-    <section className="min-h-screen bg-[#f8f5f2] px-6 py-10">
+    <section className="min-h-screen mt-20 bg-[#f8f5f2] px-6 py-10">
       <Protected>
-        <div className="mx-auto max-w-6xl">
+        <div className="max-w-6xl mx-auto">
           <h1 className="mb-8 text-3xl font-bold text-[#7c090c]">Mi perfil</h1>
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <ProfileInfo
-                name={name}
-                email={email}
-              />
+              <ProfileInfo name={name} email={email} />
             </div>
           </div>
           <div className="mt-8">

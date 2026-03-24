@@ -15,6 +15,8 @@ type ProductItem = {
   quantity: number;
 };
 
+const BACKURL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function PagoPage() {
   const router = useRouter();
   const { reservationData, clearReservationData } = useReservation();
@@ -22,7 +24,7 @@ export default function PagoPage() {
   const [cart, setCart] = useState<ProductItem[]>([]);
   const [comentarios, setComentarios] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"mercadopago" | "tarjeta">(
-    "mercadopago"
+    "mercadopago",
   );
 
   const [cardNumber, setCardNumber] = useState("");
@@ -32,7 +34,9 @@ export default function PagoPage() {
 
   useEffect(() => {
     const savedCart = localStorage.getItem("montevino_reserva_cart");
-    const savedComentarios = localStorage.getItem("montevino_reserva_comentarios");
+    const savedComentarios = localStorage.getItem(
+      "montevino_reserva_comentarios",
+    );
 
     if (savedCart) {
       setCart(JSON.parse(savedCart));
@@ -56,14 +60,14 @@ export default function PagoPage() {
   const subtotalPlatos = useMemo(() => {
     return platos.reduce(
       (acc, item) => acc + Number(item.price) * item.quantity,
-      0
+      0,
     );
   }, [platos]);
 
   const subtotalBebidas = useMemo(() => {
     return bebidas.reduce(
       (acc, item) => acc + Number(item.price) * item.quantity,
-      0
+      0,
     );
   }, [bebidas]);
 
@@ -97,15 +101,6 @@ export default function PagoPage() {
         icon: "warning",
         title: "Faltan datos de la reserva",
         text: "Primero debés elegir fecha, hora y cantidad de personas.",
-      });
-      return false;
-    }
-
-    if (cart.length === 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "No hay productos",
-        text: "Agregá al menos un plato o bebida antes de pagar.",
       });
       return false;
     }
@@ -159,89 +154,93 @@ export default function PagoPage() {
     }
   };
 
- const handleMercadoPagoReal = async () => {
-  if (!validarReserva()) return;
+  const handleMercadoPagoReal = async () => {
+    if (!validarReserva()) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    if (!API_URL) {
-      throw new Error("Falta configurar NEXT_PUBLIC_API_URL");
-    }
-
-    const session = localStorage.getItem("userSession");
-    const token = session ? JSON.parse(session).token : null;
-
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    const reservaRes = await fetch(`${API_URL}/reservations`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        reservationDate,
-        startTime,
-        peopleCount,
-        notes: comentarios,
-        pedidos: cart.map((item) => ({
-          platoId: item.id,
-          quantity: item.quantity,
-        })),
-      }),
-    });
-
-    const reservaData = await reservaRes.json();
-
-    if (!reservaRes.ok) {
-      throw new Error(
-        reservaData.message || "No se pudo crear la reserva"
-      );
-    }
-
-    const reservationId = reservaData?.id || reservaData?.reservationId;
-
-    if (!reservationId) {
-      throw new Error("La reserva no devolvió un ID");
-    }
-
-    const pagoRes = await fetch(
-      `http://localhost:3000/payments/${reservationId}`,
-      {
-        method: "POST",
-        headers,
+      if (!API_URL) {
+        throw new Error("Falta configurar NEXT_PUBLIC_API_URL");
       }
-    );
 
-    const pagoData = await pagoRes.json();
+      const session = localStorage.getItem("userSession");
+      const token = session ? JSON.parse(session).token : null;
 
-    if (!pagoRes.ok) {
-      throw new Error(
-        pagoData.message || "No se pudo crear la preferencia de pago"
-      );
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const reservaRes = await fetch(`${API_URL}/reservations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reservationDate,
+          startTime,
+          peopleCount,
+          notes: comentarios,
+          pedidos: cart.map((item) => ({
+            platoId: item.id,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+      console.log(reservaRes);
+
+      const reservaData = await reservaRes.json();
+
+      console.log(reservaData);
+
+      if (!reservaRes.ok) {
+        throw new Error(reservaData.message || "No se pudo crear la reserva");
+      }
+
+      const reservationId = reservaData?.id || reservaData?.reservationId;
+
+      if (!reservationId) {
+        throw new Error("La reserva no devolvió un ID");
+      }
+
+      const pagoRes = await fetch(`${BACKURL}/payments/${reservationId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const pagoData = await pagoRes.json();
+
+      if (!pagoRes.ok) {
+        throw new Error(
+          pagoData.message || "No se pudo crear la preferencia de pago",
+        );
+      }
+
+      if (!pagoData.init_point) {
+        throw new Error("Mercado Pago no devolvió una URL de pago");
+      }
+
+      window.location.href = pagoData.init_point;
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.message || "No se pudo iniciar Mercado Pago",
+      });
+    } finally {
+      setLoading(false);
     }
-
-    if (!pagoData.init_point) {
-      throw new Error("Mercado Pago no devolvió una URL de pago");
-    }
-
-    window.location.href = pagoData.init_point;
-  } catch (error: any) {
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.message || "No se pudo iniciar Mercado Pago",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handlePagar = async () => {
     if (paymentMethod === "mercadopago") {
@@ -261,10 +260,10 @@ export default function PagoPage() {
               Confirmar tu reserva
             </h1>
 
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-white/90 text-lg">
-              <span className=" flex items-center justify-center">
+            <div className="flex flex-wrap items-center gap-4 mt-4 text-lg text-white/90">
+              <span className="flex items-center justify-center ">
                 <svg
-                className="mx-2"
+                  className="mx-2"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -273,17 +272,18 @@ export default function PagoPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  >
+                >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="3" y1="10" x2="21" y2="10" />
-                </svg> {formatReservationDate(reservationDate)}
+                </svg>{" "}
+                {formatReservationDate(reservationDate)}
               </span>
-           
-              <span className=" flex items-center justify-center">
+
+              <span className="flex items-center justify-center ">
                 <svg
-                className="mx-2"
+                  className="mx-2"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -292,14 +292,17 @@ export default function PagoPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  >{startTime} hs
+                >
+                  {startTime} hs
                   <circle cx="12" cy="12" r="9" />
                   <polyline points="12 7 12 12 15 15" />
-                </svg>{startTime} hs
+                </svg>
+                {startTime} hs
               </span>
-          
-              <span className=" flex items-center justify-center" >
-                <svg className="mx-2"
+
+              <span className="flex items-center justify-center ">
+                <svg
+                  className="mx-2"
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -308,10 +311,12 @@ export default function PagoPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  >{peopleCount} personas
+                >
+                  {peopleCount} personas
                   <circle cx="12" cy="7" r="4" />
                   <path d="M5 21a7 7 0 0 1 14 0" />
-                </svg> {peopleCount} personas
+                </svg>{" "}
+                {peopleCount} personas
               </span>
             </div>
           </div>
@@ -319,7 +324,9 @@ export default function PagoPage() {
 
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-10 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="rounded-3xl border border-[#e5cfc5] bg-[#fffaf7] p-6 shadow-sm md:p-8">
-            <h2 className="font-serif text-3xl text-[#6d1e1e]">METODO DE PAGO</h2>
+            <h2 className="font-serif text-3xl text-[#6d1e1e]">
+              METODO DE PAGO
+            </h2>
 
             <div className="mt-6 space-y-4">
               <button
@@ -355,7 +362,7 @@ export default function PagoPage() {
                 <button
                   type="button"
                   onClick={() => setPaymentMethod("tarjeta")}
-                  className="flex w-full items-center gap-4 text-left"
+                  className="flex items-center w-full gap-4 text-left"
                 >
                   <div
                     className={`h-6 w-6 rounded-full border-2 ${
@@ -417,9 +424,8 @@ export default function PagoPage() {
               onClick={handlePagar}
               disabled={loading}
               className="mt-6 w-full relative overflow-hidden  rounded-2xl bg-gradient-to-r from-[#7c090c] to-[#520509] py-3 text-xl font-semibold text-white shadow-lg transition duration-300 group cursor-pointer"
-            
-
-            ><span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
+            >
+              <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
               {loading
                 ? "Procesando..."
                 : `Pagar seña $${formatPrice(señaTotal)}`}
@@ -430,7 +436,7 @@ export default function PagoPage() {
             <h2 className="font-serif text-4xl text-[#6d1e1e]">TU RESERVA</h2>
 
             <div className="mt-6 space-y-4 w-full grid items-stretch justify-start text-[#5c2c2c] text-lg">
-              <span className="mt-6 space-y-4 w-full flex items-center gap-2">
+              <span className="flex items-center w-full gap-2 mt-6 space-y-4">
                 <svg
                   width="24"
                   height="24"
@@ -440,15 +446,16 @@ export default function PagoPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  >
+                >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="3" y1="10" x2="21" y2="10" />
-                </svg> {formatReservationDate(reservationDate)}
+                </svg>{" "}
+                {formatReservationDate(reservationDate)}
               </span>
-   
-              <span className="mt-6 space-y-4 w-full flex items-center gap-2">
+
+              <span className="flex items-center w-full gap-2 mt-6 space-y-4">
                 <svg
                   width="24"
                   height="24"
@@ -458,13 +465,15 @@ export default function PagoPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  >{startTime} hs
+                >
+                  {startTime} hs
                   <circle cx="12" cy="12" r="9" />
                   <polyline points="12 7 12 12 15 15" />
-                </svg>{startTime} hs
+                </svg>
+                {startTime} hs
               </span>
-         
-              <span className="mt-6 space-y-4 w-full flex items-center gap-2">
+
+              <span className="flex items-center w-full gap-2 mt-6 space-y-4">
                 <svg
                   width="24"
                   height="24"
@@ -474,10 +483,12 @@ export default function PagoPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  >{peopleCount} personas
+                >
+                  {peopleCount} personas
                   <circle cx="12" cy="7" r="4" />
                   <path d="M5 21a7 7 0 0 1 14 0" />
-                </svg> {peopleCount} personas
+                </svg>{" "}
+                {peopleCount} personas
               </span>
             </div>
 
@@ -489,10 +500,15 @@ export default function PagoPage() {
                 <p className="text-[#7b6761]">No agregaste platos.</p>
               ) : (
                 platos.map((item) => (
-                  <div key={item.id} className="flex justify-between gap-4 text-lg">
+                  <div
+                    key={item.id}
+                    className="flex justify-between gap-4 text-lg"
+                  >
                     <p className="text-[#4f2b2b]">
                       {item.name}
-                      <span className="ml-2 text-[#8c6a61]">x{item.quantity}</span>
+                      <span className="ml-2 text-[#8c6a61]">
+                        x{item.quantity}
+                      </span>
                     </p>
                     <p className="font-semibold text-[#4f2b2b]">
                       ${formatPrice(Number(item.price) * item.quantity)}
@@ -510,10 +526,15 @@ export default function PagoPage() {
                 <p className="text-[#7b6761]">No agregaste bebidas.</p>
               ) : (
                 bebidas.map((item) => (
-                  <div key={item.id} className="flex justify-between gap-4 text-lg">
+                  <div
+                    key={item.id}
+                    className="flex justify-between gap-4 text-lg"
+                  >
                     <p className="text-[#4f2b2b]">
                       {item.name}
-                      <span className="ml-2 text-[#8c6a61]">x{item.quantity}</span>
+                      <span className="ml-2 text-[#8c6a61]">
+                        x{item.quantity}
+                      </span>
                     </p>
                     <p className="font-semibold text-[#4f2b2b]">
                       ${formatPrice(Number(item.price) * item.quantity)}
@@ -554,7 +575,7 @@ export default function PagoPage() {
 
               <div className="h-px bg-[#e3c8bf]" />
 
-               <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <p className="text-[#5c2c2c]">Reserva del menú(15%)</p>
                 <p className="font-semibold text-[#4f2b2b]">
                   {formatPrice(señaComida)}
@@ -562,7 +583,9 @@ export default function PagoPage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <p className="text-[#5c2c2c]">Reserva de mesa (${costoMesaPorPersona} x {peopleCount})</p>
+                <p className="text-[#5c2c2c]">
+                  Reserva de mesa (${costoMesaPorPersona} x {peopleCount})
+                </p>
                 <p className="font-semibold text-[#4f2b2b]">
                   {formatPrice(totalMesa)}
                 </p>
