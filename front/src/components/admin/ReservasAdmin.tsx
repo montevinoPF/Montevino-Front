@@ -27,7 +27,7 @@ export default function ReservasAdmin({
   );
 
   return (
-    <div className="w-150 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
+    <div className="w-200 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
       <h2 className="mb-4 text-3xl text-red-950">Reservas</h2>
 
       <div className="mb-6">
@@ -69,7 +69,11 @@ export default function ReservasAdmin({
             </tr>
           ) : (
             reservasFiltradas.map((r, i) => (
-              <tr key={i} className="cursor-pointer hover:bg-gray-50">
+              <tr
+                key={i}
+                className="cursor-pointer hover:bg-gray-50"
+                onClick={() => setReservaDetalle(r)} // <-- Agrega esto
+              >
                 <td className="w-1/6 px-3 py-3 text-center">
                   {r.reservationDate}
                 </td>
@@ -99,8 +103,14 @@ export default function ReservasAdmin({
       </table>
       {/* Modal de detalle */}
       {reservaDetalle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="relative w-full max-w-md p-8 bg-white shadow-lg rounded-xl">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30"
+          onClick={() => setReservaDetalle(null)}
+        >
+          <div
+            className="w-full max-w-md p-8 mx-4 bg-white shadow-2xl rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="absolute text-2xl text-gray-400 top-2 right-3 hover:text-red-600"
               onClick={() => setReservaDetalle(null)}
@@ -145,16 +155,6 @@ export default function ReservasAdmin({
                   {reservaDetalle.status}
                 </span>
               </div>
-              <div>
-                <span className="font-semibold">Estado:</span>{" "}
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${estadoColor(
-                    reservaDetalle.status.toLowerCase(),
-                  )}`}
-                >
-                  {reservaDetalle.status}
-                </span>
-              </div>
               {/* Platos pedidos */}
               <div>
                 <span className="font-semibold">Platos pedidos:</span>
@@ -163,7 +163,7 @@ export default function ReservasAdmin({
                   reservaDetalle.pedidos.length > 0 ? (
                     reservaDetalle.pedidos.map((pedido: any, idx: number) => (
                       <li key={pedido.id || idx}>
-                        {pedido.menuItem?.name} x {pedido.quantity}{" "}
+                        {pedido.name} x {pedido.quantity}{" "}
                         <span className="text-gray-500">
                           (${(pedido.price * pedido.quantity).toFixed(2)})
                         </span>

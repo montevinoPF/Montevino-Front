@@ -52,7 +52,7 @@ const ReservasYMesasView = () => {
         {/* Main content */}
         <div className="flex-1">
           <h1 className="pt-10 mb-10 text-5xl text-center text-red-950">
-            Panel de Administración
+            Administración de Reservas
           </h1>
           <div className="flex justify-center gap-5">
             {/* Lado izquierdo */}

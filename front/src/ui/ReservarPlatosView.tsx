@@ -200,6 +200,7 @@ export default function ReservarPlatosView() {
           icon: "warning",
           title: "Reserva vacía",
           text: "Debes agregar al menos un plato o bebida",
+          confirmButtonColor: "#000",
         });
         return;
       }
@@ -253,6 +254,7 @@ export default function ReservarPlatosView() {
         icon: "success",
         title: "Reserva confirmada",
         text: "Tu reserva fue creada correctamente",
+        confirmButtonColor: "#000",
       });
       router.push("/pagos");
     } catch (error: any) {
@@ -260,6 +262,7 @@ export default function ReservarPlatosView() {
         icon: "error",
         title: "Error",
         text: error.message || "No se pudo crear la reserva",
+        confirmButtonColor: "#000",
       });
     }
   };

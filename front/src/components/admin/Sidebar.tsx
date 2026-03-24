@@ -4,10 +4,12 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react"; // O cualquier icono que prefieras
 
 const adminLinks = [
+  { href: "/admin", label: "Dashboard" },
   { href: "/admin/usuarios", label: "Usuarios" },
   { href: "/admin/stats", label: "Estadísticas" },
   { href: "/admin/reservas-y-mesas", label: "Reservas y Mesas" },
-  { href: "/admin/platos-y-categorias", label: "Platos y Categorías" },
+  { href: "/admin/platos", label: "Platos" },
+  { href: "/admin/categorias", label: "Categorías" },
 ];
 
 const Sidebar = ({
@@ -22,7 +24,7 @@ const Sidebar = ({
       <aside
         className={`
           ${open ? "block" : "hidden"}
-          w-64 min-h-[80vh] bg-[#350A06] text-[#FED0BB] flex flex-col py-8 px-4 mr-8
+          w-64 min-h-[80vh] bg-[#350A06] text-[#FED0BB] flex flex-col py-8 px-4 mr-3
           transition-all duration-300
         `}
       >

@@ -1,3 +1,5 @@
+import { de } from "date-fns/locale";
+
 const BACKURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export async function getUsers() {
@@ -45,7 +47,7 @@ export async function getUsersById(id: string) {
   }
 }
 
-export default async function promoteUserRole(id: string) {
+export async function promoteUserRole(id: string) {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
 
@@ -56,6 +58,26 @@ export default async function promoteUserRole(id: string) {
   try {
     const response = await fetch(`${BACKURL}/users/${id}/makeadmin`, {
       method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function deleteUser(id: string) {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  try {
+    const response = await fetch(`${BACKURL}/users/${id}`, {
+      method: "DELETE",
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,

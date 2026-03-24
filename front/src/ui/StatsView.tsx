@@ -27,7 +27,7 @@ export default function Stats() {
   useEffect(() => {
     if (!isAuthReady || !userData) return;
     const init = async () => {
-      checkAdmin(); // Espera a que checkAdmin termine
+      checkAdmin();
       if (userData.user.role !== "ADMIN") return;
       try {
         const reservas = await getReservations();
@@ -58,27 +58,39 @@ export default function Stats() {
     gananciasPorMes[mes] = (gananciasPorMes[mes] || 0) + reserva.totalPrice;
   });
 
+  // Agrupa por mes y cuenta la cantidad de reservas
+  const reservasPorMes: { [mes: string]: number } = {};
+  data.forEach((reserva) => {
+    const mes = new Date(reserva.reservationDate).toLocaleString("es-ES", {
+      month: "long",
+      year: "numeric",
+    });
+    reservasPorMes[mes] = (reservasPorMes[mes] || 0) + 1;
+  });
+
   const labels = Object.keys(gananciasPorMes);
   const valores = Object.values(gananciasPorMes);
+  const labelsReservas = Object.keys(reservasPorMes);
+  const valoresReservas = Object.values(reservasPorMes);
 
   const colors = [
-    "#3E2723", // Marrón oscuro
-    "#8D6E63", // Marrón claro
-    "#C62828", // Rojo intenso
-    "#AD1457", // Fucsia oscuro
-    "#283593", // Azul oscuro
-    "#0277BD", // Azul medio
-    "#00897B", // Verde azulado
-    "#F9A825", // Amarillo mostaza
-    "#F57C00", // Naranja
-    "#6D4C41", // Marrón chocolate
+    "#3E2723",
+    "#8D6E63",
+    "#C62828",
+    "#AD1457",
+    "#283593",
+    "#0277BD",
+    "#00897B",
+    "#F9A825",
+    "#F57C00",
+    "#6D4C41",
   ];
 
-  const chartData = {
+  const chartGanancias = {
     labels,
     datasets: [
       {
-        label: "Dinero generado",
+        label: "Dinero generado ($)",
         data: valores,
         backgroundColor: colors.slice(0, labels.length),
         borderColor: colors.slice(0, labels.length).map((c) => c + "CC"),
@@ -91,14 +103,52 @@ export default function Stats() {
     ],
   };
 
-  const options = {
+  const chartReservas = {
+    labels: labelsReservas,
+    datasets: [
+      {
+        label: "Cantidad de reservas",
+        data: valoresReservas,
+        backgroundColor: colors.slice(0, labelsReservas.length),
+        borderColor: colors
+          .slice(0, labelsReservas.length)
+          .map((c) => c + "CC"),
+        borderWidth: 2,
+        borderRadius: 8,
+        hoverBackgroundColor: colors
+          .slice(0, labelsReservas.length)
+          .map((c) => c + "99"),
+      },
+    ],
+  };
+
+  const optionsGanancias = {
     responsive: true,
     plugins: {
       legend: { display: false },
       title: {
         display: true,
-        text: "Ganancias Mensuales",
+        text: "Ganancias Mensuales ($)",
         font: { size: 18 },
+      },
+    },
+  };
+
+  const optionsReservas = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Reservas Mensuales",
+        font: { size: 18 },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 1, // Solo números enteros en el eje Y
+        },
       },
     },
   };
@@ -112,13 +162,24 @@ export default function Stats() {
           <h2 className="pt-10 mb-10 text-5xl text-center text-red-950">
             Gráficos y Estadísticas
           </h2>
-          <div className="flex justify-center gap-5">
-            <Bar
-              data={chartData}
-              options={options}
-              className="w-150 h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white"
-            />
-          </div>
+
+          {loading ? (
+            <p className="text-xl text-center text-gray-500">
+              Cargando datos...
+            </p>
+          ) : (
+            <div className="flex flex-col gap-6 ml-21">
+              {/* Gráfico de ganancias */}
+              <div className="p-6 w-300 h-150 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
+                <Bar data={chartGanancias} options={optionsGanancias} />
+              </div>
+
+              {/* Gráfico de reservas */}
+              <div className="p-6 w-300 h-150 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white">
+                <Bar data={chartReservas} options={optionsReservas} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

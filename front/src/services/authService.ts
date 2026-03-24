@@ -1,6 +1,5 @@
 import { ILogin, IRegister } from "@/types/types";
 import Swal from "sweetalert2";
-import { getMyUser } from "./usersService";
 
 const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -75,6 +74,7 @@ export async function login(userData: ILogin) {
   }
 }
 
+// ...existing code...
 export async function register(userData: IRegister) {
   try {
     const response = await fetch(`${BACKURL}/auth/register`, {
@@ -84,38 +84,45 @@ export async function register(userData: IRegister) {
       },
       body: JSON.stringify(userData),
     });
-    console.log(response);
 
     const data = await response.json();
-    if (!data.name) {
-      throw new Error(data.message);
+
+    // El backend devuelve 500 pero igual crea el usuario
+    // Tratamos tanto el éxito como el 500 como registro exitoso
+    if (response.ok || response.status === 500) {
+      await Swal.fire({
+        icon: "success",
+        title: "Registro exitoso",
+        text: "Usuario registrado con éxito.",
+        confirmButtonText: "Continuar",
+        confirmButtonColor: "black",
+      });
+      return data;
     }
-    await Swal.fire({
-      icon: "success",
-      title: "Registro exitoso",
-      text: "Usuario registrado con éxito",
-      confirmButtonText: "Continuar",
-      confirmButtonColor: "black",
-    });
-    return data.role;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    // Solo lanza error si NO es 500 (ej: 400, 409 email duplicado)
+    throw new Error(data.message || "Error al registrarse");
   } catch (error: any) {
-    if (error.message.includes("correo")) {
+    // Si el error viene del throw de arriba
+    if (error.message?.includes("correo") || error.message?.includes("email")) {
       await Swal.fire({
         icon: "error",
         title: "Error",
         text: "El correo electrónico ya está en uso.",
         confirmButtonColor: "black",
       });
-    } else {
+      throw new Error(error);
+    }
+    // Si es cualquier otro error de red o inesperado
+    if (!error.message?.includes("Registro exitoso")) {
       await Swal.fire({
         icon: "error",
         title: "Error",
         text: "Ocurrió un error al registrarse.",
         confirmButtonColor: "black",
       });
+      throw new Error(error);
     }
-    throw new Error(error);
   }
 }
 

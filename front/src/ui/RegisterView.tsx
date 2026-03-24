@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 const RegisterView = () => {
   const router = useRouter();
   const { showPassword, setShowPassword } = useAuth();
-  const { setRole } = useAuth();
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
   return (
     <div className="flex flex-col items-center justify-center mt-35 mb-15">
@@ -17,7 +16,7 @@ const RegisterView = () => {
         initialValues={{ name: "", email: "", password: "" }}
         validate={registerValidations}
         onSubmit={async (values) => {
-          setRole(await register(values));
+          await register(values);
           router.push("/login");
         }}
       >
@@ -114,7 +113,7 @@ const RegisterView = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group"
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
             >
               Registrarse
               <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>

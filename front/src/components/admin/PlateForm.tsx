@@ -14,6 +14,10 @@ const PlateForm = () => {
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const { checkAdmin, isAuthReady, userData } = useAuth();
+  const tipos = [
+    { id: "platos", name: "Platos" },
+    { id: "bebidas", name: "Bebidas" },
+  ];
 
   useEffect(() => {
     if (!isAuthReady || !userData) return;
@@ -32,8 +36,8 @@ const PlateForm = () => {
 
   return (
     <div className="bg-[#F6E3D9]">
-      <Link
-        href="/admin"
+      <button
+        onClick={() => router.back()}
         className="absolute left-6 top-6  mt-30 text-[#56070C] hover:text-[#3d0c07] transition-colors"
       >
         <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
@@ -45,7 +49,7 @@ const PlateForm = () => {
             strokeLinejoin="round"
           />
         </svg>
-      </Link>
+      </button>
       <div className="flex flex-col items-center justify-center">
         <Formik
           initialValues={{
@@ -182,7 +186,7 @@ const PlateForm = () => {
               <label htmlFor="stock" className="self-start">
                 Stock
               </label>
-              <div className="flex items-center w-full border mb-3 border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-[#FED0BB]">
+              <div className="flex items-center w-full border border-gray-300 rounded-md focus-within:ring-1 focus-within:ring-[#FED0BB]">
                 <Field
                   id="stock"
                   type="number"
@@ -196,6 +200,25 @@ const PlateForm = () => {
                 component="div"
                 className="self-start text-red-500"
               />
+              <label htmlFor="type" className="self-start">
+                Tipo de producto
+              </label>
+              <div className="flex items-center w-full border border-gray-300 rounded-md focus-within:ring-1 mb-3 focus-within:ring-[#FED0BB]">
+                <Field
+                  id="type"
+                  name="type"
+                  as="select"
+                  className="w-full p-2 outline-none"
+                >
+                  <option>Selecciona un tipo</option>
+                  {tipos.map((tipo) => (
+                    <option key={tipo.id} value={tipo.id}>
+                      {tipo.name}
+                    </option>
+                  ))}
+                </Field>
+              </div>
+
               <button
                 type="submit"
                 disabled={isSubmitting}
