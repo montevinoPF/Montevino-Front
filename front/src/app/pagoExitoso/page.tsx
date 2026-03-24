@@ -1,15 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useReservation } from "@/context/ReservationContext";
 import { useRouter } from "next/navigation";
 
 export default function PagoExitosoPage() {
   const { clearReservationData } = useReservation();
   const router = useRouter();
+  const cleared = useRef(false); // ✅ evita que se ejecute más de una vez
 
   useEffect(() => {
+    if (cleared.current) return;
+    cleared.current = true;
+
     localStorage.removeItem("montevino_reserva_cart");
     localStorage.removeItem("montevino_reserva_comentarios");
     clearReservationData();
@@ -19,7 +23,7 @@ export default function PagoExitosoPage() {
     }, 2500);
 
     return () => clearTimeout(timer);
-  }, [clearReservationData, router]);
+  }, []); // ✅ array vacío, solo corre una vez
 
   return (
     <section className="mt-18 min-h-screen bg-[#f7efea] px-6 py-16">

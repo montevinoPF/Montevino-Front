@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { IProduct } from "@/types/types";
 
 type CartItem = IProduct & {
@@ -99,6 +105,14 @@ export const ReservationProvider = ({
     localStorage.removeItem("montevino_reserva_cart");
     localStorage.removeItem("montevino_reserva_comentarios");
   };
+
+  const clearReservationData = useCallback(() => {
+    setReservationDataState({
+      reservationDate: "",
+      startTime: "",
+      peopleCount: 0,
+    });
+  }, []);
 
   return (
     <ReservationContext.Provider
