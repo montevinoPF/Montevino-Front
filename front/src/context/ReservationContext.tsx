@@ -12,7 +12,7 @@ interface IReservationContext {
   comentarios: string;
   setComentarios: React.Dispatch<React.SetStateAction<string>>;
   agregarAlCarrito: (item: IProduct, quantity?: number) => void;
-  eliminarDelCarrito: (id: number) => void;
+  eliminarDelCarrito: (id: string) => void;
   vaciarReserva: () => void;
 }
 
@@ -71,7 +71,7 @@ export const ReservationProvider = ({
     });
 
   };
-  const eliminarDelCarrito = (id: number) => {
+  const eliminarDelCarrito = (id: string) => {
     setCart((prev) =>
       prev
         .map((item) =>

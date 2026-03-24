@@ -6,9 +6,7 @@ const Card: React.FC<IProduct> = ({
   price,
   imageUrl,
   id,
-  ingredientes,
-  description,
-  category,
+  ingredientes,  
 }) => {
   return (
     <div className="rounded-2xl shadow-md  bg-[#fdeadf]  shadow-2xs transition hover:shadow-2xl flex  flex-col h-full mx-auto max-w-xs ">
