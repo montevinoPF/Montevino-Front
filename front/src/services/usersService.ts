@@ -132,7 +132,9 @@ export async function promoteUserRole(id: string) {
     const data = await response.json();
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw new Error(
+      error instanceof Error ? error.message : "Error al promover el usuario",
+    );
   }
 }
 
@@ -152,6 +154,8 @@ export async function deleteUser(id: string) {
     const data = await response.json();
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw new Error(
+      error instanceof Error ? error.message : "Error al eliminar usuario",
+    );
   }
 }
