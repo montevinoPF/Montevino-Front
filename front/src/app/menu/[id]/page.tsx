@@ -1,3 +1,4 @@
+import { getBebidaById } from "@/services/bebidasService";
 import { getPlatoById } from "@/services/platosService";
 import PlatosDetailView from "@/ui/PlatosDetailView";
 
@@ -9,10 +10,17 @@ interface PageProps {
 
 const ProductPage = async ({ params }: PageProps) => {
   const { id } = await params;
-  const plato = await getPlatoById(id);
+
+  let product;
+  try {
+    product = await getPlatoById(id);
+  } catch (error) {
+    product = await getBebidaById(id);
+
+  }
 
   return (
-    <PlatosDetailView plato={plato} />
+    <PlatosDetailView plato={product} />
   );
 };
 

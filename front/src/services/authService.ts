@@ -19,14 +19,17 @@ export async function login(userData: ILogin) {
     }
 
     const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
-    const decodedData = {
-      token: data.access_token,
-      user: {
-        id: decodedToken.sub,
-        email: decodedToken.email,
-        name: decodedToken.name,
-      },
-    };
+
+const decodedData = {
+  token: data.access_token,
+  user: {
+    id: decodedToken.sub,
+    email: decodedToken.email,
+    name: decodedToken.name,
+  },
+
+  
+};
 
     await Swal.fire({
       icon: "success",
@@ -35,6 +38,12 @@ export async function login(userData: ILogin) {
       timer: 1000,
       showConfirmButton: false,
     });
+
+
+
+    console.log("decodedData login:", decodedData);
+localStorage.setItem("userSession", JSON.stringify(decodedData));
+console.log("guardado en localStorage:", localStorage.getItem("userSession"));
     return decodedData;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

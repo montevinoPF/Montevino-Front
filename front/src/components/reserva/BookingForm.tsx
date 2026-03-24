@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-
 import Protected from "@/components/Protected";
 import { createReservation } from "@/services/reservations.service";
 import PersonSelector from "./PersonSelector";
 import CalendarCustom from "./CalendarCuston";
 import TimeGrid from "./Time.Grid";
 import Swal from "sweetalert2";
+import { useReservation } from "@/context/ReservationContext";
 
 export default function BookingForm() {
   const submitReservation = async () => {
@@ -43,7 +43,7 @@ export default function BookingForm() {
       });
     }
   };
-  const router = useRouter();
+
 
   const checkInputs = () => {
     if (guests <= 0) {
@@ -92,17 +92,37 @@ export default function BookingForm() {
     });
   };
 
+  const { setReservationData } = useReservation();
+const router = useRouter();
+
   const irAPlatillos = () => {
     const fechaString = date ? format(date, "yyyy-MM-dd") : "";
     const horaString = time.replace("hs", "");
+
+    setReservationData({
+    reservationDate: fechaString,
+    startTime: horaString,
+    peopleCount: guests,
+  });
     router.push(
       `/reservar/platos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
     );
   };
 
   const reservarDirecto = () => {
-    submitReservation();
+    const fechaString = date ? format(date, "yyyy-MM-dd") : "";
+    const horaString = time.replace("hs", "");
+    
+   setReservationData({
+    reservationDate: fechaString,
+    startTime: horaString,
+    peopleCount: guests,
+  });
+    router.push(
+      `/pagos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
+    );
   };
+
 
   return (
     <Protected>

@@ -98,31 +98,3 @@ export const adaptPlato = (plato: any): IProduct => {
   };
 };
 
-export const getBebidas = async (page: number, limit: number) => {
-  const res = await fetch(`${BACKURL}/bebidas?page=${page}&limit=${limit}`);
-
-  if (!res.ok) {
-    throw new Error("Error al traer las bebidas");
-  }
-
-  const data = await res.json();
-
-  return data.map(adaptBebida);
-};
-
-export const adaptBebida = (bebida: any): IProduct => ({
-  id: bebida.id,
-  name: bebida.name,
-  price: Number(bebida.price),
-  ingredientes: bebida.ingredients,
-  imageUrl: bebida.imageUrl,
-  description: bebida.description,
-  stock: bebida.stock,
-  type: "bebidas",
-  category: bebida.category
-    ? {
-        id: bebida.category.id,
-        name: bebida.category.name,
-      }
-    : undefined,
-});

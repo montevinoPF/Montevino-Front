@@ -63,14 +63,18 @@ export async function getReservation(id: string): Promise<IReservation> {
 }
 
 export async function getReservationWithDetails(id: string): Promise<IReservation> {
-  const session = typeof window !== "undefined"
+ const session =
+  typeof window !== "undefined"
     ? JSON.parse(localStorage.getItem("userSession") ?? "null")
     : null;
-  const token = session?.token;
+
+console.log("session leída en reserva:", session);
+console.log("token usado en reserva:", session?.token);
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
+  const token = session?.token;
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const res = await fetch(`${API_URL}/reservations/${id}`, {
