@@ -1,8 +1,22 @@
-const BACKURL = process.env.NEXT_PUBLIC_BACKURL || "http://localhost:3000";
+import { X } from "lucide-react";
+
+const BACKURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export const getReservations = async () => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  if (!token) {
+    throw new Error("No hay token de autenticación");
+  }
   try {
-    const res = await fetch(`${BACKURL}/reservations`);
+    const res = await fetch(`${BACKURL}/reservations`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!res.ok) {
       throw new Error("Error al traer las reservas");
@@ -19,8 +33,19 @@ export const getReservations = async () => {
 };
 
 export const getTables = async () => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+  if (!token) {
+    throw new Error("No hay token de autenticación");
+  }
   try {
-    const res = await fetch(`${BACKURL}/tables`);
+    const res = await fetch(`${BACKURL}/tables`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!res.ok) {
       throw new Error("Error al traer las mesas");
@@ -37,9 +62,21 @@ export const getTables = async () => {
 };
 
 export const getTablesAvailability = async (fecha: string, hora: string) => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+  if (!token) {
+    throw new Error("No hay token de autenticación");
+  }
   try {
     const res = await fetch(
       `${BACKURL}/tables/availability?date=${fecha}&time=${hora}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
     );
 
     if (!res.ok) {

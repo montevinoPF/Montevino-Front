@@ -62,6 +62,7 @@ export interface IUserSession {
     id: string;
     name: string;
     email: string;
+    role: string;
   };
 }
 
@@ -127,4 +128,12 @@ export interface IReserva {
     reservations: string[];
   };
   notes: string;
+}
+
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  role: "USER" | "ADMIN";
+  reservations: IReserva[];
 }

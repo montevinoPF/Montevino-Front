@@ -5,6 +5,9 @@ import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { ReservationProvider } from "@/context/ReservationContext";
+import ChatbotButton from "@/components/chatbot/ChatBotButton"
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +41,7 @@ export default function RootLayout({
           <Footer />
           </ReservationProvider>
         </AuthProvider>
+        <ChatbotButton />
       </body>
     </html>
   );

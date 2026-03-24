@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/context/AuthContext";
 import { registerValidations } from "@/lib/validations";
-import { register } from "@/services/authService";
+import { googleLogin, register } from "@/services/authService";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 const RegisterView = () => {
   const router = useRouter();
   const { showPassword, setShowPassword } = useAuth();
-  const { setRole } = useAuth();
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
   return (
     <div className="flex flex-col items-center justify-center mt-35 mb-15">
@@ -17,7 +16,7 @@ const RegisterView = () => {
         initialValues={{ name: "", email: "", password: "" }}
         validate={registerValidations}
         onSubmit={async (values) => {
-          setRole(await register(values));
+          await register(values);
           router.push("/login");
         }}
       >
@@ -114,14 +113,15 @@ const RegisterView = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group"
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
             >
               Registrarse
               <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
             </button>
             <span>o</span>
-            <Link
-              href={`${BACKURL}/auth/google`}
+            <button
+              type="button"
+              onClick={googleLogin}
               className="w-full p-2 border border-gray-300 rounded-md hover:cursor-pointer"
             >
               <div className="flex items-center justify-center gap-2">
@@ -132,7 +132,7 @@ const RegisterView = () => {
                 />
                 <span>Continuar con Google</span>
               </div>
-            </Link>
+            </button>
             <span className="text-gray-500">
               ¿Ya tienes cuenta?{" "}
               <Link href={"/login"} className="text-[#56070C] font-semibold">
