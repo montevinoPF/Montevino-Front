@@ -10,9 +10,9 @@ export interface IAuthContext {
   isAuthLoading: boolean;
   showPassword: boolean;
   setShowPassword: (value: boolean) => void;
-  role: string | null;
-  setRole: (value: string | null) => void;
   isAuthReady: boolean;
+  handleLogout: () => void;
+  checkAdmin: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
@@ -22,8 +22,8 @@ export const AuthContext = createContext<IAuthContext>({
   isAuthReady: false,
   showPassword: false,
   setShowPassword: () => {},
-  role: null,
-  setRole: () => {},
+  handleLogout: () => {},
+  checkAdmin: async () => {},
 });
 
 export interface IAuthProvider {
@@ -34,8 +34,39 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
   const [userData, setUserData] = useState<IUserSession | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [role, setRole] = useState<string | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const router = useRouter();
+
+  const checkAdmin = () => {
+    if (!isAuthReady) return;
+    if (!userData) {
+      handleLogout();
+      router.push("/login");
+      return;
+    }
+    if (userData.user.role !== "ADMIN") {
+      router.push("/"); // Redirige a la página principal si no es admin
+      Swal.fire({
+        icon: "error",
+        title: "Acceso denegado",
+        text: "No tienes permisos para acceder a esta página.",
+        confirmButtonColor: "#000",
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("userSession");
+    setUserData(null);
+    Swal.fire({
+      icon: "success",
+      title: "Sesión cerrada",
+      text: "Has cerrado sesión correctamente",
+      confirmButtonText: "OK",
+      confirmButtonColor: "black",
+    });
+    router.push("/");
+  };
 
   useEffect(() => {
     if (userData) {
@@ -64,8 +95,8 @@ export const AuthProvider: React.FC<IAuthProvider> = ({ children }) => {
         showPassword,
         setShowPassword,
         isAuthReady,
-        role,
-        setRole,
+        handleLogout,
+        checkAdmin,
       }}
     >
       {children}

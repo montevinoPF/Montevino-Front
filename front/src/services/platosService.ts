@@ -22,9 +22,8 @@ export const getPlatoById = async (id: string) => {
     cache: "no-store",
   });
 
-  if (!res.ok) {
-    throw new Error("Error al traer el plato");
-  }
+  if (!res.ok) throw new Error("Error al obtener el plato");
+
   const data = await res.json();
 
   return adaptPlato(data);
@@ -38,20 +37,25 @@ export const getPlatos = async (page: number, limit: number) => {
   }
 
   const data = await res.json();
+
   return data.map(adaptPlato);
 };
 
 export const createPlato = async (plato: any, router?: any) => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
   try {
     const res = await fetch(`${BACKURL}/platos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(plato),
     });
 
     if (!res.ok) {
+      const error = await res.json();
       throw new Error("Error al crear el plato");
     }
 
@@ -63,12 +67,11 @@ export const createPlato = async (plato: any, router?: any) => {
       confirmButtonColor: "#000",
       showCancelButton: true,
       confirmButtonText: "Ver plato",
-      cancelButtonText: "Reservar otro",
+      cancelButtonText: "Crear otro",
     }).then((result) => {
       if (result.isConfirmed && router) {
         router.push(`/menu/${data.id}`);
       }
-      // Si elige "Reservar otro", simplemente se queda en el formulario
     });
     return data;
   } catch (error) {
@@ -79,7 +82,6 @@ export const createPlato = async (plato: any, router?: any) => {
 // ...existing code...
 
 export const adaptPlato = (plato: any): IProduct => {
-  console.log("PRODUCTOS DEL BACK:", plato);
   return {
     id: plato.id,
     name: plato.name,
@@ -126,3 +128,132 @@ export const adaptBebida = (bebida: any): IProduct => ({
       }
     : undefined,
 });
+
+// ...existing code...
+export const editPlato = async (id: string, plato: any, router: any) => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  // Asegúrate de que categoryId esté en el body
+  const body = {
+    name: plato.name,
+    description: plato.description,
+    price: Number(plato.price),
+    ingredientes: plato.ingredientes,
+    imageUrl: plato.imageUrl,
+    stock: Number(plato.stock),
+    categoryId: plato.categoryId,
+    type: plato.type,
+  };
+
+  try {
+    const res = await fetch(`${BACKURL}/platos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.log("ERROR DEL BACK:", error);
+      throw new Error("Error al editar el plato");
+    }
+    // ...existing code...
+
+    const data = await res.json();
+    Swal.fire({
+      icon: "success",
+      title: "Plato editado",
+      text: "El plato se ha editado correctamente.",
+      confirmButtonColor: "#000",
+      showCancelButton: true,
+      confirmButtonText: "Ver plato",
+      cancelButtonText: "Editar otro",
+    }).then((result) => {
+      if (result.isConfirmed && router) {
+        router.push(`/menu/${data.id}`);
+      }
+    });
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deletePlato = async (id: string, router: any) => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  try {
+    const res = await fetch(`${BACKURL}/platos/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.log("ERROR DEL BACK:", error);
+      throw new Error("Error al eliminar el plato");
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Plato eliminado",
+      text: "El plato se ha eliminado correctamente.",
+      confirmButtonColor: "#000",
+      showCancelButton: true,
+      confirmButtonText: "Ver menú",
+      cancelButtonText: "Seguir administrando",
+    }).then((result) => {
+      if (result.isConfirmed && router) {
+        router.push(`/menu`);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const crearCategoria = async (name: string) => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  try {
+    const res = await fetch(`${BACKURL}/categories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name }),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      console.log("ERROR DEL BACK:", error);
+      throw new Error("Error al crear la categoria");
+    }
+
+    const data = await res.json();
+
+    Swal.fire({
+      icon: "success",
+      title: "Categoria creada",
+      text: "La categoria se ha creado correctamente.",
+      confirmButtonColor: "#000",
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

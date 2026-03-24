@@ -93,11 +93,11 @@ export default function CalendarCustom({
 
   while (cells.length % 7 !== 0) cells.push(null);
 
-  //const dotColor: Record<string, string> = {
-  //  available: "#22c55e",
-  //  full: "#ef4444",
-  //  // waitlist: "#f97316",
-  //};
+  // const dotColor: Record<string, string> = {
+  //   available: "#22c55e",
+  //   full: "#ef4444",
+  //   // waitlist: "#f97316",
+  // };
 
   return (
     <div
@@ -271,7 +271,6 @@ export default function CalendarCustom({
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      //background: dotColor[avail],
                       marginTop: 1,
                     }}
                   />
@@ -292,8 +291,8 @@ export default function CalendarCustom({
           }}
         >
           {[
-            //{ color: "#22c55e", label: "Hay lugar" },
-            //{ color: "#ef4444", label: "Lleno" },
+            // { color: "#22c55e", label: "Hay lugar" },
+            // { color: "#ef4444", label: "Lleno" },
             // { color: "#f97316", label: "Lista de espera" },
           ].map(({ color, label }) => (
             <div

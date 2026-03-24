@@ -18,7 +18,6 @@ const LoginView = () => {
         onSubmit={async (values) => {
           const response = await login(values);
           const { token, user } = response;
-          console.log(token, user);
           setUserData({ token, user });
           router.push("/");
         }}
@@ -105,7 +104,7 @@ const LoginView = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group"
+              className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
             >
               Entrar
               <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
