@@ -50,6 +50,12 @@ export async function login(userData: ILogin) {
       timer: 1000,
       showConfirmButton: false,
     });
+
+
+
+    console.log("decodedData login:", decodedData);
+localStorage.setItem("userSession", JSON.stringify(decodedData));
+console.log("guardado en localStorage:", localStorage.getItem("userSession"));
     return decodedData;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {

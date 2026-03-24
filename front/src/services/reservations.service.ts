@@ -75,6 +75,7 @@ export async function getReservationWithDetails(
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
+  const token = session?.token;
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const res = await fetch(`${API_URL}/reservations/${id}`, {

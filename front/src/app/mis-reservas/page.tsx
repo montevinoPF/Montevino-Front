@@ -1,10 +1,8 @@
-import BookingForm from "@/components/reserva/BookingForm";
+import MisReservasView from "@/ui/MisReservasView";
 
 export default function ReservasPage() {
 
   return (
-    <div className="p-80 bg-[#f7efea]">
-      <BookingForm />
-    </div>
+      <MisReservasView />
   );
 }

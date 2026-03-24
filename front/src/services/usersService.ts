@@ -1,92 +1,66 @@
-import { de } from "date-fns/locale";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
-const BACKURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
-export async function getUsers() {
-  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
-  const token = session?.token;
-
-  try {
-    const response = await fetch(`${BACKURL}/users`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-    return data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    throw new Error(error);
-  }
+export interface IReservation {
+  id: string;
+  reservationDate: string;
+  startTime: string;
+  peopleCount: number;
+  totalPrice: number | string;
+  depositAmount?: number | string;
+  status: string;
+  notes?: string;
+  pedidos?: Array<{
+    id: string;
+    quantity: number;
+    price?: number | string;
+    platoId?: string;
+    bebidaId?: string;
+    menuItem?: {
+      name?: string;
+      imageUrl?: string;
+      type?: string;
+    };
+  }>;
 }
 
-export async function getUsersById(id: string) {
-  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
-  const token = session?.token;
-
-  if (!token) {
-    throw new Error("No hay token de autenticación");
-  }
-  try {
-    const response = await fetch(`${BACKURL}/users/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-    return data;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    throw new Error(error);
-  }
+export interface IUserWithReservations {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  reservations: IReservation[];
 }
 
-export async function promoteUserRole(id: string) {
-  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+export async function getCurrentUserWithReservations(): Promise<IUserWithReservations> {
+  const sessionRaw =
+    typeof window !== "undefined" ? localStorage.getItem("userSession") : null;
+
+  if (!sessionRaw) {
+    throw new Error("No hay sesión iniciada");
+  }
+
+  const session = JSON.parse(sessionRaw);
   const token = session?.token;
+  const userId = session?.user?.id;
 
-  if (!token) {
-    throw new Error("No hay token de autenticación");
+  if (!token || !userId) {
+    throw new Error("Sesión inválida");
   }
 
-  try {
-    const response = await fetch(`${BACKURL}/users/${id}/makeadmin`, {
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const res = await fetch(`${API_URL}/users/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw new Error(error);
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.message || "No se pudieron obtener las reservas");
   }
-}
 
-export async function deleteUser(id: string) {
-  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
-  const token = session?.token;
-
-  try {
-    const response = await fetch(`${BACKURL}/users/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw new Error(error);
-  }
+  return data;
 }
