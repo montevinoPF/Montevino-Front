@@ -242,56 +242,6 @@ export default function ReservarPlatosView() {
         return;
       }
 
-<<<<<<< HEAD
-      const session = localStorage.getItem("userSession");
-      const token = session ? JSON.parse(session).token : null;
-
-      const pedidos = cart
-        .filter((item) => item.type?.toLowerCase() === "platos")
-        .map((item) => ({
-          platoId: item.id,
-          quantity: item.quantity,
-        }));
-
-      const body = {
-        reservationDate,
-        startTime,
-        peopleCount,
-        notes: comentarios,
-        pedidos,
-      };
-
-      console.log("BODY RESERVA:", body);
-      console.log("CART:", cart);
-      console.log("PEDIDOS ENVIADOS:", pedidos);
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      const text = await res.text();
-      console.log("RESPUESTA DEL BACK:", text);
-
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(text || "El servidor no devolvió un JSON válido");
-      }
-
-      if (!res.ok) {
-        throw new Error(
-          Array.isArray(data.message) ? data.message.join(", ") : data.message,
-        );
-      }
-
-=======
->>>>>>> 901b7b9 (Arreglos para pagos)
       Swal.fire({
         icon: "success",
         title: "Platos seleccionados.",
