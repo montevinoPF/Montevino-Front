@@ -18,12 +18,12 @@ const Card: React.FC<IProduct> = ({
           {name}
         </h3>
 
-        <h3 className="p-3 font-serif text-lg text-slate-900 min-h-10 flex items-center justify-center ">
+        <h3 className="flex items-center justify-center p-3 font-serif text-lg text-slate-900 min-h-10 ">
           {ingredientes}
         </h3>
 
         <div className="mt-auto">
-          <p className="flex flex-col items-center justify-center py-3 text-lg font-bold text-slate-900 mt-auto ">
+          <p className="flex flex-col items-center justify-center py-3 mt-auto text-lg font-bold text-slate-900 ">
             ${price}
           </p>
 

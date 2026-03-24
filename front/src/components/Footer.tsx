@@ -3,9 +3,13 @@ import Link from "next/link";
 import { FaInstagram, FaFacebook, FaWhatsapp } from "react-icons/fa";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext"; // Importamos el contexto
+import dynamic from "next/dynamic";
+ const MapaFooter = dynamic(() => import("../app/mapa/page"), { ssr: false });
+
 
 export default function Footer() {
   const { userData, setUserData } = useAuth();
+ 
 
   const handleLogout = () => {
     localStorage.removeItem("userSession");
@@ -75,17 +79,9 @@ export default function Footer() {
         {/* Ubicación ficticia */}
         <div>
           <h3 className="text-xl font-semibold mb-4">Ubicación</h3>
-          <p className="text-sm mb-2">Av. Montevino 1234, Buenos Aires</p>
+          <p className="text-sm mb-2">Juana Manso 1450, C1107 Cdad. Autónoma de Buenos Aires, Argentina</p>
           <div className="rounded overflow-hidden shadow-md">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3282.847870598135!2d-58.56312368477017!3d-34.63450958045237!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcc9e5f9f9f9f9%3A0x123456789abcdef!2sUbicación%20Ficticia!5e0!3m2!1ses!2sar!4v1234567890"
-              width="100%"
-              height="180"
-              style={{ border: 0 }}
-              allowFullScreen={true}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+            <MapaFooter />
           </div>
         </div>
       </div>

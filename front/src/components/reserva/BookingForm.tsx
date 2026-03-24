@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-
 import Protected from "@/components/Protected";
 import { createReservation } from "@/services/reservations.service";
 import PersonSelector from "./PersonSelector";
 import CalendarCustom from "./CalendarCuston";
 import TimeGrid from "./Time.Grid";
 import Swal from "sweetalert2";
+import { useReservation } from "@/context/ReservationContext";
 
 export default function BookingForm() {
   const submitReservation = async () => {
@@ -26,61 +26,18 @@ export default function BookingForm() {
         pedidos: [],
       });
 
-      Swal.fire({
-        icon: "success",
-        title: "Reserva creada",
-        text: "Tu reserva ha sido creada exitosamente.",
-        confirmButtonColor: "#000",
-      });
-      router.push("/pagos");
+      alert("Reserva creada");
     } catch (error: unknown) {
       console.error(error);
-      Swal.fire({
-        icon: "error",
-        title: "Error al crear la reserva",
-        text: "No se pudo crear la reserva.",
-        confirmButtonColor: "#000",
-      });
+      alert("No se pudo crear la reserva");
     }
   };
-  const router = useRouter();
 
-  const checkInputs = () => {
-    if (guests <= 0) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Por favor, selecciona el número de personas.",
-        confirmButtonColor: "#000",
-      });
-      return false;
-    }
-    if (!date) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Por favor, selecciona una fecha.",
-        confirmButtonColor: "#000",
-      });
-      return false;
-    }
-    if (!time) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Por favor, selecciona una hora.",
-        confirmButtonColor: "#000",
-      });
-      return false;
-    }
-    setShowOptions(true);
-    return true;
-  };
 
   // Estados
-  const [guests, setGuests] = useState(0);
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState("");
+  const [guests, setGuests] = useState(3);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [time, setTime] = useState("11:45hs");
   const [showOptions, setShowOptions] = useState(false);
 
   const formatDate = (d: Date | undefined) => {
@@ -92,17 +49,37 @@ export default function BookingForm() {
     });
   };
 
+  const { setReservationData } = useReservation();
+const router = useRouter();
+
   const irAPlatillos = () => {
     const fechaString = date ? format(date, "yyyy-MM-dd") : "";
     const horaString = time.replace("hs", "");
+
+    setReservationData({
+    reservationDate: fechaString,
+    startTime: horaString,
+    peopleCount: guests,
+  });
     router.push(
       `/reservar/platos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
     );
   };
 
   const reservarDirecto = () => {
-    submitReservation();
+    const fechaString = date ? format(date, "yyyy-MM-dd") : "";
+    const horaString = time.replace("hs", "");
+    
+   setReservationData({
+    reservationDate: fechaString,
+    startTime: horaString,
+    peopleCount: guests,
+  });
+    router.push(
+      `/pagos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
+    );
   };
+
 
   return (
     <Protected>
@@ -131,7 +108,7 @@ export default function BookingForm() {
 
             {!showOptions ? (
               <button
-                onClick={() => checkInputs()}
+                onClick={() => setShowOptions(true)}
                 className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
               >
                 Continuar

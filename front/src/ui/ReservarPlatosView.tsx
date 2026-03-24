@@ -6,6 +6,7 @@ import Protected from "@/components/Protected";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { getPlatos } from "@/services/platosService";
+import { getBebidas } from "@/services/bebidasService";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type CartItem = IProduct & {
@@ -60,9 +61,15 @@ export default function ReservarPlatosView() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getPlatos(1, 100);
-        console.log("PRODUCTOS DEL BACK:", data);
-        setProducts(data);
+        const [platosData, bebidasData] = await Promise.all([
+          getPlatos(1, 100),
+          getBebidas(1, 100),
+        ]);
+        const bebidasAdaptadas = bebidasData.map((bebida: any) => ({ ...bebida, type: "bebidas" }));
+        const platosAdaptados = platosData.map((plato: any) => ({ ...plato, type: "platos" }));
+
+        console.log("PRODUCTOS DEL BACK:", [...platosAdaptados, ...bebidasAdaptadas]);
+        setProducts([...platosAdaptados, ...bebidasAdaptadas]);
       } catch (error) {
         console.error("Error al traer productos:", error);
       } finally {
@@ -73,6 +80,11 @@ export default function ReservarPlatosView() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    console.log("PRODUCTS...", products);
+    [products];
+    });
+
   const platos = useMemo(() => {
     return products.filter((item) => item.type?.toLowerCase() === "platos");
   }, [products]);
@@ -80,6 +92,10 @@ export default function ReservarPlatosView() {
   const bebidas = useMemo(() => {
     return products.filter((item) => item.type?.toLowerCase() === "bebidas");
   }, [products]);
+  useEffect(() => {
+  console.log("PLATOS:", platos);
+  console.log("BEBIDAS:", bebidas);
+}, [platos, bebidas]);
 
   const totalPages = Math.ceil(platos.length / itemsPerPage);
 
@@ -101,7 +117,7 @@ export default function ReservarPlatosView() {
           "vegetariano",
           "sin tac",
         ]
-      : ["todos", "vinos", "cervezas", "cocktails", "sin alcohol"];
+      : ["todos", "vinos", "cervezas", "cocktails", "jugos", "agua", "gaseosas"];
 
   const filteredItems = useMemo(() => {
     const visibleItems = activeTab === "platos" ? platosPaginados : bebidas;
@@ -190,8 +206,12 @@ export default function ReservarPlatosView() {
   }, [bebidasEnReserva]);
 
   const totalGeneral = subtotalPlatos + subtotalBebidas;
-  const seña = Number((totalGeneral * 0.15).toFixed(2));
-  const restoRestaurante = Number((totalGeneral - seña).toFixed(2));
+  const costoMesaPorPersona = 2000;
+  const totalMesa = peopleCount * costoMesaPorPersona;
+  const señaComida = Math.round(totalGeneral * 0.15);
+  const señaTotal = Math.round(señaComida + totalMesa);
+  const totalFinal = Math.round(totalGeneral + totalMesa);
+  const restoRestaurante = Math.round(totalFinal - señaTotal);
 
   const confirmarReserva = async () => {
     try {
@@ -200,6 +220,7 @@ export default function ReservarPlatosView() {
           icon: "warning",
           title: "Reserva vacía",
           text: "Debes agregar al menos un plato o bebida",
+          confirmButtonColor: "#000",
         });
         return;
       }
@@ -207,10 +228,12 @@ export default function ReservarPlatosView() {
       const session = localStorage.getItem("userSession");
       const token = session ? JSON.parse(session).token : null;
 
-      const pedidos = cart.map((item) => ({
-        platoId: item.id,
-        quantity: item.quantity,
-      }));
+      const pedidos = cart
+        .filter((item) => item.type?.toLowerCase() === "platos")
+        .map((item) => ({
+          platoId: item.id,
+          quantity: item.quantity,
+        }));
 
       const body = {
         reservationDate,
@@ -253,6 +276,7 @@ export default function ReservarPlatosView() {
         icon: "success",
         title: "Reserva confirmada",
         text: "Tu reserva fue creada correctamente",
+        confirmButtonColor: "#000",
       });
       router.push("/pagos");
     } catch (error: any) {
@@ -260,6 +284,7 @@ export default function ReservarPlatosView() {
         icon: "error",
         title: "Error",
         text: error.message || "No se pudo crear la reserva",
+        confirmButtonColor: "#000",
       });
     }
   };
@@ -410,13 +435,14 @@ export default function ReservarPlatosView() {
                                 >
                                   {" "}
                                   <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-                                  {isReserved
+                                    {isReserved
                                     ? activeTab === "platos"
                                       ? "Ya reservado"
                                       : "Ya reservada"
                                     : activeTab === "platos"
                                       ? "Reservar plato"
                                       : "Reservar bebida"}
+                                  
                                 </button>
                               </div>
                             </div>
@@ -613,44 +639,52 @@ export default function ReservarPlatosView() {
 
                 <div className="flex items-center justify-between h-2 mt-6 text-s">
                   <p className="text-[#5c2c2c]">Subtotal de platos</p>
-                  <p className="font-bold text-[#5c0f14]">${subtotalPlatos}</p>
+                  <p className="font-semibold text-[#5c0f14]">${subtotalPlatos}</p>
                 </div>
 
                 <div className="flex items-center justify-between h-2 mt-4 text-s">
                   <p className="text-[#5c2c2c]">Subtotal de bebidas</p>
-                  <p className="font-bold text-[#5c0f14]">${subtotalBebidas}</p>
+                  <p className="font-semibold text-[#5c0f14]">${subtotalBebidas}</p>
                 </div>
 
                 <div className="mt-4 space-y-2">
-                  <div className="flex items-center justify-between text-lg">
-                    <p className="text-[#5c2c2c]">Total del pedido</p>
-                    <p className="font-semibold text-[#5c0f14]">
-                      ${totalGeneral}
-                    </p>
-                  </div>
-
-                  <div className="rounded-2xl border border-[#e5cfc5] bg-[#f8ece6] p-6 shadow-sm">
-                    <div className="flex items-center justify-between text-2xl">
-                      <p className="text-[#5c2c2c]">Seña (15%)</p>
-                      <p className="font-bold text-[#7c090c]">${seña}</p>
+                    <div className="flex justify-between text-lg">
+                        <p>Reserva del menú(15%)</p>
+                        <p>${señaComida}</p>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between text-lg font-bold">
-                    <p className="text-[#5c2c2c]">
-                      Resto a pagar en el restaurante
-                    </p>
-                    <p className="text-[#4f2b2b]">${restoRestaurante}</p>
-                  </div>
+                    <div className="flex justify-between text-lg">
+                        <p>Reserva de mesa (${costoMesaPorPersona} x {peopleCount})</p>
+                        <p>${totalMesa}</p>
+                    </div>
+
+                    <div className="border-t my-2" />
+
+                    <div className="flex justify-between text-lg font-semibold">
+                        <p>Total General</p>
+                        <p>${totalFinal}</p>
+                    </div>
+
+                    <div className="flex justify-between text-lg text-[#7c090c] font-bold">
+                        <p>Seña a pagar ahora</p>
+                        <p>${señaTotal}</p>
+                    </div>
+
+                    <div className="flex justify-between text-lg text-[#5c2c2c]">
+                        <p>Resto del pago en el restaurante</p>
+                        <p>${restoRestaurante}</p>
+                    </div>
+            
+
+                    <button
+                    className="mt-6 relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
+                    onClick={confirmarReserva}
+                    >
+                    Confirmar reserva (${señaTotal})
+                    <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
+                    </button>
                 </div>
-
-                <button
-                  className="mt-6 relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
-                  onClick={confirmarReserva}
-                >
-                  Confirmar reserva
-                </button>
-              </div>
+            </div>
             </div>
           </div>
         </section>

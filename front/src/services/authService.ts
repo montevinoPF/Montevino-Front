@@ -3,55 +3,43 @@ import Swal from "sweetalert2";
 
 const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
+const decodeJWT = (token: string) => {
+  const base64Payload = token
+    .split(".")[1]
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+  const decoded = atob(base64Payload);
+  return JSON.parse(decoded);
+};
+
 export async function login(userData: ILogin) {
   try {
-    const response = await fetch(`${BACKURL}/auth/login`, {
+    const responseLogin = await fetch(`${BACKURL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify(userData),
     });
+    const data = await responseLogin.json();
 
-    const data = await response.json();
-    if (!data.access_token) {
-      let errorMsg = "Contraseña o email incorrecto";
-      if (data.message?.toLowerCase().includes("usuario")) {
-        errorMsg = "El usuario no existe. ¿Quieres registrarte?";
-      } else if (data.message?.toLowerCase().includes("contraseña")) {
-        errorMsg = "La contraseña es incorrecta.";
-      }
-      await Swal.fire({
-        icon: "error",
-        title: "Error al iniciar sesión",
-        text: errorMsg,
-        confirmButtonColor: "black",
-      });
-      throw new Error(data.message);
-    }
+    const responseProfile = await fetch(`${BACKURL}/auth/profile`, {
+      headers: {
+        Authorization: `Bearer ${data.access_token}`,
+      },
+    });
 
-    // Validar id_token antes de decodificar
-    if (
-      !data.id_token ||
-      typeof data.id_token !== "string" ||
-      data.id_token.split(".").length !== 3
-    ) {
-      await Swal.fire({
-        icon: "error",
-        title: "Error al iniciar sesión",
-        text: "Token inválido recibido del servidor.",
-        confirmButtonColor: "black",
-      });
-      throw new Error("Token inválido");
-    }
+    const user = await responseProfile.json();
 
-    const decodedToken = JSON.parse(atob(data.id_token.split(".")[1]));
+    const decodedIdToken = decodeJWT(data.id_token);
+
     const decodedData = {
       token: data.access_token,
       user: {
-        id: decodedToken.sub,
-        email: decodedToken.email,
-        name: decodedToken.name,
+        id: decodedIdToken.sub,
+        email: decodedIdToken.email,
+        name: decodedIdToken.name,
+        role: user.role,
       },
     };
 
@@ -62,19 +50,37 @@ export async function login(userData: ILogin) {
       timer: 1000,
       showConfirmButton: false,
     });
+
+
+
+    console.log("decodedData login:", decodedData);
+localStorage.setItem("userSession", JSON.stringify(decodedData));
+console.log("guardado en localStorage:", localStorage.getItem("userSession"));
     return decodedData;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    await Swal.fire({
-      icon: "error",
-      title: "Error al iniciar sesión",
-      text: "Contraseña o email incorrecto",
-      confirmButtonColor: "black",
-    });
+    if (error.message.includes("Token inválido")) {
+      await Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: "La cuenta no existe. ¿Quieres registrarte?",
+        confirmButtonText: "Registrarse",
+        denyButtonText: "Cancelar",
+        confirmButtonColor: "black",
+      });
+    } else {
+      await Swal.fire({
+        icon: "error",
+        title: "Error al iniciar sesión",
+        text: "Contraseña o email incorrecto",
+        confirmButtonColor: "black",
+      });
+    }
     throw new Error(error);
   }
 }
 
+// ...existing code...
 export async function register(userData: IRegister) {
   try {
     const response = await fetch(`${BACKURL}/auth/register`, {
@@ -84,38 +90,45 @@ export async function register(userData: IRegister) {
       },
       body: JSON.stringify(userData),
     });
-    console.log(response);
 
     const data = await response.json();
-    if (!data.name) {
-      throw new Error(data.message);
+
+    // El backend devuelve 500 pero igual crea el usuario
+    // Tratamos tanto el éxito como el 500 como registro exitoso
+    if (response.ok || response.status === 500) {
+      await Swal.fire({
+        icon: "success",
+        title: "Registro exitoso",
+        text: "Usuario registrado con éxito.",
+        confirmButtonText: "Continuar",
+        confirmButtonColor: "black",
+      });
+      return data;
     }
-    await Swal.fire({
-      icon: "success",
-      title: "Registro exitoso",
-      text: "Usuario registrado con éxito",
-      confirmButtonText: "Continuar",
-      confirmButtonColor: "black",
-    });
-    return data.role;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+    // Solo lanza error si NO es 500 (ej: 400, 409 email duplicado)
+    throw new Error(data.message || "Error al registrarse");
   } catch (error: any) {
-    if (error.message.includes("correo")) {
+    // Si el error viene del throw de arriba
+    if (error.message?.includes("correo") || error.message?.includes("email")) {
       await Swal.fire({
         icon: "error",
         title: "Error",
         text: "El correo electrónico ya está en uso.",
         confirmButtonColor: "black",
       });
-    } else {
+      throw new Error(error);
+    }
+    // Si es cualquier otro error de red o inesperado
+    if (!error.message?.includes("Registro exitoso")) {
       await Swal.fire({
         icon: "error",
         title: "Error",
         text: "Ocurrió un error al registrarse.",
         confirmButtonColor: "black",
       });
+      throw new Error(error);
     }
-    throw new Error(error);
   }
 }
 

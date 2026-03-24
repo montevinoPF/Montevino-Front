@@ -4,6 +4,10 @@ import "./globals.css";
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { ReservationProvider } from "@/context/ReservationContext";
+import ChatbotButton from "@/components/chatbot/ChatBotButton"
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +35,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col`}
       >
         <AuthProvider>
+          <ReservationProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          </ReservationProvider>
         </AuthProvider>
+        <ChatbotButton />
       </body>
     </html>
   );

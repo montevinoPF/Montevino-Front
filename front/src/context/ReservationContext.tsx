@@ -1,11 +1,18 @@
 "use client";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { IProduct } from "@/types/types";
 
 type CartItem = IProduct & {
   quantity: number;
 };
+
+type ReservationData = {
+  reservationDate: string;
+  startTime: string;
+  peopleCount: number;
+};
+
 
 interface IReservationContext {
   cart: CartItem[];
@@ -14,16 +21,15 @@ interface IReservationContext {
   agregarAlCarrito: (item: IProduct, quantity?: number) => void;
   eliminarDelCarrito: (id: string) => void;
   vaciarReserva: () => void;
+
+   reservationData: ReservationData;
+  setReservationData: (data: ReservationData) => void;
+  clearReservationData: () => void;
 }
 
-export const ReservationContext = createContext<IReservationContext>({
-  cart: [],
-  comentarios: "",
-  setComentarios: () => {},
-  agregarAlCarrito: () => {},
-  eliminarDelCarrito: () => {},
-  vaciarReserva: () => {},
-});
+export const ReservationContext = createContext<IReservationContext | undefined>(
+  undefined
+);
 
 export const ReservationProvider = ({
   children,
@@ -32,6 +38,11 @@ export const ReservationProvider = ({
 }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [comentarios, setComentarios] = useState("");
+   const [reservationData, setReservationDataState] = useState<ReservationData>({
+    reservationDate: "",
+    startTime: "",
+    peopleCount: 1,
+  });
 
   useEffect(() => {
     const savedCart = localStorage.getItem("montevino_reserva_cart");
@@ -94,6 +105,15 @@ export const ReservationProvider = ({
         cart,
         comentarios,
         setComentarios,
+          reservationData,
+        setReservationData: setReservationDataState,
+        clearReservationData: () =>
+          setReservationDataState({
+            reservationDate: "",
+            startTime: "",
+            peopleCount: 1,
+          }),
+
         agregarAlCarrito,
         eliminarDelCarrito,
         vaciarReserva,
@@ -102,4 +122,15 @@ export const ReservationProvider = ({
       {children}
     </ReservationContext.Provider>
   );
+};
+
+
+export const useReservation = () => {
+  const context = useContext(ReservationContext);
+
+  if (!context) {
+    throw new Error("useReservation debe usarse dentro de ReservationProvider");
+  }
+
+  return context;
 };
