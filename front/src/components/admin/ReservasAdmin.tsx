@@ -19,7 +19,7 @@ export default function ReservasAdmin({
 
   const estadoColor = (estado: string) => {
     if (estado === "confirmada") return "bg-green-100 text-green-700";
-    if (estado === "pendiente") return "bg-orange-100 text-orange-700";
+    if (estado === "pago pendiente") return "bg-orange-100 text-orange-700";
   };
 
   const reservasFiltradas = reservas.filter(

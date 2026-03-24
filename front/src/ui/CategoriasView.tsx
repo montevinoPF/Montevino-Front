@@ -63,23 +63,7 @@ const CategoriasView = () => {
                 className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.10)] hover:bg-gray-50 transition-colors"
               >
                 <span className="font-medium text-gray-800">{p.name}</span>
-                <div className="flex gap-2">
-                  <button
-                    className="relative overflow-hidden py-1 px-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
-                    onClick={() =>
-                      router.push(
-                        `/admin/platos-y-categorias/editar-categoria/${p.id}`,
-                      )
-                    }
-                  >
-                    Editar
-                    <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-                  </button>
-                  <button className="relative overflow-hidden py-1 px-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer">
-                    Borrar
-                    <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-                  </button>
-                </div>
+                <div className="flex gap-2"></div>
               </div>
             ))}
           </div>
