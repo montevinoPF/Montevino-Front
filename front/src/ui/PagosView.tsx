@@ -164,8 +164,8 @@ export default function PagoPage() {
         throw new Error("Falta configurar NEXT_PUBLIC_BACKURL");
       }
 
-      const session = localStorage.getItem("userSession");
-      const token = session ? JSON.parse(session).token : null;
+      const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+      const token = session?.token;
 
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
@@ -217,6 +217,8 @@ export default function PagoPage() {
       });
 
       const pagoData = await pagoRes.json();
+      console.log("pagoData completo:", pagoData);
+      console.log("keys de pagoData:", Object.keys(pagoData));
 
       if (!pagoRes.ok) {
         throw new Error(
@@ -224,11 +226,26 @@ export default function PagoPage() {
         );
       }
 
-      if (!pagoData.init_point) {
-        throw new Error("Mercado Pago no devolvió una URL de pago");
+      const initPoint =
+        pagoData.init_point ||
+        pagoData.sandbox_init_point ||
+        pagoData.url ||
+        pagoData.checkoutUrl ||
+        pagoData.checkout_url ||
+        pagoData.paymentUrl ||
+        pagoData.payment_url ||
+        pagoData.data?.init_point ||
+        pagoData.data?.url;
+
+      console.log("initPoint encontrado:", initPoint);
+
+      if (!initPoint) {
+        throw new Error(
+          `Mercado Pago no devolvió una URL de pago. Keys disponibles: ${Object.keys(pagoData).join(", ")}`,
+        );
       }
 
-      window.location.href = pagoData.init_point;
+      window.location.href = initPoint;
     } catch (error: any) {
       Swal.fire({
         icon: "error",
