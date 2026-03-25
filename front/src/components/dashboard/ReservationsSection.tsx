@@ -1,10 +1,15 @@
-
-interface Reservation {
+export interface Reservation {
+  id: string;
+  user?: {
     id: string;
-    date: string;
-    time: string;
-    people: string;
-    status: string;
+  };
+  reservationDate: string;
+  startTime: string;
+  peopleCount: number;
+  status: string;
+  totalPrice: number;
+  depositAmount: number;
+  notes: string;
 }
 
 interface Props {
@@ -29,11 +34,11 @@ export default function ReservationsSection({ reservations }: Props) {
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <p className="text-sm text-slate-500">Fecha</p>
-              <p className="font-medium text-slate-800">{current.date}</p>
+              <p className="font-medium text-slate-800">{current.reservationDate}</p>
             </div>
             <div>
               <p className="text-sm text-slate-500">Personas</p>
-              <p className="font-medium text-slate-800">{current.people}</p>
+              <p className="font-medium text-slate-800">{current.peopleCount}</p>
             </div>
             <div>
               <p className="text-sm text-slate-500">Estado</p>
@@ -55,8 +60,8 @@ export default function ReservationsSection({ reservations }: Props) {
             <div key={r.id} className="rounded-2xl border border-slate-200 p-4">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="font-medium text-slate-800">{r.date}</p>
-                  <p className="text-sm text-slate-500">{r.people} personas</p>
+                  <p className="font-medium text-slate-800">{r.reservationDate}</p>
+                  <p className="text-sm text-slate-500">{r.peopleCount} personas</p>
                 </div>
                 <span className="text-sm font-medium text-slate-600">{r.status}</span>
               </div>
