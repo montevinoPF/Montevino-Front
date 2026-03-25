@@ -63,6 +63,7 @@ export interface IUserSession {
     name: string;
     email: string;
     role: string;
+    isActive: boolean;
   };
 }
 
@@ -81,7 +82,7 @@ export interface IPlate {
   price: number;
   ingredientes: string;
   description: string;
-  imageUrl: string;
+  file: File | null;
   stock: number;
   categoryId: string;
 }
@@ -91,7 +92,7 @@ export interface IPlateErrors {
   price?: string;
   ingredientes?: string;
   description?: string;
-  imageUrl?: string;
+  file?: File | null;
   stock?: string;
   categoryId?: string;
 }
@@ -134,6 +135,7 @@ export interface IUser {
   id: string;
   name: string;
   email: string;
-  role: "USER" | "ADMIN";
+  role: string;
+  isActive: boolean;
   reservations: IReserva[];
 }

@@ -138,13 +138,35 @@ export async function promoteUserRole(id: string) {
   }
 }
 
-export async function deleteUser(id: string) {
+export async function desactivateUser(id: string) {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
 
   try {
-    const response = await fetch(`${BACKURL}/users/${id}`, {
-      method: "DELETE",
+    const response = await fetch(`${BACKURL}/users/${id}/desactivate`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : "Error al eliminar usuario",
+    );
+  }
+}
+
+export async function activateUser(id: string) {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  try {
+    const response = await fetch(`${BACKURL}/users/${id}/activate`, {
+      method: "PATCH",
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,
