@@ -4,9 +4,10 @@ import Navbar from "@/components/NavBar";
 import { useAuth } from "@/context/AuthContext";
 import {
   promoteUserRole,
-  deleteUser,
+  desactivateUser,
   getUsers,
   getUsersById,
+  activateUser,
 } from "@/services/usersService";
 import { IUser } from "@/types/types";
 import { useEffect, useState } from "react";
@@ -68,7 +69,7 @@ const UsuariosView = () => {
           </h2>
           <div className="flex justify-center gap-5">
             <div className="w-full h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white overflow-hidden">
-              <h3 className="mb-4 text-3xl text-red-950">Lista de Usuarios</h3>
+              <h3 className="mb-4 text-3xl text-red-950">Usuarios Activos</h3>
               <table className="w-full table-fixed">
                 <thead className="text-sm text-black bg-gray-100">
                   <tr>
@@ -80,48 +81,83 @@ const UsuariosView = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {users.length === 0 ? (
+                  {users.filter((u) => u.isActive).length === 0 ? (
                     <tr>
                       <td colSpan={5} className="py-6 text-center">
                         <h2>No hay usuarios para mostrar.</h2>
                       </td>
                     </tr>
                   ) : (
-                    users.map((u, i) => (
-                      <tr
-                        key={i}
-                        className="cursor-pointer hover:bg-gray-50"
-                        onClick={() => handleVerDetalle(u.id)} // <-- Abre el modal
-                      >
-                        <td className="w-1/5 px-3 py-3 text-center truncate">
-                          {u.name}
-                        </td>
-                        <td className="w-1/5 px-3 py-3 text-center truncate">
-                          {u.email}
-                        </td>
-                        <td className="w-1/5 px-3 py-3 text-center">
-                          {u.role}
-                        </td>
-                        <td
-                          className="w-1/5 px-3 py-3 text-center"
-                          onClick={(e) => e.stopPropagation()} // <-- Evita abrir el modal
+                    users
+                      .filter((u) => u.isActive)
+                      .map((u, i) => (
+                        <tr
+                          key={i}
+                          className="cursor-pointer hover:bg-gray-50"
+                          onClick={() => handleVerDetalle(u.id)} // <-- Abre el modal
                         >
-                          {u.role === "USER" ? (
+                          <td className="w-1/5 px-3 py-3 text-center truncate">
+                            {u.name}
+                          </td>
+                          <td className="w-1/5 px-3 py-3 text-center truncate">
+                            {u.email}
+                          </td>
+                          <td className="w-1/5 px-3 py-3 text-center">
+                            {u.role}
+                          </td>
+                          <td
+                            className="w-1/5 px-3 py-3 text-center"
+                            onClick={(e) => e.stopPropagation()} // <-- Evita abrir el modal
+                          >
+                            {u.role === "USER" ? (
+                              <button
+                                className="relative overflow-hidden py-2 px-3 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer text-[15px]"
+                                onClick={async () => {
+                                  const response = await promoteUserRole(u.id);
+                                  if (response) {
+                                    setUsers((prevUsers) =>
+                                      prevUsers.map((user) =>
+                                        user.id === u.id
+                                          ? { ...user, role: "ADMIN" }
+                                          : user,
+                                      ),
+                                    );
+                                    Swal.fire({
+                                      title: "Usuario promovido",
+                                      text: "El usuario ha sido promovido a administrador",
+                                      icon: "success",
+                                      confirmButtonText: "Aceptar",
+                                      confirmButtonColor: "#000",
+                                    });
+                                  }
+                                }}
+                              >
+                                HACER ADMIN
+                                <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
+                              </button>
+                            ) : (
+                              <span className="text-sm text-gray-400">—</span>
+                            )}
+                          </td>
+                          <td
+                            className="w-1/5 px-3 py-3 text-center"
+                            onClick={(e) => e.stopPropagation()} // <-- Evita abrir el modal
+                          >
                             <button
                               className="relative overflow-hidden py-2 px-3 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer text-[15px]"
                               onClick={async () => {
-                                const response = await promoteUserRole(u.id);
+                                const response = await desactivateUser(u.id);
                                 if (response) {
                                   setUsers((prevUsers) =>
                                     prevUsers.map((user) =>
                                       user.id === u.id
-                                        ? { ...user, role: "ADMIN" }
+                                        ? { ...user, isActive: false }
                                         : user,
                                     ),
                                   );
                                   Swal.fire({
-                                    title: "Usuario promovido",
-                                    text: "El usuario ha sido promovido a administrador",
+                                    title: "Usuario desahabilitado",
+                                    text: "El usuario ha sido desahabilitado correctamente",
                                     icon: "success",
                                     confirmButtonText: "Aceptar",
                                     confirmButtonColor: "#000",
@@ -129,41 +165,96 @@ const UsuariosView = () => {
                                 }
                               }}
                             >
-                              HACER ADMIN
+                              DESHABILITAR
                               <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
                             </button>
-                          ) : (
-                            <span className="text-sm text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td
-                          className="w-1/5 px-3 py-3 text-center"
-                          onClick={(e) => e.stopPropagation()} // <-- Evita abrir el modal
+                          </td>
+                        </tr>
+                      ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-5 mt-10">
+            <div className="w-full h-full p-6 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.20)] bg-white overflow-hidden">
+              <h3 className="mb-4 text-3xl text-red-950">
+                Usuarios Deshabilitados
+              </h3>
+              <table className="w-full table-fixed">
+                <thead className="text-sm text-black bg-gray-100">
+                  <tr>
+                    <th className="w-1/5 px-3 py-3 text-center">Nombre</th>
+                    <th className="w-1/5 px-3 py-3 text-center">Correo</th>
+                    <th className="w-1/5 px-3 py-3 text-center">Rol</th>
+                    <th className="w-1/5 px-3 py-3 text-center">Promover</th>
+                    <th className="w-1/5 px-3 py-3 text-center">Activar</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {users.filter((u) => !u.isActive).length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-6 text-center">
+                        <h2>No hay usuarios para mostrar.</h2>
+                      </td>
+                    </tr>
+                  ) : (
+                    users
+                      .filter((u) => !u.isActive)
+                      .map((u, i) => (
+                        <tr
+                          key={i}
+                          className="cursor-pointer hover:bg-gray-50"
+                          onClick={() => handleVerDetalle(u.id)} // <-- Abre el modal
                         >
-                          <button
-                            className="relative overflow-hidden py-2 px-3 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer text-[15px]"
-                            onClick={async () => {
-                              const response = await deleteUser(u.id);
-                              if (response) {
-                                setUsers((prevUsers) =>
-                                  prevUsers.filter((user) => user.id !== u.id),
-                                );
-                                Swal.fire({
-                                  title: "Usuario eliminado",
-                                  text: "El usuario ha sido eliminado correctamente",
-                                  icon: "success",
-                                  confirmButtonText: "Aceptar",
-                                  confirmButtonColor: "#000",
-                                });
-                              }
-                            }}
+                          <td className="w-1/5 px-3 py-3 text-center truncate">
+                            {u.name}
+                          </td>
+                          <td className="w-1/5 px-3 py-3 text-center truncate">
+                            {u.email}
+                          </td>
+                          <td className="w-1/5 px-3 py-3 text-center">
+                            {u.role}
+                          </td>
+                          <td
+                            className="w-1/5 px-3 py-3 text-center"
+                            onClick={(e) => e.stopPropagation()} // <-- Evita abrir el modal
                           >
-                            BORRAR
-                            <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                            <span className="text-sm text-gray-400">—</span>
+                          </td>
+                          <td
+                            className="w-1/5 px-3 py-3 text-center"
+                            onClick={(e) => e.stopPropagation()} // <-- Evita abrir el modal
+                          >
+                            <button
+                              className="relative overflow-hidden py-2 px-3 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer text-[15px]"
+                              onClick={async () => {
+                                const response = await activateUser(u.id);
+                                if (response) {
+                                  setUsers((prevUsers) =>
+                                    prevUsers.map((user) =>
+                                      user.id === u.id
+                                        ? { ...user, isActive: true }
+                                        : user,
+                                    ),
+                                  );
+                                  Swal.fire({
+                                    title: "Usuario activado",
+                                    text: "El usuario ha sido activado correctamente",
+                                    icon: "success",
+                                    confirmButtonText: "Aceptar",
+                                    confirmButtonColor: "#000",
+                                  });
+                                }
+                              }}
+                            >
+                              HABILITAR
+                              <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))
                   )}
                 </tbody>
               </table>

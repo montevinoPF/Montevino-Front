@@ -40,8 +40,19 @@ export async function login(userData: ILogin) {
         email: decodedIdToken.email,
         name: decodedIdToken.name,
         role: user.role,
+        isActive: user.isActive,
       },
     };
+
+    if (!user.isActive) {
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "La cuenta está desactivada.",
+        confirmButtonColor: "black",
+      });
+      return null;
+    }
 
     await Swal.fire({
       icon: "success",
