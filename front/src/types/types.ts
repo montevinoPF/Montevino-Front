@@ -64,6 +64,7 @@ export interface IUserSession {
     email: string;
     role: string;
     isActive: boolean;
+    image?: string;
   };
 }
 
