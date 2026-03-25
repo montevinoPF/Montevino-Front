@@ -25,7 +25,7 @@ export default function MisReservasPage() {
         }
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/profile`,
+          `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
           {
             method: "GET",
             headers: {
@@ -37,13 +37,11 @@ export default function MisReservasPage() {
 
         const data = await res.json();
 
-        console.log("PROFILE:", data);
-
         if (!res.ok) {
           throw new Error(data.message || "No se pudieron cargar tus reservas");
         }
 
-        setReservas(data.reservations || []);
+        setReservas(data || []);
       } catch (error: any) {
         Swal.fire({
           icon: "error",
