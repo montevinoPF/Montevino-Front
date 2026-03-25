@@ -70,7 +70,7 @@ export async function getReservationWithDetails(
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("userSession") ?? "null")
       : null;
-  const token = session?.token;
+  // const token = session?.token;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

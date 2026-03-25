@@ -1,5 +1,6 @@
 "use client";
 
+import ProfileImage from "@/components/dashboard/ProfileImage";
 import ProfileInfo from "@/components/dashboard/ProfileInfo";
 import ReservationsSection from "@/components/dashboard/ReservationsSection";
 import Protected from "@/components/Protected";
@@ -17,6 +18,10 @@ export default function DashboardUser() {
         <div className="mx-auto max-w-6xl">
           <h1 className="mb-8 text-3xl font-bold text-[#7c090c]">Mi perfil</h1>
           <div className="grid gap-6 lg:grid-cols-3">
+
+            <div className="lg:col-span-1">
+              <ProfileImage />
+            </div>
             <div className="lg:col-span-2">
               <ProfileInfo
                 name={name}
