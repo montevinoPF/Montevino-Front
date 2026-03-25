@@ -33,6 +33,7 @@ export default function ProfileImage() {
                 }
             );
 
+            console.log("status:", res.status);
             const data = await res.json();
             console.log("respuesta del back:", data);
 
