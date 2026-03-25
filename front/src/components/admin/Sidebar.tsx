@@ -8,7 +8,7 @@ const adminLinks = [
   { href: "/admin/usuarios", label: "Usuarios" },
   { href: "/admin/stats", label: "Estadísticas" },
   { href: "/admin/reservas-y-mesas", label: "Reservas y Mesas" },
-  { href: "/admin/platos", label: "Platos" },
+  { href: "/admin/productos", label: "Productos" },
   { href: "/admin/categorias", label: "Categorías" },
 ];
 
