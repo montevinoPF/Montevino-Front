@@ -146,7 +146,7 @@ const AdminView = () => {
               Accesos Rápidos
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Link href="/admin/platos-y-categorias/crear-plato">
+              <Link href="/admin/productos/crear-productos">
                 <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl hover:bg-[#F6E3D9] transition-colors cursor-pointer">
                   <div className="bg-[#F6E3D9] p-3 rounded-xl text-[#56070C]">
                     <FiShoppingBag size={22} />
