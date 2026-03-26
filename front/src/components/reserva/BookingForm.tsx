@@ -52,6 +52,37 @@ export default function BookingForm() {
   const { setReservationData } = useReservation();
 const router = useRouter();
 
+  const VALID_TIMES = ["18:00", "20:00", "22:00", "00:00"];
+
+  const validarYContinuar = () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDay = date ? new Date(date) : null;
+    if (selectedDay) selectedDay.setHours(0, 0, 0, 0);
+
+    if (!selectedDay || selectedDay <= today) {
+      Swal.fire({
+        icon: "warning",
+        title: "Fecha inválida",
+        text: "Por favor seleccioná una fecha futura.",
+        confirmButtonColor: "#7c090c",
+      });
+      return;
+    }
+
+    if (!VALID_TIMES.includes(time)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Horario no seleccionado",
+        text: "Por favor seleccioná un horario disponible.",
+        confirmButtonColor: "#7c090c",
+      });
+      return;
+    }
+
+    setShowOptions(true);
+  };
+
   const irAPlatillos = () => {
     const fechaString = date ? format(date, "yyyy-MM-dd") : "";
     const horaString = time.replace("hs", "");
@@ -108,7 +139,7 @@ const router = useRouter();
 
             {!showOptions ? (
               <button
-                onClick={() => setShowOptions(true)}
+                onClick={validarYContinuar}
                 className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
               >
                 Continuar

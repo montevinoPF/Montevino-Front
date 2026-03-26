@@ -32,6 +32,34 @@ export const getReservations = async () => {
   }
 };
 
+export const getMyReservations = async () => {
+  const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+  const token = session?.token;
+
+  if (!token) {
+    throw new Error("No hay token de autenticación");
+  }
+  try {
+    const res = await fetch(`${BACKURL}/reservations/myreservations`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error("Error al traer las reservas");
+    }
+
+    return await res.json();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error);
+  }
+};
+
 export const getTables = async () => {
   const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
   const token = session?.token;
@@ -92,3 +120,4 @@ export const getTablesAvailability = async (fecha: string, hora: string) => {
     throw new Error(error);
   }
 };
+

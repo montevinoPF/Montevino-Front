@@ -65,10 +65,12 @@ export default function ReservarPlatosView() {
           getPlatos(1, 100),
           getBebidas(1, 100),
         ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const bebidasAdaptadas = bebidasData.map((bebida: any) => ({
           ...bebida,
           type: "bebidas",
         }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const platosAdaptados = platosData.map((plato: any) => ({
           ...plato,
           type: "platos",
@@ -263,6 +265,48 @@ export default function ReservarPlatosView() {
         return;
       }
 
+      const session = localStorage.getItem("userSession");
+      const token = session ? JSON.parse(session).token : null;
+
+      const pedidos = cart
+        .filter((item) => item.type?.toLowerCase() === "platos")
+        .map((item) => ({
+          platoId: item.id,
+          quantity: item.quantity,
+        }));
+
+      const body = {
+        reservationDate,
+        startTime,
+        peopleCount,
+        notes: comentarios,
+        pedidos,
+      };
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(text || "El servidor no devolvió un JSON válido");
+      }
+
+      if (!res.ok) {
+        throw new Error(
+          Array.isArray(data.message) ? data.message.join(", ") : data.message,
+        );
+      }
+
       Swal.fire({
         icon: "success",
         title: "Platos seleccionados.",
@@ -270,6 +314,7 @@ export default function ReservarPlatosView() {
         confirmButtonColor: "#000",
       });
       router.push("/pagos");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       Swal.fire({
         icon: "error",
