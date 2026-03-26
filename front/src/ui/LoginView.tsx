@@ -98,9 +98,7 @@ const LoginView = () => {
               component="div"
               className="self-start text-red-500"
             />
-            <span className="self-end text-sm hover:cursor-pointer">
-              Olvidaste tu contraseña?
-            </span>
+           
             <button
               type="submit"
               disabled={isSubmitting}

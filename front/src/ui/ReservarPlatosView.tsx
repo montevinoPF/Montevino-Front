@@ -65,10 +65,12 @@ export default function ReservarPlatosView() {
           getPlatos(1, 100),
           getBebidas(1, 100),
         ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const bebidasAdaptadas = bebidasData.map((bebida: any) => ({
           ...bebida,
           type: "bebidas",
         }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const platosAdaptados = platosData.map((plato: any) => ({
           ...plato,
           type: "platos",
@@ -242,7 +244,6 @@ export default function ReservarPlatosView() {
         return;
       }
 
-<<<<<<< HEAD
       const session = localStorage.getItem("userSession");
       const token = session ? JSON.parse(session).token : null;
 
@@ -261,10 +262,6 @@ export default function ReservarPlatosView() {
         pedidos,
       };
 
-      console.log("BODY RESERVA:", body);
-      console.log("CART:", cart);
-      console.log("PEDIDOS ENVIADOS:", pedidos);
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
         method: "POST",
         headers: {
@@ -275,7 +272,6 @@ export default function ReservarPlatosView() {
       });
 
       const text = await res.text();
-      console.log("RESPUESTA DEL BACK:", text);
 
       let data;
       try {
@@ -290,8 +286,6 @@ export default function ReservarPlatosView() {
         );
       }
 
-=======
->>>>>>> 901b7b9 (Arreglos para pagos)
       Swal.fire({
         icon: "success",
         title: "Platos seleccionados.",
@@ -299,6 +293,7 @@ export default function ReservarPlatosView() {
         confirmButtonColor: "#000",
       });
       router.push("/pagos");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       Swal.fire({
         icon: "error",

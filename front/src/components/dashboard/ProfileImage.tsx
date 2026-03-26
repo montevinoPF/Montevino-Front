@@ -32,17 +32,19 @@ export default function ProfileImage() {
                     body: formData,
                 }
             );
+           
 
-            console.log("status:", res.status);
             const data = await res.json();
-            console.log("respuesta del back:", data);
 
-            const imageUrl: string = data.user.imgUrl;
+            if (!res.ok) throw new Error(data.message || "Error al actualizar la imagen");
+
+            const imageUrl = data.user?.imgUrl;
+            if (!imageUrl) throw new Error("No se devolvió imgUrl validamente");
 
             if (userData) {
                 const updated = {
                     ...userData,
-                    user: { ...userData.user, image: imageUrl },
+                    user: { ...userData.user, image: imageUrl},
                 };
                 setUserData(updated);
                 localStorage.setItem("userSession", JSON.stringify(updated));

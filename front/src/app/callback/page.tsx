@@ -20,7 +20,7 @@ export default function Callback() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setUserData({ token: data.access_token, user: data.user });
+        setUserData({ token: data.access_token, user: { ...data.user, image: data.user.imgUrl } });
 
         router.push("/");
       });

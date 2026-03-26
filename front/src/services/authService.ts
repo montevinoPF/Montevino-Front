@@ -36,10 +36,11 @@ export async function login(userData: ILogin) {
     const decodedData = {
       token: data.access_token,
       user: {
-        id: decodedIdToken.sub,
+        id: user.id,
         email: decodedIdToken.email,
         name: decodedIdToken.name,
         role: user.role,
+        image: user.imgUrl,
       },
     };
 
@@ -103,6 +104,7 @@ export async function register(userData: IRegister) {
 
     // Solo lanza error si NO es 500 (ej: 400, 409 email duplicado)
     throw new Error(data.message || "Error al registrarse");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Si el error viene del throw de arriba
     if (error.message?.includes("correo") || error.message?.includes("email")) {
