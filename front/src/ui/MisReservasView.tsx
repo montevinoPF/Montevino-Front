@@ -12,47 +12,52 @@ import {
 export default function MisReservasPage() {
   const [reservas, setReservas] = useState<IReservation[]>([]);
   const [loading, setLoading] = useState(true);
-useEffect(() => {
-  const loadReservas = async () => {
-    try {
-      const session = JSON.parse(localStorage.getItem("userSession") || "null");
-      const token = session?.token;
+  useEffect(() => {
+    const loadReservas = async () => {
+      try {
+        const session = JSON.parse(
+          localStorage.getItem("userSession") || "null",
+        );
+        const token = session?.token;
 
-      if (!token) {
-        throw new Error("No hay sesión iniciada");
+        if (!token) {
+          throw new Error("No hay sesión iniciada");
+        }
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/profile`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const data = await res.json();
+
+        console.log("PROFILE:", data);
+
+        if (!res.ok) {
+          throw new Error(data.message || "No se pudieron cargar tus reservas");
+        }
+
+        setReservas(data.reservations || []);
+      } catch (error: any) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message || "No se pudieron cargar tus reservas",
+          confirmButtonColor: "#7c090c",
+        });
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-
-      console.log("PROFILE:", data);
-
-      if (!res.ok) {
-        throw new Error(data.message || "No se pudieron cargar tus reservas");
-      }
-
-      setReservas(data.reservations || []);
-    } catch (error: any) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message || "No se pudieron cargar tus reservas",
-        confirmButtonColor: "#7c090c",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  loadReservas();
-}, []);
+    loadReservas();
+  }, []);
 
   const reservasOrdenadas = useMemo(() => {
     return [...reservas].sort((a, b) => {
@@ -103,41 +108,50 @@ useEffect(() => {
   const getStatusLabel = (status: string) => {
     const normalized = status?.toUpperCase();
 
-    if (normalized?.includes("CONFIRM") || normalized?.includes("SUCCESS")) return "Confirmada";
-    if (normalized?.includes("PENDING") || normalized?.includes("PEND")) return "Pendiente";
-    if (normalized?.includes("FAILURE") || normalized?.includes("CANCEL")) return "Fallida";
+    if (normalized?.includes("CONFIRM") || normalized?.includes("SUCCESS"))
+      return "Confirmada";
+    if (normalized?.includes("PENDING") || normalized?.includes("PEND"))
+      return "Pendiente";
+    if (normalized?.includes("FAILURE") || normalized?.includes("CANCEL"))
+      return "Fallida";
 
     return status || "Sin estado";
   };
 
   const contarPlatos = (reserva: IReservation) => {
-    return reserva.pedidos?.reduce((acc, pedido) => acc + Number(pedido.quantity || 0), 0) || 0;
+    return (
+      reserva.pedidos?.reduce(
+        (acc, pedido) => acc + Number(pedido.quantity || 0),
+        0,
+      ) || 0
+    );
   };
 
   const contarBebidas = (reserva: IReservation) => {
     const bebidas =
       reserva.pedidos?.filter(
-        (pedido) => pedido.menuItem?.type?.toLowerCase() === "bebidas"
+        (pedido) => pedido.menuItem?.type?.toLowerCase() === "bebidas",
       ) || [];
 
-    return bebidas.reduce((acc, pedido) => acc + Number(pedido.quantity || 0), 0);
+    return bebidas.reduce(
+      (acc, pedido) => acc + Number(pedido.quantity || 0),
+      0,
+    );
   };
 
   return (
-   <Protected>
+    <Protected>
       <section className="mt-10 min-h-screen bg-[#f7efea]">
-          <div className="bg-[radial-gradient(circle_at_top,#8b0d14_0%,#5d070b_45%,#3d0407_100%)] md:h-45">
-            <div className="px-6 mx-auto max-w-7xl py-14 md:px-8 md:py-16">
-              <h1 className="font-serif text-white md:text-4xl">
-              Mis Reservas
-            </h1>
-            <p className="mt-3 max-w-2xl text-white/80">
+        <div className="bg-[radial-gradient(circle_at_top,#8b0d14_0%,#5d070b_45%,#3d0407_100%)] md:h-45">
+          <div className="px-6 mx-auto max-w-7xl py-14 md:px-8 md:py-16">
+            <h1 className="font-serif text-white md:text-4xl">Mis Reservas</h1>
+            <p className="max-w-2xl mt-3 text-white/80">
               Acá podés ver el historial de tus reservas y revisar su estado.
             </p>
           </div>
         </div>
 
-        <div className="mx-auto max-w-7xl px-6 py-10 md:px-8">
+        <div className="px-6 py-10 mx-auto max-w-7xl md:px-8">
           {loading ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {[1, 2, 3].map((item) => (
@@ -173,7 +187,8 @@ useEffect(() => {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <h2 className="font-serif text-2xl text-[#2b1b18]">
-                        {formatDate(reserva.reservationDate)} - {reserva.startTime}
+                        {formatDate(reserva.reservationDate)} -{" "}
+                        {reserva.startTime}
                       </h2>
                       <p className="mt-1 text-sm text-[#8b7b76]">
                         Reserva #{reserva.id.slice(0, 8)}
@@ -182,7 +197,7 @@ useEffect(() => {
 
                     <span
                       className={`rounded-xl px-3 py-2 text-sm font-medium ${getBadgeClasses(
-                        reserva.status
+                        reserva.status,
                       )}`}
                     >
                       {getStatusLabel(reserva.status)}
@@ -191,20 +206,22 @@ useEffect(() => {
 
                   <div className="my-5 h-px bg-[#efe1d8]" />
 
-                  <div className="mt-4 flex flex-wrap items-center gap-10 text-black/90 text-lg">
+                  <div className="flex flex-wrap items-center gap-10 mt-4 text-lg text-black/90">
                     <p className="flex items-center justify-center">
                       <span>
-                        <svg className="mx-2"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round">
-                        <circle cx="12" cy="7" r="4" />
-                        <path d="M5 21a7 7 0 0 1 14 0" />
+                        <svg
+                          className="mx-2"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="12" cy="7" r="4" />
+                          <path d="M5 21a7 7 0 0 1 14 0" />
                         </svg>
                       </span>
                       <span>{reserva.peopleCount} personas</span>
@@ -220,7 +237,8 @@ useEffect(() => {
 
                     {reserva.notes && (
                       <p className="rounded-xl bg-[#fcf6f2] px-3 py-2 text-sm text-[#7a5b52]">
-                        <span className="font-medium">Comentario:</span> {reserva.notes}
+                        <span className="font-medium">Comentario:</span>{" "}
+                        {reserva.notes}
                       </p>
                     )}
                   </div>
@@ -245,10 +263,10 @@ useEffect(() => {
                     )}
                   </div>
 
-                  <div className="mt-6 flex gap-3">
+                  <div className="flex gap-3 mt-6">
                     <Link
                       href={`/mis-reservas/${reserva.id}`}
-                       className="flex items-center justify-center relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
+                      className="flex items-center justify-center relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
                     >
                       Ver detalle
                       <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>

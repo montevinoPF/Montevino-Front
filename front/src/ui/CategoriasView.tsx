@@ -1,6 +1,7 @@
 "use client";
 import Sidebar from "@/components/admin/Sidebar";
 import Navbar from "@/components/NavBar";
+import { categoryValidation } from "@/lib/validations";
 import { crearCategoria } from "@/services/platosService";
 import { ICategory } from "@/types/types";
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ const CategoriasView = () => {
   const router = useRouter();
   const [categorias, setCategorias] = useState<ICategory[]>([]);
   const { isAuthReady, userData, checkAdmin } = useAuth();
+  const [errorCategoria, setErrorCategoria] = useState("");
   const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -33,19 +35,25 @@ const CategoriasView = () => {
 
   const handleCrearCategoria = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevaCategoria.trim()) return;
 
+    const error = categoryValidation(nuevaCategoria);
+    if (error) {
+      setErrorCategoria(error);
+      return;
+    }
+    setErrorCategoria("");
     setLoadingCategoria(true);
     try {
-      const nueva = await crearCategoria(nuevaCategoria);
-      setCategorias((prev) => [...prev, nueva]); // Agrega sin recargar
-      setNuevaCategoria(""); // Limpia el input
+      const nueva = await crearCategoria(nuevaCategoria.trim());
+      setCategorias((prev) => [...prev, nueva]);
+      setNuevaCategoria("");
     } catch (error) {
       console.error(error);
     } finally {
       setLoadingCategoria(false);
     }
   };
+
   return (
     <>
       <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -71,23 +79,34 @@ const CategoriasView = () => {
           <div className="flex justify-center my-6">
             <form
               onSubmit={handleCrearCategoria}
-              className="flex items-center gap-3 bg-white px-6 py-4 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.10)] w-full max-w-md"
+              className="flex flex-col gap-2 bg-white px-6 py-4 rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.10)] w-full max-w-md"
             >
-              <input
-                type="text"
-                value={nuevaCategoria}
-                onChange={(e) => setNuevaCategoria(e.target.value)}
-                placeholder="Nueva categoría..."
-                className="flex-1 p-2 border border-gray-300 rounded-md outline-none focus:ring-1 focus:ring-[#FED0BB]"
-              />
-              <button
-                type="submit"
-                disabled={loadingCategoria || !nuevaCategoria.trim()}
-                className="relative overflow-hidden py-1 px-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
-              >
-                {loadingCategoria ? "Creando..." : "Agregar"}
-                <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-              </button>
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={nuevaCategoria}
+                  onChange={(e) => {
+                    setNuevaCategoria(e.target.value);
+                    setErrorCategoria(categoryValidation(e.target.value));
+                  }}
+                  placeholder="Nueva categoría..."
+                  className={`flex-1 p-2 border rounded-md outline-none focus:ring-1 focus:ring-[#FED0BB] ${
+                    errorCategoria ? "border-red-400" : "border-gray-300"
+                  }`}
+                />
+                <button
+                  type="submit"
+                  disabled={loadingCategoria || !nuevaCategoria.trim()}
+                  className="relative overflow-hidden py-1 px-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer disabled:opacity-50"
+                >
+                  {loadingCategoria ? "Creando..." : "Agregar"}
+                  <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
+                </button>
+              </div>
+              {/* Error debajo del input */}
+              {errorCategoria && (
+                <p className="text-sm text-red-500">{errorCategoria}</p>
+              )}
             </form>
           </div>
         </div>
