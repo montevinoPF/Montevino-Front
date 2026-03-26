@@ -20,13 +20,14 @@ export default function ReservaDetallePage() {
         const token = session?.token;
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/reservations/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
           {
+            method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         const data = await res.json();
@@ -35,7 +36,9 @@ export default function ReservaDetallePage() {
           throw new Error(data.message || "No se pudo obtener la reserva");
         }
 
-        setReserva(data);
+        const reservaAMostrar = data.find((item: any) => item.id === id);
+
+        setReserva(reservaAMostrar);
       } catch (error) {
         console.error("Error cargando reserva:", error);
       } finally {
@@ -54,7 +57,7 @@ export default function ReservaDetallePage() {
     <Protected>
       <section className="min-h-screen bg-[#f7efea]">
         <div className="bg-[radial-gradient(circle_at_top,#8b0d14_0%,#5d070b_45%,#3d0407_100%)]">
-          <div className="mx-auto max-w-5xl px-6 py-14 md:px-8 md:py-16">
+          <div className="max-w-5xl px-6 mx-auto py-14 md:px-8 md:py-16">
             <Link
               href="/mis-reservas"
               className="text-white/80 hover:text-white"
@@ -72,12 +75,12 @@ export default function ReservaDetallePage() {
           </div>
         </div>
 
-        <div className="mx-auto max-w-5xl px-6 py-10 md:px-8">
+        <div className="max-w-5xl px-6 py-10 mx-auto md:px-8">
           <div className="rounded-3xl border border-[#efe1d8] bg-white p-6 shadow-sm md:p-8">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
               <div>
                 <h2 className="font-serif text-3xl text-[#2b1b18]">
-                  (reserva.reservationDate)
+                  {reserva.reservationDate}
                 </h2>
                 <p className="mt-2 text-lg text-[#7a5b52]">
                   {reserva.startTime} hs · {reserva.peopleCount} personas
@@ -88,9 +91,9 @@ export default function ReservaDetallePage() {
               </div>
 
               <span
-                className={`w-fit rounded-xl px-4 py-2 text-sm font-medium ${(
+                className={`w-fit rounded-xl px-4 py-2 text-sm font-medium ${
                   reserva.status
-                )}`}
+                }`}
               >
                 {reserva.status}
               </span>
@@ -100,67 +103,73 @@ export default function ReservaDetallePage() {
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="rounded-2xl border border-[#efe1d8] bg-[#fffaf7] p-5">
-                <h3 className="font-serif text-2xl text-[#6d1e1e]">
-                  Resumen
-                </h3>
+                <h3 className="font-serif text-2xl text-[#6d1e1e]">Resumen</h3>
 
-                <div className="mt-4 flex flex-wrap items-center gap-10 text-black/90 text-lg">
-                  <p className=" flex items-center justify-center">
-                    <svg className="mx-2"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round">
-                    <circle cx="12" cy="7" r="4" />
-                    <path d="M5 21a7 7 0 0 1 14 0" />
-                    </svg> {reserva.peopleCount} personas
-                  </p>
-                  <p className=" flex items-center justify-center">
+                <div className="flex flex-wrap items-center gap-10 mt-4 text-lg text-black/90">
+                  <p className="flex items-center justify-center ">
                     <svg
-                    className="mx-2"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                      className="mx-2"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                    <circle cx="12" cy="12" r="9" />
-                    <polyline points="12 7 12 12 15 15" />
-                    </svg> {reserva.startTime} hs</p>
-                  <p className=" flex items-center justify-center">
-                    <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5 h-5"
-                    >
-                    <path d="M12 3v18" />
-                    <path d="M17 7c0-2-2-3-5-3s-5 1-5 3 2 3 5 3 5 1 5 3-2 3-5 3-5-1-5-3" />
-                    </svg> Total: {reserva.totalPrice}
+                      <circle cx="12" cy="7" r="4" />
+                      <path d="M5 21a7 7 0 0 1 14 0" />
+                    </svg>{" "}
+                    {reserva.peopleCount} personas
                   </p>
-                  <p className=" flex items-center justify-center">
+                  <p className="flex items-center justify-center ">
                     <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-5 h-5 text-gray-600">
-                    <rect x="2" y="5" width="20" height="14" rx="2" />
-                    <path d="M2 10h20" />
-                    <path d="M6 15h4" />
-                    </svg> Seña: {reserva.depositAmount}
+                      className="mx-2"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <polyline points="12 7 12 12 15 15" />
+                    </svg>{" "}
+                    {reserva.startTime} hs
+                  </p>
+                  <p className="flex items-center justify-center ">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5"
+                    >
+                      <path d="M12 3v18" />
+                      <path d="M17 7c0-2-2-3-5-3s-5 1-5 3 2 3 5 3 5 1 5 3-2 3-5 3-5-1-5-3" />
+                    </svg>{" "}
+                    Total: {reserva.totalPrice}
+                  </p>
+                  <p className="flex items-center justify-center ">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-5 h-5 text-gray-600"
+                    >
+                      <rect x="2" y="5" width="20" height="14" rx="2" />
+                      <path d="M2 10h20" />
+                      <path d="M6 15h4" />
+                    </svg>{" "}
+                    Seña: {reserva.depositAmount}
                   </p>
                 </div>
               </div>
@@ -182,17 +191,14 @@ export default function ReservaDetallePage() {
               <h3 className="font-serif text-3xl text-[#6d1e1e]">Pedidos</h3>
 
               <div className="mt-5 space-y-4">
-                {reserva.pedidos.map((pedido: any) => (
+                {reserva.pedidos.map((pedido: any, index: number) => (
                   <div
-                    key={pedido.id}
+                    key={index}
                     className="flex items-center justify-between rounded-2xl border border-[#efe1d8] p-4"
                   >
                     <div>
                       <p className="text-lg font-medium text-[#2b1b18]">
-                        {pedido.menuItem?.name}
-                      </p>
-                      <p className="text-sm text-[#8b7b76]">
-                        {pedido.menuItem?.type}
+                        {pedido.name}
                       </p>
                     </div>
 
@@ -201,7 +207,7 @@ export default function ReservaDetallePage() {
                         Cantidad: {pedido.quantity}
                       </p>
                       <p className="text-lg font-semibold text-[#2b1b18]">
-                        {pedido.price}
+                        ${pedido.price}
                       </p>
                     </div>
                   </div>
@@ -209,7 +215,7 @@ export default function ReservaDetallePage() {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 mt-8 sm:flex-row">
               <Link
                 href="/mis-reservas"
                 className="rounded-2xl border border-[#ead8cf] px-5 py-3 text-center font-medium text-[#6d1e1e]"

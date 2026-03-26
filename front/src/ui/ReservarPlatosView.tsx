@@ -8,6 +8,7 @@ import Link from "next/link";
 import { getPlatos } from "@/services/platosService";
 import { getBebidas } from "@/services/bebidasService";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useReservation } from "@/context/ReservationContext";
 
 type CartItem = IProduct & {
   quantity: number;
@@ -24,6 +25,7 @@ export default function ReservarPlatosView() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { setReservationData } = useReservation();
 
   const searchParams = useSearchParams();
 
@@ -283,17 +285,20 @@ export default function ReservarPlatosView() {
         pedidos,
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      // 1️⃣ Crear la reserva con los platos
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reservations`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      });
+      );
 
       const text = await res.text();
-
       let data;
       try {
         data = JSON.parse(text);
@@ -307,14 +312,44 @@ export default function ReservarPlatosView() {
         );
       }
 
+      // 2️⃣ Obtener el ID de la reserva recién creada
+      const resReservations = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (!resReservations.ok)
+        throw new Error("No se pudo obtener las reservas");
+
+      const reservations = await resReservations.json();
+
+      const sorted = [...reservations].sort((a, b) => {
+        const dateA = new Date(`${a.reservationDate}T${a.startTime}`).getTime();
+        const dateB = new Date(`${b.reservationDate}T${b.startTime}`).getTime();
+        return dateB - dateA;
+      });
+
+      const reservationId = sorted[0]?.id;
+      if (!reservationId) throw new Error("No se encontró el ID de la reserva");
+
+      // 3️⃣ Guardar en el context para usarlo en el pago
+      setReservationData({
+        reservationDate: reservationDate ?? "",
+        startTime,
+        peopleCount,
+        reservationId,
+      });
+
       Swal.fire({
         icon: "success",
         title: "Platos seleccionados.",
         text: "Tus platos fueron seleccionados correctamente",
         confirmButtonColor: "#000",
       });
+
       router.push("/pagos");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       Swal.fire({
         icon: "error",

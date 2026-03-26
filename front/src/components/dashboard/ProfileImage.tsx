@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProfileImage() {
   const { userData, setUserData } = useAuth();
@@ -9,6 +9,13 @@ export default function ProfileImage() {
   const [preview, setPreview] = useState<string | null>(
     userData?.user?.image ?? null,
   );
+
+  // Sincroniza el preview cuando cambia userData (por ejemplo, al recargar desde contexto)
+  useEffect(() => {
+    if (userData?.user?.image) {
+      setPreview(userData.user.image);
+    }
+  }, [userData?.user?.image]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -35,20 +42,22 @@ export default function ProfileImage() {
       const data = await res.json();
       console.log("respuesta del back:", data);
 
-      const imageUrl: string = data.user.imgUrl;
+      // Verificar cuál key usa el backend: data.user.imgUrl o data.imgUrl
+      const imageUrl: string = data.user?.imgUrl ?? data.imgUrl ?? data.image;
 
-      if (userData) {
+      if (userData && imageUrl) {
         const updated = {
           ...userData,
           user: { ...userData.user, image: imageUrl },
         };
         setUserData(updated);
         localStorage.setItem("userSession", JSON.stringify(updated));
+        setPreview(imageUrl); // Forzar actualización del preview con la URL final
       }
-
-      setPreview(imageUrl);
     } catch (error) {
       console.error("Error actualizando imagen:", error);
+      // Revertir preview si hay error
+      setPreview(userData?.user?.image ?? null);
     } finally {
       setUploading(false);
     }
