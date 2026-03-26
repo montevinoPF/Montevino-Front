@@ -37,7 +37,7 @@ export default function ChatbotWindow({ onClose }: Props) {
       msg.includes("abren") ||
       msg.includes("cierran")
     ) {
-      return "Nuestro horario es de lunes a sábado de 18:00 a 23:00.";
+      return "Nuestro horario es todos los dias de 18:00 a 00:00.";
     }
 
     if (
@@ -51,7 +51,11 @@ export default function ChatbotWindow({ onClose }: Props) {
       return "Nuestras cedes puedas verlas en la parte inferior donde encontraras un mapa interactivo";
     }
 
-    if (msg.includes("menu") || msg.includes("menú") || msg.includes("platos")) {
+    if (
+      msg.includes("menu") ||
+      msg.includes("menú") ||
+      msg.includes("platos")
+    ) {
       return "Puedes consultar nuestro menú completo desde la sección 'Menú'.";
     }
 
@@ -101,7 +105,7 @@ export default function ChatbotWindow({ onClose }: Props) {
     <div className="fixed bottom-24 right-6 z-50 w-[360px] overflow-hidden rounded-2xl border border-[#d9c4bb] bg-white shadow-2xl">
       <div className="flex items-center justify-between bg-[#7c090c] px-4 py-3 text-white">
         <h3 className="font-semibold">Asistente MonteVino</h3>
-        <button onClick={onClose} className="cursor-pointer text-lg">
+        <button onClick={onClose} className="text-lg cursor-pointer">
           ✕
         </button>
       </div>
@@ -126,7 +130,7 @@ export default function ChatbotWindow({ onClose }: Props) {
           Opciones rápidas
         </p>
 
-        <div className="mb-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-3">
           {quickOptions.map((option) => (
             <button
               key={option}
