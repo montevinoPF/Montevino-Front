@@ -103,16 +103,16 @@ export const dishValidation = (values: {
     errors.price = "El precio no puede superar $1.000.000";
   }
 
-  if (!values.file) {
-    errors.file = "La imagen es requerida";
-  } else if (!(values.file instanceof File)) {
-    errors.file = "El archivo no es válido";
-  } else if (values.file.size > 5 * 1024 * 1024) {
-    errors.file = "La imagen no puede superar los 5 MB";
-  } else if (
-    !["image/jpeg", "image/png", "image/webp"].includes(values.file.type)
-  ) {
-    errors.file = "Solo se permiten imágenes JPG, PNG o WEBP";
+  if (values.file) {
+    if (!(values.file instanceof File)) {
+      errors.file = "El archivo no es válido";
+    } else if (values.file.size > 5 * 1024 * 1024) {
+      errors.file = "La imagen no puede superar los 5 MB";
+    } else if (
+      !["image/jpeg", "image/png", "image/webp"].includes(values.file.type)
+    ) {
+      errors.file = "Solo se permiten imágenes JPG, PNG o WEBP";
+    }
   }
 
   if (values.stock === undefined || values.stock === null) {

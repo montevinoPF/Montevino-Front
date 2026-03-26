@@ -59,7 +59,11 @@ const EditPlateForm = ({ plato }: any) => {
             categoryId: plato.category?.id || plato.categoryId || "",
             type: plato.type || "platos",
           }}
-          validate={dishValidation}
+          validate={(values) => {
+            const errors = dishValidation(values);
+            delete errors.file; // La imagen no es obligatoria al editar
+            return errors;
+          }}
           onSubmit={async (values) => {
             const formData = new FormData();
             formData.append("name", values.name);
