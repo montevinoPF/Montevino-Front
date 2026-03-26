@@ -6,7 +6,7 @@ import ProfileInfo from "@/components/dashboard/ProfileInfo";
 import ReservationsSection from "@/components/dashboard/ReservationsSection";
 import Protected from "@/components/Protected";
 import { useAuth } from "@/context/AuthContext";
-import { getReservations } from "@/services/reservationsService";  
+import { getMyReservations } from "@/services/reservationsService";
 import type { Reservation } from "@/components/dashboard/ReservationsSection";
 
 export default function DashboardUser() {
@@ -17,10 +17,10 @@ export default function DashboardUser() {
   const email = userData?.user.email ?? "Sin email";
 
   useEffect(() => {
-    getReservations()
+    if (!userData) return;
+    getMyReservations()
       .then((data: Reservation[]) => {
-        const misReservas = data.filter((r) => r.user?.id === userData?.user.id);
-        setReservations(misReservas);
+        setReservations(data);
       })
       .catch((err) => console.error("Error al traer reservas:", err));
   }, [userData]);
