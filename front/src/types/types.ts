@@ -63,26 +63,43 @@ export interface IUserSession {
     name: string;
     email: string;
     role: string;
+    isActive: boolean;
     image?: string;
   };
 }
 
 export interface IReservation {
+  id: string;
   reservationDate: string;
   startTime: string;
   peopleCount: number;
-  notes: string;
-  pedidos: Array<{
-    platoId: string;
+  totalPrice: number;
+  depositAmount: number;
+  status: string;
+  user: {
+    id: string;
+    auth0Id: string;
+    email: string;
+    name: string;
+    role: "USER" | "ADMIN";
+    reservations: string[];
+  };
+  table: ITable;
+  pedidos: {
+    id: string;
     quantity: number;
-  }>;
+    price: number;
+    menuItem: IProduct;
+    reservations: string[];
+  };
+  notes: string;
 }
 export interface IPlate {
   name: string;
   price: number;
   ingredientes: string;
   description: string;
-  imageUrl: string;
+  file: File | null;
   stock: number;
   categoryId: string;
 }
@@ -92,7 +109,7 @@ export interface IPlateErrors {
   price?: string;
   ingredientes?: string;
   description?: string;
-  imageUrl?: string;
+  file?: File | null;
   stock?: string;
   categoryId?: string;
 }
@@ -135,6 +152,7 @@ export interface IUser {
   id: string;
   name: string;
   email: string;
-  role: "USER" | "ADMIN";
+  role: string;
+  isActive: boolean;
   reservations: IReserva[];
 }

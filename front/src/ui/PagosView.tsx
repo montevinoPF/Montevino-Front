@@ -192,11 +192,9 @@ export default function PagoPage() {
           })),
         }),
       });
-      console.log(reservaRes);
 
       const reservaData = await reservaRes.json();
 
-      console.log(reservaData);
 
       if (!reservaRes.ok) {
         throw new Error(reservaData.message || "No se pudo crear la reserva");
@@ -217,8 +215,6 @@ export default function PagoPage() {
       });
 
       const pagoData = await pagoRes.json();
-      console.log("pagoData completo:", pagoData);
-      console.log("keys de pagoData:", Object.keys(pagoData));
 
       if (!pagoRes.ok) {
         throw new Error(
@@ -236,8 +232,6 @@ export default function PagoPage() {
         pagoData.payment_url ||
         pagoData.data?.init_point ||
         pagoData.data?.url;
-
-      console.log("initPoint encontrado:", initPoint);
 
       if (!initPoint) {
         throw new Error(

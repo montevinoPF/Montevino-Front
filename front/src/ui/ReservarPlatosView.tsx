@@ -166,11 +166,33 @@ export default function ReservarPlatosView() {
   };
 
   const agregarAlCarrito = (item: IProduct) => {
+    // Verificar stock
+    if (item.stock === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Sin stock",
+        text: `${item.name} no tiene stock disponible`,
+        confirmButtonColor: "#7c090c",
+      });
+      return;
+    }
+
     const quantity = quantities[item.id] ?? 1;
+
+    // Verificar que la cantidad no supere el stock
+    const cantidadEnCarrito = cart.find((c) => c.id === item.id)?.quantity ?? 0;
+    if (cantidadEnCarrito + quantity > item.stock) {
+      Swal.fire({
+        icon: "warning",
+        title: "Stock insuficiente",
+        text: `Solo hay ${item.stock} unidades disponibles de ${item.name}`,
+        confirmButtonColor: "#7c090c",
+      });
+      return;
+    }
 
     setCart((prev) => {
       const existing = prev.find((cartItem) => cartItem.id === item.id);
-
       if (existing) {
         return prev.map((cartItem) =>
           cartItem.id === item.id
@@ -178,7 +200,6 @@ export default function ReservarPlatosView() {
             : cartItem,
         );
       }
-
       return [...prev, { ...item, quantity }];
     });
 
@@ -387,14 +408,19 @@ export default function ReservarPlatosView() {
                     const isReserved = cart.some(
                       (cartItem) => cartItem.id === item.id,
                     );
+                    const sinStock = item.stock === 0; // <-- Check stock
 
                     return (
                       <article
                         key={item.id}
-                        className="rounded-2xl border border-[#e5cfc5] bg-[#f1dbd098] p-4 shadow-sm"
+                        className={`rounded-2xl border p-4 shadow-sm ${
+                          sinStock
+                            ? "border-gray-300 bg-gray-100 opacity-60" // <-- Grisado si sin stock
+                            : "border-[#e5cfc5] bg-[#f1dbd098]"
+                        }`}
                       >
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-[190px_1fr]">
-                          <div className="overflow-hidden rounded-xl h-80">
+                          <div className="relative overflow-hidden rounded-xl h-80">
                             <Link href={`/menu/${item.id}`}>
                               <img
                                 src={item.imageUrl}
@@ -402,6 +428,14 @@ export default function ReservarPlatosView() {
                                 className="object-cover w-full h-48 md:h-full"
                               />
                             </Link>
+                            {/* Badge sin stock */}
+                            {sinStock && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-xl">
+                                <span className="px-3 py-1 text-sm font-bold text-white bg-red-600 rounded-full">
+                                  Sin stock
+                                </span>
+                              </div>
+                            )}
                           </div>
                           <div className="flex flex-col justify-between">
                             <div>
@@ -411,7 +445,7 @@ export default function ReservarPlatosView() {
 
                               <div className="my-3 h-px w-full bg-[#e3c8bf]" />
 
-                              <p className="text-sm leading-6 text-[#5e4a45] ">
+                              <p className="text-sm leading-6 text-[#5e4a45]">
                                 {Array.isArray(item.ingredientes)
                                   ? item.ingredientes.join(", ")
                                   : item.ingredientes}
@@ -422,11 +456,12 @@ export default function ReservarPlatosView() {
                               </h3>
                             </div>
 
-                            <div className="mt-3 ">
+                            <div className="mt-3">
                               <div className="flex items-center overflow-hidden rounded-xl border border-[#e5cfc5] bg-[#fff7f2] shadow-sm w-fit">
                                 <button
                                   onClick={() => disminuirCantidad(item.id)}
-                                  className="flex h-10 w-10 items-center justify-center text-3xl text-[#7c090c] transition hover:bg-[#f6e2d9]"
+                                  disabled={sinStock}
+                                  className="flex h-10 w-10 items-center justify-center text-3xl text-[#7c090c] transition hover:bg-[#f6e2d9] disabled:opacity-50"
                                 >
                                   -
                                 </button>
@@ -437,7 +472,8 @@ export default function ReservarPlatosView() {
 
                                 <button
                                   onClick={() => aumentarCantidad(item.id)}
-                                  className="flex h-10 w-10 items-center justify-center bg-[#7c090c] text-3xl text-white transition hover:brightness-110"
+                                  disabled={sinStock}
+                                  className="flex h-10 w-10 items-center justify-center bg-[#7c090c] text-3xl text-white transition hover:brightness-110 disabled:opacity-50"
                                 >
                                   +
                                 </button>
@@ -446,17 +482,19 @@ export default function ReservarPlatosView() {
                               <div className="relative flex flex-col gap-2 mt-3 overflow-hidden font-semibold text-white transition duration-300 rounded-md shadow-lg cursor-pointer bg-gradient-to-r group">
                                 <button
                                   onClick={() => agregarAlCarrito(item)}
-                                  className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
+                                  disabled={sinStock}
+                                  className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#7c090c] to-[#520509] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  {" "}
                                   <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
-                                  {isReserved
-                                    ? activeTab === "platos"
-                                      ? "Ya reservado"
-                                      : "Ya reservada"
-                                    : activeTab === "platos"
-                                      ? "Reservar plato"
-                                      : "Reservar bebida"}
+                                  {sinStock
+                                    ? "Sin stock"
+                                    : isReserved
+                                      ? activeTab === "platos"
+                                        ? "Ya reservado"
+                                        : "Ya reservada"
+                                      : activeTab === "platos"
+                                        ? "Reservar plato"
+                                        : "Reservar bebida"}
                                 </button>
                               </div>
                             </div>

@@ -17,6 +17,7 @@ const LoginView = () => {
         validate={loginValidations}
         onSubmit={async (values) => {
           const response = await login(values);
+          if (!response) return;
           const { token, user } = response;
           setUserData({ token, user });
           router.push("/");
