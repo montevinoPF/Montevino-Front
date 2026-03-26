@@ -179,44 +179,6 @@ export default function PagoPage() {
     clearReservationData();
   };
 
-  const handlePagoSimulado = async () => {
-    if (!validarReserva()) return;
-
-    if (paymentMethod === "tarjeta") {
-      if (!cardNumber || !cardExpiry || !cardCvv) {
-        Swal.fire({
-          icon: "warning",
-          title: "Faltan datos de la tarjeta",
-          text: "Completá número, vencimiento y CVV.",
-        });
-        return;
-      }
-    }
-
-    setLoading(true);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-
-      Swal.fire({
-        icon: "success",
-        title: "Pago realizado",
-        text: "La seña fue abonada correctamente.",
-      });
-
-      limpiarReservaLocal();
-      router.push("/mis-reservas");
-    } catch {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo procesar el pago.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const validarDatosReserva = () => {
     if (!reservationDate || !startTime || !peopleCount) {
       Swal.fire({
@@ -297,12 +259,8 @@ export default function PagoPage() {
   };
 
   const handlePagar = async () => {
-    if (paymentMethod === "mercadopago") {
-      await handleMercadoPagoReal();
-      return;
-    }
-
-    await handlePagoSimulado();
+    await handleMercadoPagoReal();
+    return;
   };
 
   if (loadingReserva) {
@@ -415,73 +373,6 @@ export default function PagoPage() {
                   </span>
                 </div>
               </button>
-
-              <div
-                className={`rounded-2xl border p-5 transition ${
-                  paymentMethod === "tarjeta"
-                    ? "border-[#8b1e2d] bg-[#f8ece6]"
-                    : "border-[#e5cfc5] bg-white"
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("tarjeta")}
-                  className="flex items-center w-full gap-4 text-left"
-                >
-                  <div
-                    className={`h-6 w-6 rounded-full border-2 ${
-                      paymentMethod === "tarjeta"
-                        ? "border-[#8b1e2d] bg-[#8b1e2d]"
-                        : "border-[#c9b1a7]"
-                    }`}
-                  />
-                  <span className="text-xl font-serif text-[#6d1e1e]">
-                    Tarjeta de crédito o débito
-                  </span>
-                </button>
-
-                {paymentMethod === "tarjeta" && (
-                  <div className="mt-6 space-y-4">
-                    <input
-                      type="text"
-                      placeholder="Número de tarjeta"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full rounded-xl border border-[#e5cfc5] bg-white px-4 py-3 outline-none"
-                    />
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        placeholder="MM / YY"
-                        value={cardExpiry}
-                        onChange={(e) => setCardExpiry(e.target.value)}
-                        className="w-full rounded-xl border border-[#e5cfc5] bg-white px-4 py-3 outline-none"
-                      />
-
-                      <input
-                        type="text"
-                        placeholder="CVV"
-                        value={cardCvv}
-                        onChange={(e) => setCardCvv(e.target.value)}
-                        className="w-full rounded-xl border border-[#e5cfc5] bg-white px-4 py-3 outline-none"
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-3 pt-2 text-sm text-[#7b6761]">
-                      <span className="rounded-md border border-[#e5cfc5] px-3 py-2">
-                        VISA
-                      </span>
-                      <span className="rounded-md border border-[#e5cfc5] px-3 py-2">
-                        Mastercard
-                      </span>
-                      <span className="rounded-md border border-[#e5cfc5] px-3 py-2">
-                        Amex
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
 
             <button
