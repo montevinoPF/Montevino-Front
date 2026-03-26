@@ -107,8 +107,8 @@ export const dishValidation = (values: {
     errors.file = "La imagen es requerida";
   } else if (!(values.file instanceof File)) {
     errors.file = "El archivo no es válido";
-  } else if (values.file.size > 500 * 1024) {
-    errors.file = "La imagen no puede superar los 500 KB";
+  } else if (values.file.size > 5 * 1024 * 1024) {
+    errors.file = "La imagen no puede superar los 5 MB";
   } else if (
     !["image/jpeg", "image/png", "image/webp"].includes(values.file.type)
   ) {

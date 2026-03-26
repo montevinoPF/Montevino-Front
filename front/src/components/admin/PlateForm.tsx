@@ -72,7 +72,7 @@ const PlateForm = () => {
               </label>
               <Field
                 id="name"
-                type="name"
+                type="text"
                 name="name"
                 placeholder="Pasta al Pesto"
                 className="w-full p-2 border border-gray-300 rounded-md outline-none focus-within:ring-1 focus-within:ring-[#FED0BB]"
@@ -167,6 +167,13 @@ const PlateForm = () => {
                   </div>
                 )}
               </div>
+              <ErrorMessage
+                name="file"
+                component="div"
+                className="self-start text-red-500"
+              />
+
+              <label htmlFor="categoryId" className="self-start"></label>
 
               <label htmlFor="categoryId" className="self-start">
                 Categoria
@@ -219,7 +226,7 @@ const PlateForm = () => {
                   as="select"
                   className="w-full p-2 outline-none"
                 >
-                  <option>Selecciona un tipo</option>
+                  <option value="">Selecciona un tipo</option>
                   {tipos.map((tipo) => (
                     <option key={tipo.id} value={tipo.id}>
                       {tipo.name}
@@ -231,9 +238,9 @@ const PlateForm = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
+                className="relative overflow-hidden w-full py-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-lg shadow-lg transition duration-300 group cursor-pointer disabled:opacity-60"
               >
-                Subir
+                {isSubmitting ? "Guardando..." : "Subir producto"}
                 <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
               </button>
             </Form>

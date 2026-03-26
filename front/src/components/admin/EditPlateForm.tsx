@@ -259,7 +259,7 @@ const EditPlateForm = ({ plato }: any) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="relative overflow-hidden w-full py-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-lg shadow-lg transition duration-300 group cursor-pointer disabled:opacity-60 cursor-pointer"
+                  className="relative overflow-hidden w-full py-2 bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-lg shadow-lg transition duration-300 group cursor-pointer disabled:opacity-60"
                 >
                   {isSubmitting ? "Guardando..." : "Guardar Cambios"}
                   <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
