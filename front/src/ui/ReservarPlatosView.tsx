@@ -270,12 +270,11 @@ export default function ReservarPlatosView() {
       const session = localStorage.getItem("userSession");
       const token = session ? JSON.parse(session).token : null;
 
-      const pedidos = cart
-        .filter((item) => item.type?.toLowerCase() === "platos")
-        .map((item) => ({
-          platoId: item.id,
-          quantity: item.quantity,
-        }));
+      // ✅ Incluir platos Y bebidas
+      const pedidos = cart.map((item) => ({
+        platoId: item.id,
+        quantity: item.quantity,
+      }));
 
       const body = {
         reservationDate,
@@ -285,7 +284,6 @@ export default function ReservarPlatosView() {
         pedidos,
       };
 
-      // 1️⃣ Crear la reserva con los platos
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/reservations`,
         {
@@ -312,35 +310,55 @@ export default function ReservarPlatosView() {
         );
       }
 
-      // 2️⃣ Obtener el ID de la reserva recién creada
-      const resReservations = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      // ✅ Usar el ID que devuelve el backend directamente, sin hacer otro fetch
+      const reservationId = data?.id || data?.reservationId;
 
-      if (!resReservations.ok)
-        throw new Error("No se pudo obtener las reservas");
+      if (!reservationId) {
+        // Fallback: buscar en myreservations si el back no devuelve el ID
+        const resReservations = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
-      const reservations = await resReservations.json();
+        if (!resReservations.ok)
+          throw new Error("No se pudo obtener las reservas");
 
-      const sorted = [...reservations].sort((a, b) => {
-        const dateA = new Date(`${a.reservationDate}T${a.startTime}`).getTime();
-        const dateB = new Date(`${b.reservationDate}T${b.startTime}`).getTime();
-        return dateB - dateA;
-      });
+        const reservations = await resReservations.json();
 
-      const reservationId = sorted[0]?.id;
-      if (!reservationId) throw new Error("No se encontró el ID de la reserva");
+        const sorted = [...reservations].sort((a, b) => {
+          const dateA = new Date(
+            `${a.reservationDate}T${a.startTime}`,
+          ).getTime();
+          const dateB = new Date(
+            `${b.reservationDate}T${b.startTime}`,
+          ).getTime();
+          return dateB - dateA;
+        });
 
-      // 3️⃣ Guardar en el context para usarlo en el pago
-      setReservationData({
-        reservationDate: reservationDate ?? "",
-        startTime,
-        peopleCount,
-        reservationId,
-      });
+        const idFallback = sorted[0]?.id;
+        if (!idFallback) throw new Error("No se encontró el ID de la reserva");
+
+        setReservationData({
+          reservationDate: reservationDate ?? "",
+          startTime,
+          peopleCount,
+          reservationId: idFallback,
+        });
+
+        console.log("reservationId (fallback):", idFallback); // debug
+      } else {
+        // ✅ Guardar en context con el ID directo del backend
+        setReservationData({
+          reservationDate: reservationDate ?? "",
+          startTime,
+          peopleCount,
+          reservationId,
+        });
+
+        console.log("reservationId (directo):", reservationId); // debug
+      }
 
       Swal.fire({
         icon: "success",
