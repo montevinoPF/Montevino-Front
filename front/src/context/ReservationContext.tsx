@@ -17,6 +17,7 @@ type ReservationData = {
   reservationDate: string;
   startTime: string;
   peopleCount: number;
+  reservationId?: string; // ✅ Agregar esto
 };
 
 interface IReservationContext {
@@ -47,6 +48,7 @@ export const ReservationProvider = ({
     reservationDate: "",
     startTime: "",
     peopleCount: 1,
+    reservationId: "", // ✅ Agregar esto
   });
 
   useEffect(() => {
@@ -127,6 +129,7 @@ export const ReservationProvider = ({
             reservationDate: "",
             startTime: "",
             peopleCount: 1,
+            reservationId: "", // ✅ Agregar esto
           }),
 
         agregarAlCarrito,

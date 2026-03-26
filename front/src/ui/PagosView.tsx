@@ -167,43 +167,11 @@ export default function PagoPage() {
       const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
       const token = session?.token;
 
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const reservaRes = await fetch(`${BACKURL}/reservations`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          reservationDate,
-          startTime,
-          peopleCount,
-          notes: comentarios,
-          pedidos: cart.map((item) => ({
-            platoId: item.id,
-            quantity: item.quantity,
-          })),
-        }),
-      });
-
-      const reservaData = await reservaRes.json();
-
-
-      if (!reservaRes.ok) {
-        throw new Error(reservaData.message || "No se pudo crear la reserva");
-      }
-
-      const reservationId = reservaData?.id || reservaData?.reservationId;
+      // ✅ Usamos el ID de la reserva ya creada
+      const reservationId = reservationData.reservationId; // <-- ajustá el nombre del campo según tu context
 
       if (!reservationId) {
-        throw new Error("La reserva no devolvió un ID");
+        throw new Error("No se encontró el ID de la reserva");
       }
 
       const pagoRes = await fetch(`${BACKURL}/payments/${reservationId}`, {

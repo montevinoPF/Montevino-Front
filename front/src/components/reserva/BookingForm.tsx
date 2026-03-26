@@ -12,32 +12,15 @@ import Swal from "sweetalert2";
 import { useReservation } from "@/context/ReservationContext";
 
 export default function BookingForm() {
-  const submitReservation = async () => {
-    try {
-      const reservationDate = date ? format(date, "yyyy-MM-dd") : "";
-      const startTime = time.replace(/hs$/i, "").trim();
-      const peopleCount = guests;
-
-      await createReservation({
-        reservationDate,
-        startTime,
-        peopleCount,
-        notes: "",
-        pedidos: [],
-      });
-
-      alert("Reserva creada");
-    } catch (error: unknown) {
-      console.error(error);
-      alert("No se pudo crear la reserva");
-    }
-  };
-
-  // Estados
   const [guests, setGuests] = useState(3);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [time, setTime] = useState("11:45hs");
   const [showOptions, setShowOptions] = useState(false);
+
+  const { setReservationData } = useReservation();
+  const router = useRouter();
+
+  const VALID_TIMES = ["18:00", "20:00", "22:00", "00:00"];
 
   const formatDate = (d: Date | undefined) => {
     if (!d) return "";
@@ -47,11 +30,6 @@ export default function BookingForm() {
       month: "short",
     });
   };
-
-  const { setReservationData } = useReservation();
-  const router = useRouter();
-
-  const VALID_TIMES = ["18:00", "20:00", "22:00", "00:00"];
 
   const validarYContinuar = () => {
     const today = new Date();
@@ -82,32 +60,124 @@ export default function BookingForm() {
     setShowOptions(true);
   };
 
+  // ✅ Función reutilizable para crear la reserva
+  const crearReserva = async () => {
+    const fechaString = date ? format(date, "yyyy-MM-dd") : "";
+    const horaString = time.replace("hs", "").trim();
+
+    const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+    const token = session?.token;
+
+    // 1️⃣ Crear la reserva
+    await createReservation({
+      reservationDate: fechaString,
+      startTime: horaString,
+      peopleCount: guests,
+      notes: "",
+      pedidos: [],
+    });
+
+    // 2️⃣ Obtener las reservas del usuario para agarrar el ID de la última
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!res.ok) throw new Error("No se pudo obtener las reservas");
+
+    const reservations = await res.json();
+
+    const sorted = [...reservations].sort((a, b) => {
+      const dateA = new Date(`${a.reservationDate}T${a.startTime}`).getTime();
+      const dateB = new Date(`${b.reservationDate}T${b.startTime}`).getTime();
+      return dateB - dateA;
+    });
+
+    const lastReservation = sorted[0];
+    const reservationId = lastReservation?.id;
+
+    if (!reservationId) throw new Error("No se encontró el ID de la reserva");
+
+    // 4️⃣ Guardar en el context
+    setReservationData({
+      reservationDate: fechaString,
+      startTime: horaString,
+      peopleCount: guests,
+      reservationId,
+    });
+
+    return { fechaString, horaString, reservationId };
+  };
+
   const irAPlatillos = () => {
     const fechaString = date ? format(date, "yyyy-MM-dd") : "";
-    const horaString = time.replace("hs", "");
+    const horaString = time.replace("hs", "").trim();
 
+    // ✅ Solo guardar datos en el context, SIN crear la reserva
     setReservationData({
       reservationDate: fechaString,
       startTime: horaString,
       peopleCount: guests,
     });
+
     router.push(
       `/reservar/platos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
     );
   };
 
-  const reservarDirecto = () => {
-    const fechaString = date ? format(date, "yyyy-MM-dd") : "";
-    const horaString = time.replace("hs", "");
+  const reservarDirecto = async () => {
+    try {
+      const fechaString = date ? format(date, "yyyy-MM-dd") : "";
+      const horaString = time.replace("hs", "").trim();
 
-    setReservationData({
-      reservationDate: fechaString,
-      startTime: horaString,
-      peopleCount: guests,
-    });
-    router.push(
-      `/pagos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
-    );
+      const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
+      const token = session?.token;
+
+      // ✅ Crear reserva sin platos solo cuando va directo al pago
+      await createReservation({
+        reservationDate: fechaString,
+        startTime: horaString,
+        peopleCount: guests,
+        notes: "",
+        pedidos: [],
+      });
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/reservations/myreservations`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      const reservations = await res.json();
+
+      const sorted = [...reservations].sort((a, b) => {
+        const dateA = new Date(`${a.reservationDate}T${a.startTime}`).getTime();
+        const dateB = new Date(`${b.reservationDate}T${b.startTime}`).getTime();
+        return dateB - dateA;
+      });
+
+      const reservationId = sorted[0]?.id;
+
+      setReservationData({
+        reservationDate: fechaString,
+        startTime: horaString,
+        peopleCount: guests,
+        reservationId,
+      });
+
+      router.push("/pagos");
+    } catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo crear la reserva. Intentá de nuevo.",
+        confirmButtonColor: "#7c090c",
+      });
+    }
   };
 
   return (
