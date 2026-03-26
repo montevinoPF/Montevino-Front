@@ -15,9 +15,19 @@ const RegisterView = () => {
       <Formik
         initialValues={{ name: "", email: "", password: "" }}
         validate={registerValidations}
-        onSubmit={async (values) => {
-          await register(values);
-          router.push("/login");
+        onSubmit={async (values, { setSubmitting }) => {
+          try {
+            const result = await register(values);
+            if (result !== undefined) {
+              // Solo redirige si el registro fue exitoso
+              router.push("/login");
+            }
+          } catch (error) {
+            // El Swal de error ya se muestra en authService
+            console.error("Error en registro:", error);
+          } finally {
+            setSubmitting(false);
+          }
         }}
       >
         {({ isSubmitting }) => (

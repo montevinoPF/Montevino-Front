@@ -87,7 +87,6 @@ export async function login(userData: ILogin) {
   }
 }
 
-// ...existing code...
 export async function register(userData: IRegister) {
   try {
     const response = await fetch(`${BACKURL}/auth/register`, {
@@ -100,8 +99,6 @@ export async function register(userData: IRegister) {
 
     const data = await response.json();
 
-    // El backend devuelve 500 pero igual crea el usuario
-    // Tratamos tanto el éxito como el 500 como registro exitoso
     if (response.ok || response.status === 500) {
       await Swal.fire({
         icon: "success",
@@ -113,30 +110,37 @@ export async function register(userData: IRegister) {
       return data;
     }
 
-    // Solo lanza error si NO es 500 (ej: 400, 409 email duplicado)
-    throw new Error(data.message || "Error al registrarse");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    // Si el error viene del throw de arriba
-    if (error.message?.includes("correo") || error.message?.includes("email")) {
+    // Email duplicado u otro error conocido
+    const mensaje = data.message?.toLowerCase() || "";
+    if (
+      mensaje.includes("correo") ||
+      mensaje.includes("email") ||
+      mensaje.includes("duplicate")
+    ) {
       await Swal.fire({
         icon: "error",
         title: "Error",
         text: "El correo electrónico ya está en uso.",
         confirmButtonColor: "black",
       });
-      throw new Error(error);
-    }
-    // Si es cualquier otro error de red o inesperado
-    if (!error.message?.includes("Registro exitoso")) {
+    } else {
       await Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Ocurrió un error al registrarse.",
+        text: data.message || "Ocurrió un error al registrarse.",
         confirmButtonColor: "black",
       });
-      throw new Error(error);
     }
+
+    return undefined; // <-- No lanza error, solo devuelve undefined para que el onSubmit no redirija
+  } catch (error: any) {
+    await Swal.fire({
+      icon: "error",
+      title: "Error de conexión",
+      text: "No se pudo conectar con el servidor.",
+      confirmButtonColor: "black",
+    });
+    return undefined;
   }
 }
 
