@@ -231,6 +231,19 @@ export default function PagoPage() {
 
   const handleMercadoPagoReal = async () => {
     if (!validarDatosReserva()) return;
+
+    // ✅ Validar que el ID existe ANTES de hacer el fetch
+    if (!reservationId) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se encontró el ID de la reserva. Por favor volvé a intentarlo.",
+      });
+      return;
+    }
+
+    console.log("Pagando reserva con ID:", reservationId); // debug
+
     setLoading(true);
 
     try {
