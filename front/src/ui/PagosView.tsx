@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import Protected from "@/components/Protected";
 import { useReservation } from "@/context/ReservationContext";
@@ -19,6 +19,9 @@ const BACKURL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function PagoPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const reservationIdFromUrl = searchParams.get("reservationId");
+
   const { reservationData, clearReservationData } = useReservation();
 
   const [cart, setCart] = useState<ProductItem[]>([]);
@@ -26,28 +29,88 @@ export default function PagoPage() {
   const [paymentMethod, setPaymentMethod] = useState<"mercadopago" | "tarjeta">(
     "mercadopago",
   );
-
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvv, setCardCvv] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Estado para reserva cargada desde URL
+  const [reservaFromUrl, setReservaFromUrl] = useState<any>(null);
+  const [loadingReserva, setLoadingReserva] = useState(false);
   useEffect(() => {
+    if (!reservationIdFromUrl) return;
+
+    const loadReserva = async () => {
+      setLoadingReserva(true);
+      try {
+        const session = JSON.parse(
+          localStorage.getItem("userSession") ?? "null",
+        );
+        const token = session?.token;
+
+        const res = await fetch(`${BACKURL}/reservations/myreservations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+
+        const reservaEncontrada = data.find(
+          (reserva: any) => reserva.id === reservationIdFromUrl,
+        );
+
+        if (!res.ok)
+          throw new Error(data.message || "Error al cargar la reserva");
+
+        setReservaFromUrl(reservaEncontrada);
+
+        if (reservaEncontrada.pedidos?.length) {
+          const cartFromReserva: ProductItem[] = reservaEncontrada.pedidos.map(
+            (pedido: any) => ({
+              name: pedido.name || "Producto",
+              price: pedido.price || 0,
+              quantity: pedido.quantity || 1,
+            }),
+          );
+          setCart(cartFromReserva);
+        }
+
+        if (reservaEncontrada.notes) setComentarios(reservaEncontrada.notes);
+      } catch (error: any) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.message || "No se pudo cargar la reserva",
+        });
+      } finally {
+        setLoadingReserva(false);
+      }
+    };
+
+    loadReserva();
+  }, [reservationIdFromUrl]);
+
+  // Si NO viene de URL, cargar del localStorage (flujo normal)
+  useEffect(() => {
+    if (reservationIdFromUrl) return; // ya lo maneja el useEffect de arriba
+
     const savedCart = localStorage.getItem("montevino_reserva_cart");
     const savedComentarios = localStorage.getItem(
       "montevino_reserva_comentarios",
     );
+    if (savedCart) setCart(JSON.parse(savedCart));
+    if (savedComentarios) setComentarios(savedComentarios);
+  }, [reservationIdFromUrl]);
 
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-
-    if (savedComentarios) {
-      setComentarios(savedComentarios);
-    }
-  }, []);
-
-  const { reservationDate, startTime, peopleCount } = reservationData;
+  // Datos de la reserva: usa los del backend si vinieron por URL, sino del context
+  const reservationDate =
+    reservaFromUrl?.reservationDate || reservationData.reservationDate;
+  const startTime = reservaFromUrl?.startTime || reservationData.startTime;
+  const peopleCount =
+    reservaFromUrl?.peopleCount || reservationData.peopleCount;
+  const reservationId = reservationIdFromUrl || reservationData.reservationId;
 
   const platos = useMemo(() => {
     return cart.filter((item) => item.type?.toLowerCase() === "platos");
@@ -154,25 +217,30 @@ export default function PagoPage() {
     }
   };
 
-  const handleMercadoPagoReal = async () => {
-    if (!validarReserva()) return;
+  const validarDatosReserva = () => {
+    if (!reservationDate || !startTime || !peopleCount) {
+      Swal.fire({
+        icon: "warning",
+        title: "Faltan datos de la reserva",
+        text: "No se pudieron cargar los datos de la reserva.",
+      });
+      return false;
+    }
+    return true;
+  };
 
+  const handleMercadoPagoReal = async () => {
+    if (!validarDatosReserva()) return;
     setLoading(true);
 
     try {
-      if (!BACKURL) {
-        throw new Error("Falta configurar NEXT_PUBLIC_BACKURL");
-      }
+      if (!BACKURL) throw new Error("Falta configurar NEXT_PUBLIC_BACKURL");
 
       const session = JSON.parse(localStorage.getItem("userSession") ?? "null");
       const token = session?.token;
 
-      // ✅ Usamos el ID de la reserva ya creada
-      const reservationId = reservationData.reservationId; // <-- ajustá el nombre del campo según tu context
-
-      if (!reservationId) {
-        throw new Error("No se encontró el ID de la reserva");
-      }
+      // ✅ Ahora usa el ID correcto ya sea de URL o del context
+      if (!reservationId) throw new Error("No se encontró el ID de la reserva");
 
       const pagoRes = await fetch(`${BACKURL}/payments/${reservationId}`, {
         method: "POST",
@@ -209,11 +277,7 @@ export default function PagoPage() {
 
       window.location.href = initPoint;
     } catch (error: any) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.message || "No se pudo iniciar Mercado Pago",
-      });
+      Swal.fire({ icon: "error", title: "Error", text: error.message });
     } finally {
       setLoading(false);
     }
@@ -227,6 +291,16 @@ export default function PagoPage() {
 
     await handlePagoSimulado();
   };
+
+  if (loadingReserva) {
+    return (
+      <Protected>
+        <div className="min-h-screen bg-[#f7efea] flex items-center justify-center">
+          <p className="text-[#6d1e1e] text-xl">Cargando reserva...</p>
+        </div>
+      </Protected>
+    );
+  }
 
   return (
     <Protected>
@@ -270,7 +344,7 @@ export default function PagoPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  {startTime} hs
+                  {/* ❌ ANTES: {startTime} hs estaba acá dentro del SVG */}
                   <circle cx="12" cy="12" r="9" />
                   <polyline points="12 7 12 12 15 15" />
                 </svg>
@@ -289,7 +363,7 @@ export default function PagoPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  {peopleCount} personas
+                  {/* ❌ ANTES: {peopleCount} personas estaba acá dentro del SVG */}
                   <circle cx="12" cy="7" r="4" />
                   <path d="M5 21a7 7 0 0 1 14 0" />
                 </svg>{" "}
@@ -432,7 +506,7 @@ export default function PagoPage() {
                 {formatReservationDate(reservationDate)}
               </span>
 
-              <span className="flex items-center w-full gap-2 mt-6 space-y-4">
+              <span className="flex items-center w-full gap-2">
                 <svg
                   width="24"
                   height="24"
@@ -443,14 +517,14 @@ export default function PagoPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  {startTime} hs
+                  {/* ❌ ANTES: {startTime} hs estaba acá dentro del SVG */}
                   <circle cx="12" cy="12" r="9" />
                   <polyline points="12 7 12 12 15 15" />
                 </svg>
                 {startTime} hs
               </span>
 
-              <span className="flex items-center w-full gap-2 mt-6 space-y-4">
+              <span className="flex items-center w-full gap-2">
                 <svg
                   width="24"
                   height="24"
@@ -461,7 +535,7 @@ export default function PagoPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  {peopleCount} personas
+                  {/* ❌ ANTES: {peopleCount} personas estaba acá dentro del SVG */}
                   <circle cx="12" cy="7" r="4" />
                   <path d="M5 21a7 7 0 0 1 14 0" />
                 </svg>{" "}
@@ -471,40 +545,14 @@ export default function PagoPage() {
 
             <div className="my-6 h-px bg-[#e3c8bf]" />
 
-            <h3 className="font-serif text-3xl text-[#6d1e1e]">Platos</h3>
+            <h3 className="font-serif text-3xl text-[#6d1e1e]">Productos</h3>
             <div className="mt-4 space-y-3">
-              {platos.length === 0 ? (
-                <p className="text-[#7b6761]">No agregaste platos.</p>
+              {cart.length === 0 ? (
+                <p className="text-[#7b6761]">No agregaste productos.</p>
               ) : (
-                platos.map((item) => (
+                cart.map((item, index) => (
                   <div
-                    key={item.id}
-                    className="flex justify-between gap-4 text-lg"
-                  >
-                    <p className="text-[#4f2b2b]">
-                      {item.name}
-                      <span className="ml-2 text-[#8c6a61]">
-                        x{item.quantity}
-                      </span>
-                    </p>
-                    <p className="font-semibold text-[#4f2b2b]">
-                      ${formatPrice(Number(item.price) * item.quantity)}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-
-            <div className="my-6 h-px bg-[#e3c8bf]" />
-
-            <h3 className="font-serif text-3xl text-[#6d1e1e]">Bebidas</h3>
-            <div className="mt-4 space-y-3">
-              {bebidas.length === 0 ? (
-                <p className="text-[#7b6761]">No agregaste bebidas.</p>
-              ) : (
-                bebidas.map((item) => (
-                  <div
-                    key={item.id}
+                    key={item.id || index} // <-- index como fallback si id es undefined
                     className="flex justify-between gap-4 text-lg"
                   >
                     <p className="text-[#4f2b2b]">

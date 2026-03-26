@@ -115,7 +115,7 @@ const RegisterView = () => {
               disabled={isSubmitting}
               className="relative overflow-hidden py-2 w-full bg-gradient-to-r from-[#3d0c07] to-[#56070C] text-white font-semibold rounded-md shadow-lg transition duration-300 group cursor-pointer"
             >
-              Registrarse
+              {isSubmitting ? "Creando cuenta..." : "Registrarse"}
               <span className="absolute inset-0 transition-transform -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:translate-x-full duration-1500"></span>
             </button>
             <span>o</span>
