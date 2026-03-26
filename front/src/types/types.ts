@@ -69,31 +69,16 @@ export interface IUserSession {
 }
 
 export interface IReservation {
-  id: string;
   reservationDate: string;
   startTime: string;
   peopleCount: number;
-  totalPrice: number;
-  depositAmount: number;
-  status: string;
-  user: {
-    id: string;
-    auth0Id: string;
-    email: string;
-    name: string;
-    role: "USER" | "ADMIN";
-    reservations: string[];
-  };
-  table: ITable;
-  pedidos: {
-    id: string;
-    quantity: number;
-    price: number;
-    menuItem: IProduct;
-    reservations: string[];
-  };
   notes: string;
+  pedidos: Array<{
+    platoId: string;
+    quantity: number;
+  }>;
 }
+
 export interface IPlate {
   name: string;
   price: number;

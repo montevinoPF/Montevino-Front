@@ -33,7 +33,6 @@ export default function BookingForm() {
     }
   };
 
-
   // Estados
   const [guests, setGuests] = useState(3);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -50,7 +49,7 @@ export default function BookingForm() {
   };
 
   const { setReservationData } = useReservation();
-const router = useRouter();
+  const router = useRouter();
 
   const VALID_TIMES = ["18:00", "20:00", "22:00", "00:00"];
 
@@ -88,10 +87,10 @@ const router = useRouter();
     const horaString = time.replace("hs", "");
 
     setReservationData({
-    reservationDate: fechaString,
-    startTime: horaString,
-    peopleCount: guests,
-  });
+      reservationDate: fechaString,
+      startTime: horaString,
+      peopleCount: guests,
+    });
     router.push(
       `/reservar/platos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
     );
@@ -100,17 +99,16 @@ const router = useRouter();
   const reservarDirecto = () => {
     const fechaString = date ? format(date, "yyyy-MM-dd") : "";
     const horaString = time.replace("hs", "");
-    
-   setReservationData({
-    reservationDate: fechaString,
-    startTime: horaString,
-    peopleCount: guests,
-  });
+
+    setReservationData({
+      reservationDate: fechaString,
+      startTime: horaString,
+      peopleCount: guests,
+    });
     router.push(
       `/pagos?fecha=${fechaString}&hora=${horaString}&personas=${guests}`,
     );
   };
-
 
   return (
     <Protected>
